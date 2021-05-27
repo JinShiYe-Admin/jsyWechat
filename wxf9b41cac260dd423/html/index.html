@@ -1,0 +1,35 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title>教宝校园</title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../css/mui.min.css" rel="stylesheet" />
+		<link rel="stylesheet" href="../css/common.css" />
+		<link rel="stylesheet" href="../fonts/iconfont1.css" />
+		<link rel="stylesheet" href="../css/mui.picker.min.css" />
+		<link href="../css/mui.poppicker.css" rel="stylesheet" />
+		<style type="text/css">
+		</style>
+	</head>
+
+	<body style="background: white;">
+		<script type="text/javascript">
+			window.onload = function() {
+				console.log('页面url:' + window.location.href);
+				var tempUrl = window.location.href;
+				console.log('tempUrl0:'+tempUrl);
+				var tempUrl1 = tempUrl.replace('index','registerIndex');
+				console.log('tempUrl1:'+tempUrl1);
+				var tempArray = tempUrl.split('/');
+				var appid = tempArray[4];
+				console.log('tempArray:'+JSON.stringify(tempArray));
+				var tempGo = 'https://jsypay.jiaobaowang.net/jsypaym/wxpay/ThdGetOpenid.ashx?appid='+appid+'&returi='+encodeURI(tempUrl1);
+				// 向服务器传递appid、返回URL
+				location.replace(tempGo);
+			};
+		</script>
+	</body>
+
+</html>
