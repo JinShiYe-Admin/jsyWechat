@@ -1,0 +1,391 @@
+<!doctype html>
+<html>
+	<!--  
+	-->
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../../css/mui.min.css" rel="stylesheet" />
+		<link href="../../css/common.css" rel="stylesheet" />
+		<link rel="stylesheet" href="../../css/mui.picker.min.css" />
+		<link href="../../css/mui.poppicker.css" rel="stylesheet" />
+		<style>
+			[v-cloak] {
+				visibility: hidden;
+				display:none !important;
+			}
+			html,
+			body {
+				background-color: #efeff4;
+			}
+			
+			.mui-bar~.mui-content .mui-fullscreen {
+				top: 44px;
+				height: auto;
+			}
+			
+			.line-green{
+				background-color: #00CFBD;
+				margin-bottom: 0.3125rem;
+				height: 1px;
+			}
+			
+			.line {
+				right: 0;
+				bottom: 0;
+				left: 0;
+				height: 1px;
+				content: '';
+				-webkit-transform: scaleY(.5);
+				transform: scaleY(.5);
+				background-color: #e4e4e4;
+			}
+			
+			.double-line{
+				height: 10px;
+				background-color: #EAEAEA;
+			}
+			.aCss {
+				font-size: 15px;
+				color: #333;
+				width: 5rem;
+			}
+			
+			.iCss{
+				word-break: break-all !important;
+				word-wrap: break-word !important;
+			}
+			.iCss-right{
+				text-align: right;
+			}
+			
+			.mui-input-row label~input,.mui-input-row label~select, .mui-input-row label~textarea ,
+			input::-webkit-input-placeholder,textarea::-webkit-input-placeholder {
+				color: #999;
+				/* placeholder字体大小  */
+				font-size: 14px;
+			}
+			
+			.leaveType {
+				color: #00CFBD;
+				padding: 3px;
+				font-size: 13px;
+				border-radius: 2px;
+				border: 1px solid #00CFBD;
+			}
+			
+			.leaveType-cr {
+				color: #FF5733;
+				padding: 3px;
+				font-size: 13px;
+				border-radius: 2px;
+				border: 1px solid #FF5733;
+			}
+			.mui-btn-bottom,.mui-btn-bottom-success{
+				width: 45%;
+				margin:0 2%;
+				color: #FFFFFF;
+				height: 45px;
+				font-size: 16px;
+				background: #ED4C51;
+				border: 0;
+			}
+			.mui-btn-bottom-success{
+				background: #00CFBD;
+			}
+		</style>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav" id="tempVue">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 v-cloak class="mui-title">{{titleName}}</h1>
+		</header>
+		<div v-cloak id="datasource" class="mui-content mui-fullscreen" style="z-index:0">
+			<div v-cloak class="mui-scroll-wrapper" style="margin-top: 44px;background-color: #FFFFFF;">
+				<div v-cloak class="mui-scroll">
+					<div v-cloak class="mui-input-row" style="margin-top: 0.425rem;">
+						<label class="aCss" >请假申请人</label>
+						<input type="text" class="iCss-right" placeholder="暂无数据" :value="detailData.grd_name+' '+detailData.cls_name+' '+detailData.stu_name" readonly>
+					</div>
+					<div class="line"></div>
+					<div v-cloak class="mui-input-row">
+						<label class="aCss" >请假时间</label>
+						<input type="text" class="iCss-right" placeholder="暂无数据" :value="'共计:'+ detailData.apply_time" readonly>
+						<input type="text" style="width:100%" class="iCss-right" placeholder="暂无数据" :value="detailData.begin_time+' 至 '+detailData.end_time" readonly>
+					</div>
+					<div class="line"></div>
+					<div v-cloak class="mui-input-row">
+						<label class="aCss" >请假事由</label>
+						<textarea maxlength="300" :rows="detailData.comment.length>40?detailData.comment.length/12:detailData.comment.length/10" readonly>{{detailData.comment}}</textarea>
+					</div>
+					<div v-cloak class="mui-input-row" style="padding:0 0 10px;">
+						<span class="leaveType" style="margin:0 0 0 15px;">{{detailData.item_code=='sickLeave'?'病假':detailData.item_code=='absenceLeave'?'事假':''}}</span>
+						<span class="leaveType-cr" style="margin:0 0 0 15px;">{{detailData.in_out_permission_code=='outSchool'?'可以出校':detailData.in_out_permission_code=='backDorm'?'可回宿舍':''}}</span>
+					</div>
+					<div class="double-line"></div>
+					<div v-cloak class="mui-input-row">
+						<label class="aCss" >审批人</label>
+					</div>
+					<div class="line-green"></div>
+					<div v-cloak class="mui-input-row" style="font-size: 15px;">
+						<ul v-cloak class="mui-table-view no-line">
+							<li v-cloak v-for="(item,index) in detailData.approve_list" class="mui-table-view-cell no-bgc">
+								<a class=""> <!-- mui-navigate-right -->
+									<div class="mui-ellipsis">{{item.approve_user_name}}</div>
+									<p style="margin-top: 0.75rem ;font-size: 13px;">{{item.approve_content}}</p>
+									<template v-if="item.lstatus==0">
+										<div style="position: absolute; right: 10px;top: 15px;">
+											<img src="../../img/stuleave/pass.png" style="width: 15px;height: 15px;">
+										</div>
+									</template>
+									<template v-else-if="item.lstatus==1"> 
+										<div style="position: absolute; right: 10px;top: 15px;">
+											<img src="../../img/stuleave/req.png" style="width: 15px;height: 15px;">
+										</div>
+									</template>
+									<template v-else-if="item.lstatus==2"> 
+										<div style="position: absolute; right: 10px;top: 15px;">
+											<img src="../../img/stuleave/ref.png" style="width: 15px;height: 15px;">
+										</div>
+									</template>
+								</a>
+							</li>
+						</ul>
+					</div>
+					<div class="double-line"></div>
+					<div v-cloak class="mui-input-row">
+						<label class="aCss" >抄送人</label>
+					</div>
+					<div class="line-green"></div>
+					<div v-cloak class="mui-input-row">
+						<label style="width: 100%;font-size: 14px;">
+								<template v-for="(item,index) in detailData.copy_list"><template v-if="index < detailData.copy_list.length-1">{{item.copy_user_name}},</template><template v-else>{{item.copy_user_name}}</template></template>
+						</label>
+					</div>
+					<div v-if="flag==0">
+						<div class="double-line"></div>
+						<div style="padding: 10px;">
+							<textarea maxlength="120" v-model="detailData.approve_comment" style="border: 1px solid rgba(0,207,189,0.3);" rows="6" placeholder="批复内容(选填)"></textarea>
+						</div>
+						<div style="text-align: center;">
+							<button @tap="cancel" type="button" class="mui-btn mui-btn-bottom">
+								拒 绝
+							</button>
+							<button @tap="submit" type="button" class="mui-btn mui-btn-bottom-success">
+								通 过
+							</button>
+						</div>
+					</div>
+					<div v-else-if="flag==1">
+						<div class="double-line"></div>
+						<div style="padding: 10px;">
+							<textarea maxlength="120" style="border: 1px solid rgba(0,207,189,0.3);" rows="6" placeholder="暂无内容" readonly></textarea>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<script src="../../js/utils/mui.min.js"></script>
+		<script src="../../js/utils/storageKeyName.js"></script>
+		<!-- <script src="../../js/utils/vconsole.min.js"></script> -->
+		<script src="../../js/utils/mui.pullToRefresh.js"></script>
+		<script src="../../js/utils/mui.pullToRefresh.material.js"></script>
+		<script src="../../js/utils/vue.js"></script>
+		<script src="../../js/utils/publicProtocol.js"></script>
+		<script src="../../js/utils/store.js"></script>
+		<script src="../../js/utils/utils.js"></script>
+		<script src="../../js/utils/events.js"></script>
+		<script src="../../js/utils/mui.picker.min.js"></script>
+		<script src="../../js/utils/mui.poppicker.js"></script>
+		<!--加密-->
+		<script src="../../js/libs/RSA/Barrett.js"></script>
+		<script src="../../js/libs/RSA/BigInt.js"></script>
+		<script src="../../js/libs/RSA/RSA.js"></script>
+		<script src="../../js/libs/encryption/RSAEncrypt.js"></script>
+		<script src="../../js/libs/crypto-js/require.js"></script>
+		<script src="../../js/libs/encryption/signHmacSHA1.js"></script>
+		<script src="../../js/libs/jquery.js"></script>
+		<script src="../../js/libs/encryption/sortSign.js"></script>
+		<script type="text/javascript">
+			var $M = mui.init();
+			//获取个人信息
+			var personal = store.get(window.storageKeyName.PERSONALINFO);
+			console.log('personal:' + JSON.stringify(personal));
+			var curPage = {};
+			var pageIndex = 1; //请求数据页面
+			var totalPageCount; //总页码
+			var flagRef = 0; //是刷新0，还是加载更多1
+			var tempVue = new Vue({
+				el: "#tempVue",
+				data: {
+					titleName: '',
+				},
+			});
+			var datasource = new Vue({
+				el: "#datasource",
+				data: {
+					canSub:true,//是否允许提交
+					flag:0,//0 待审批，1已审批 2已发起 3 抄送本人
+					detailData: {
+						cls_name:"",
+						item_code:"",
+						grd_name:"",
+						create_user_name:"",
+						end_time:"",
+						in_out_permission_code:"",
+						begin_time:"",
+						apply_time:"",
+						sms_parent_stu_flag:0,
+						create_user_code:"",
+						stu_code:"",
+						copy_list:[{copy_user_name:"",copy_user_code:""}],
+						stu_name:"",
+						comment:"",
+						id:0,
+						grd_code:"",
+						cls_code:"",
+						status:1,
+						approve_comment:'',//审核意见
+					}, //详情
+					index_code:'',
+				},
+				methods:{
+					submit:function(){
+						approveLeave(1);
+					},
+					cancel:function(){
+						approveLeave(0);
+					}
+				}
+			});
+
+			mui.plusReady(function() {
+				curPage = utils.getDataFromUrl(window.location.href);
+				console.log('2222:' + JSON.stringify(curPage));
+				datasource.flag=curPage[0]
+				datasource.index_code=curPage[2]
+				if(curPage[0]==0){
+					tempVue.titleName = '请假审批';
+				}else{
+					tempVue.titleName = '请假详情';
+				}
+				
+				// let note=curPage.note;
+				// if(note){
+				// 	let newNote=note.replace(/\n/g,'<br>')
+				// 	curPage.note=newNote
+				// 	datasource.rudDetail=curPage
+				// }else{
+				// 	curPage.note='暂无'
+				// 	datasource.rudDetail=curPage
+				// }
+				//阻尼系数、初始化刷新加载更多
+				var deceleration = mui.os.ios ? 0.003 : 0.0009;
+				mui('.mui-scroll-wrapper').scroll({
+					bounce: false,
+					indicators: true, //是否显示滚动条
+					deceleration: deceleration
+				});
+				
+				events.showWaiting();
+				getLeaveDetail();
+			});
+			
+			//获取请假详情
+			function getLeaveDetail(){
+				let flag=curPage[0]
+				let itemObj=curPage[1]
+				let url=window.storageKeyName.STULEAVE_API + 'apply/getApplyById'
+				if(flag==0||flag==1){
+					url=window.storageKeyName.STULEAVE_API + 'apply/getApproveById'
+				}
+				comData = {
+					id:itemObj.id,
+					index_code: curPage[2],
+				}
+				console.log("comData: " + JSON.stringify(comData));
+				postDataEncry(url, {}, comData, 2, function(data) {
+					events.closeWaiting();
+					if (data.code == 0) {
+						let leave=data.data
+						let approveList=leave.approve_list
+						if(approveList){
+							approveList.map((item,index)=>{
+								//lstatus 0 通过 1 待定 2 拒绝
+								if(leave.status==1){//请假审核状态为已通过
+									item.lstatus=0
+								}else if(leave.status==0){//请假审核状态为待审批
+									if(item.status==2){//抄送人审核状态为已批
+										item.lstatus=0
+									}else{
+										item.lstatus=1
+									}
+								}else if(leave.status==2){//请假审核状态为已拒绝
+									//找到最后一个已批审核人的下标
+									let num=0;
+									if(leave.status==2){
+										approveList.map((item,index)=>{
+											if(item.status==2){
+												num=index
+											}
+										})
+									}
+									if(item.status==2){//抄送人审核状态为已批
+										item.lstatus=0
+										if(num===index){
+											item.lstatus=2
+										}
+									}else{
+										item.lstatus=1
+									}
+								}
+							})
+						}
+						datasource.detailData=leave
+					} else {
+						mui.toast(data.msg);
+					}
+				});
+			}
+			
+			//审核发送的请假
+			function approveLeave(status){
+				if(datasource.canSub){
+					datasource.canSub=false
+					events.showWaiting();
+					let comment=comm.replace(/\s+/g, '').replace(/\n/g, '').replace(/\t/g, '').replace(/\r/g, '')
+					if(!comment){
+						if(status==1){
+							comment="同意"
+						}else{
+							comment="不同意"
+						}
+					}
+					comData = {
+						id:datasource.detailData.id,
+						approve_content:comment,
+						status:status,
+						index_code:curPage[2]
+					}
+					console.log("comData: " + JSON.stringify(comData));
+					postDataEncry(window.storageKeyName.STULEAVE_API + 'apply/setApprove', {}, comData, 2, function(data) {
+						datasource.canSub=true
+						events.closeWaiting();
+						if (data.code == 0) {
+							mui.toast('操作成功');
+							setTimeout(function(){
+								 mui.fire(plus.webview.currentWebview().opener(), 'refreshList', {});
+								 mui.back()
+							},1500)
+						} else {
+							mui.toast(data.msg);
+						}
+					});
+				}
+			}
+		</script>
+	</body>
+
+</html>

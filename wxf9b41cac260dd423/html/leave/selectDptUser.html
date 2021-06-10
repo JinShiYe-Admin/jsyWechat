@@ -1,0 +1,265 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport"
+			content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../../css/mui.min.css" rel="stylesheet" />
+		<link href="../../css/common.css" rel="stylesheet" />
+		<link href="../../js/layui/css/layui.css" rel="stylesheet" />
+		<link href="layu" rel="stylesheet" />
+		<style>
+			[v-cloak] {
+				visibility: hidden;
+				display: none !important;
+			}
+
+			html,
+			body {
+				background-color: #efeff4;
+			}
+
+			.mui-bar~.mui-content .mui-fullscreen {
+				top: 44px;
+				height: auto;
+			}
+			
+			.mui-scroll-wrapper{
+				background: #FFFFFF;
+			}
+			
+			.mui-scroll-wrapper{
+				padding: 0px;
+				border-right: 1px solid #EAEAEA;
+			}
+			
+			.mui-table-view:before,.mui-table-view:after,.mui-table-view-cell:before,.mui-table-view-cell:after,.mui-input-group .mui-input-row:after,.mui-input-group:before,.mui-input-group:after {
+			    height: 0px;
+			}
+			
+			.layui-tree-entry{
+				background-color: #FFF;
+				margin: 3px 0 0;
+				padding: 6px 0;
+				height: 35px;
+			}
+		</style>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav" id="tempVue">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title">{{titleName}}</h1>
+			<a @click.stop="sure()" class="mui-pull-right" style="font-size: 14px;margin-top: 0px;">确定</a>
+		</header>
+		<div id="datasource" class="mui-content mui-fullscreen" style="z-index:0" v-cloak>
+			<div class="mui-row">
+				<div class="mui-col-xs-5">
+					<div class="mui-scroll-wrapper" :style="{height:windowHeight}" v-cloak>
+						<div class="mui-scroll">
+							<div class="scroll-body" >
+								  <div id="left-tree"></div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="mui-col-xs-7">
+					<div class="mui-scroll-wrapper" :style="{height:windowHeight}" v-cloak>
+						<div class="mui-scroll">
+							<div class="scroll-body" >
+								<template v-if="dptClicked">
+									<template v-if="tecArray.length>0">
+										<form class="mui-input-group">
+											<template v-for="item in tecArray">
+												<div class="mui-input-row mui-checkbox mui-left">
+													<label>{{item.user_name}}</label>
+													<input name="checkbox" :value="item.stu_code" type="checkbox" :checked="item.checked" @click="userClick(item)">
+												</div>
+											</template>
+										</form>
+									</template>
+									<template v-else>
+										<div style="margin:10px 10px 0;">暂无人员</div>
+									</template>
+								</template>
+								<template v-else>
+									<div style="margin:10px 10px 0;">请选择部门</div>
+								</template>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<script src="../../js/utils/mui.js"></script>
+		<script src="../../js/utils/storageKeyName.js"></script>
+		<script src="../../js/utils/vconsole.min.js"></script>
+		<script src="../../js/utils/vue.js"></script>
+		<script src="../../js/utils/publicProtocol.js"></script>
+		<script src="../../js/utils/store.js"></script>
+		<script src="../../js/utils/utils.js"></script>
+		<script src="../../js/utils/events.js"></script>
+		<script src="../../js/layui/layui.js"></script>
+		<!--加密-->
+		<script src="../../js/libs/RSA/Barrett.js"></script>
+		<script src="../../js/libs/RSA/BigInt.js"></script>
+		<script src="../../js/libs/RSA/RSA.js"></script>
+		<script src="../../js/libs/encryption/RSAEncrypt.js"></script>
+		<script src='../../js/libs/crypto-js/require.js'></script>
+		<script src='../../js/libs/encryption/signHmacSHA1.js'></script>
+		<script src='../../js/libs/jquery.js'></script>
+		<script src='../../js/libs/encryption/sortSign.js'></script>
+		<script type="text/javascript">
+			//获取个人信息
+			var personal = store.get(window.storageKeyName.PERSONALINFO);
+			// console.log('personal:' + JSON.stringify(personal));
+			var curPage = {};
+			var pageIndex = 1; //请求数据页面
+			var totalPageCount; //总页码
+			var flagRef = 0; //是刷新0，还是加载更多1
+			var tempVue = new Vue({
+				el: "#tempVue",
+				data: {
+					titleName: ''
+				},
+				methods: {
+					sure: function() {
+						let checkTec=[]
+						datasource.selectPeoples.forEach((value,key)=>{
+							checkTec.push({text:value.user_name,value:value.user_code})
+						})
+						mui.fire(plus.webview.currentWebview().opener(), 'refreshCopy', checkTec);
+						setTimeout(function() {
+							mui.back()
+						}, 100)
+					}
+				}
+			});
+			var datasource = new Vue({
+				el: "#datasource",
+				data: {
+					windowHeight: '0', //窗口高度
+					grdSelect:{},
+					clsSelect:{},
+					dptClicked:false,
+					pageArray: [] ,//界面年级班级总数组
+					tecArray:[],//部门下的人员数组
+					selectPeoples:new Map(),//选择的人员
+				},
+				methods: {
+					userClick:function(user){
+						user.checked=!user.checked
+						if(user.checked){
+							this.selectPeoples.set(user.user_code,user)
+						}else{
+							this.selectPeoples.delete(user.user_code)
+						}
+					}
+				}
+			});
+			mui.init();
+
+			mui.plusReady(function() {
+				curPage = utils.getDataFromUrl(window.location.href);
+				// console.log('2222:' + JSON.stringify(curPage));
+				datasource.windowHeight = document.body.clientHeight-45  + 'px'
+				tempVue.titleName = curPage.name;
+				let copy_list=curPage.copy_list;
+				let copy_map=new Map();
+				copy_list.map(item=>{ 
+					copy_map.set(item.value,item)
+				})
+				datasource.selectPeoples=copy_map
+				var deceleration = mui.os.ios ? 0.003 : 0.0009;
+				mui('.mui-scroll-wrapper').scroll({
+					bounce: false,
+					indicators: true, //是否显示滚动条
+					deceleration: deceleration
+				});
+				events.showWaiting();
+				getDpt();
+			});
+			
+			//获取学校部门
+			function getDpt(){
+				const params = {
+					sch_code:personal.unit_code,
+					index_code: curPage.index_code,
+				}
+				postDataEncry(window.storageKeyName.INTERFACE_HR_SUB + 'dpt', {}, params, 2, function(data) {
+					events.closeWaiting();
+					if (data.code == 0) {
+						 let list=data.data.list
+						 list.map(item=>{
+							 item.title=item.dpt_name
+						 })
+						 let treeList=getDptTree(list);
+						 datasource.pageArray=treeList
+						 layui.use('tree', function(){
+						     var tree = layui.tree;
+						     //渲染
+						     var inst1 = tree.render({
+						       elem: '#left-tree' 
+						       ,data: treeList
+							   ,showLine: false 
+							   ,click: function(obj){
+								    datasource.dptClicked=true
+									getDptUser(obj.data.dpt_code)
+							    }
+						     }); 
+						   });
+					}else{
+						mui.toast(data.msg);
+					}
+				});
+			} 
+			
+			
+			//获取学校有账号的部门人员
+			function getDptUser(dpt_code){
+				const params = {
+					sch_code:personal.unit_code,
+					dpt_codes:dpt_code,
+					uid_stat:1,
+					page_size:1,
+					page_number:-1,
+					index_code: curPage.index_code,
+				}
+				postDataEncry(window.storageKeyName.INTERFACE_HR_SUB + 'dptUser', {}, params, 2, function(data) {
+					events.closeWaiting();
+					if (data.code == 0) {
+						 datasource.selectPeoples.forEach((value,key)=>{
+							data.data.list.map(item=>{
+								if(key===item.user_code){
+									item.checked=true
+								}
+							})
+						 })
+						  datasource.tecArray=data.data.list
+					}else{
+						mui.toast(data.msg);
+					}
+				});
+			} 
+			getDptTree=(dptList)=>{
+			    const map = {};
+			    const val = [];
+			    dptList.forEach((item) => {
+			      map[item.dpt_code] = item;
+			    });
+			    dptList.forEach((item) => {
+			      const parent = map[item.pcode];
+			      if (parent) {
+			        (parent.children || (parent.children = [])).push(item);
+			      } else {
+			        val.push(item);
+			      }
+			    });
+			    return val
+			  }
+		</script>
+	</body>
+
+</html>

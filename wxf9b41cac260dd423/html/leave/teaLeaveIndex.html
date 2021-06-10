@@ -1,0 +1,84 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../../css/mui.min.css" rel="stylesheet" />
+		<link rel="stylesheet" type="text/css" href="../../css/common.css" />
+		<link rel="stylesheet" href="../../js/swiper/swiper-bundle.min.css">
+		<style type="text/css">
+			[v-cloak] {
+				display: none !important;
+			}
+		</style>
+	</head>
+
+	<body style="background: white;">
+		<header class="mui-bar mui-bar-nav" id="tempHead">
+			<h1 v-cloak class="mui-title">{{headTitle}}</h1>
+		</header>
+		<div v-cloak class="mui-content" style="margin-top: 0px;background: white;" id="contentData">
+			<ul v-cloak class="mui-table-view mui-grid-view mui-grid-9" style="background-color: white;padding-left: 7px;margin-top: 0px;">
+				<li v-cloak v-for="item in showArray" class="mui-table-view-cell mui-media mui-col-sm-3 mui-col-xs-3" style="border: 0px;padding:10px 5px">
+					 <a href="#" @click="clickFunction(item)">
+					 	<img class="circular-square" :src=item.icon />
+					 	<div class="mui-media-body divNameCss">{{item.name}}</div>
+					 </a>
+				</li>
+			</ul>
+		</div>
+		<script src="../../js/utils/mui.min.js"></script>
+		<script src="../../js/utils/events.js"></script>
+		<script src="../../js/utils/storageKeyName.js"></script>
+		<script src="../../js/utils/vconsole.min.js"></script>
+		<script src="../../js/utils/vue.js"></script>
+		<script src="../../js/utils/publicProtocol.js"></script>
+		<script src="../../js/utils/store.js"></script>
+		<script src="../../js/utils/mui.picker.js"></script>
+		<script src="../../js/utils/mui.poppicker.js"></script>
+		
+		<!--加密-->
+		<script src="../../js/libs/RSA/Barrett.js"></script>
+		<script src="../../js/libs/RSA/BigInt.js"></script>
+		<script src="../../js/libs/RSA/RSA.js"></script>
+		<script src="../../js/libs/encryption/RSAEncrypt.js"></script>
+		<script src='../../js/libs/crypto-js/require.js'></script>
+		<script src='../../js/libs/encryption/signHmacSHA1.js'></script>
+		<script src='../../js/libs/jquery.js'></script>
+		<script src='../../js/libs/encryption/sortSign.js'></script>
+		<script src='../../js/utils/md5.js'></script>
+		<script src="../../js/utils/utils.js"></script>
+
+		<script type="text/javascript">
+			mui.init();
+			//获取个人信息
+			var personal = store.get(window.storageKeyName.PERSONALINFO);
+			console.log('personal:' + JSON.stringify(personal));
+			var curPage =utils.getDataFromUrl(window.location.href);
+			var tempHead = new Vue({
+				el: "#tempHead",
+				data: {
+					headTitle: '教师代请假',
+					headImg: setImg(personal.img_url, 9)
+				},
+			});
+			
+			//vue数据
+			var contentData = new Vue({
+				el: "#contentData",
+				data: {
+					showArray:curPage
+				},
+				methods: {
+					clickFunction: function(model) {
+						console.log('index:' + JSON.stringify(model));
+						utils.mOpenWithData(model.href, model);
+					}
+				},
+			});
+		</script>
+	</body>
+
+</html>

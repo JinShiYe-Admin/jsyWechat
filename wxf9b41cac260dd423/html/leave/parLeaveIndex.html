@@ -1,0 +1,470 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../../css/mui.min.css" rel="stylesheet" />
+		<link href="../../css/common.css" rel="stylesheet" />
+		<style type="text/css">
+			[v-cloak] {
+				display: none !important;
+			}
+			.mui-bar~.mui-content .mui-fullscreen {
+				top: 44px;
+				height: auto;
+			}
+
+			.mui-pull-top-tips {
+				position: absolute;
+				top: -20px;
+				left: 50%;
+				margin-left: -25px;
+				width: 40px;
+				height: 40px;
+				border-radius: 100%;
+				z-index: 2;
+				/* 仅为适配swiper而改动，原值：1 */
+			}
+
+			.mui-bar~.mui-pull-top-tips {
+				top: 24px;
+			}
+
+			 
+			
+			.mui-pull-top-wrapper {
+				width: 42px;
+				height: 42px;
+				display: block;
+				text-align: center;
+				background-color: #efeff4;
+				border: 1px solid #ddd;
+				border-radius: 25px;
+				background-clip: padding-box;
+				box-shadow: 0 4px 10px #bbb;
+				overflow: hidden;
+			}
+
+			.mui-pull-top-tips.mui-transitioning {
+				-webkit-transition-duration: 200ms;
+				transition-duration: 200ms;
+			}
+
+			.mui-pull-top-tips .mui-pull-loading {
+				margin: 0;
+			}
+
+			.mui-pull-top-wrapper .mui-icon,
+			.mui-pull-top-wrapper .mui-spinner {
+				margin-top: 7px;
+			}
+			
+			.mui-pull-bottom-tips {
+				text-align: center;
+				background-color: #efeff4;
+				font-size: 15px;
+				line-height: 40px;
+				color: #777;
+			}
+
+			.mui-pull-top-canvas {
+				overflow: hidden;
+				background-color: #fafafa;
+				border-radius: 40px;
+				box-shadow: 0 4px 10px #bbb;
+				width: 40px;
+				height: 40px;
+				margin: 0 auto;
+			}
+
+			.mui-pull-top-canvas canvas {
+				width: 40px;
+			}
+
+			.mui-scroll-wrapper {
+				position: fixed;
+				/* 仅为适配swiper而改动 fixed，原值：absolute */
+			}
+			.leaveContent {
+				padding-left: 20px;
+				padding-right: 30px;
+				display: -webkit-box;
+				-webkit-box-orient: vertical;
+				-webkit-line-clamp: 2;
+				overflow: hidden;
+				color: #505050;
+				font-size: 14px;
+			}
+			.leaveType {
+				color: #2A82E4;
+				padding: 3px;
+				font-size: 13px;
+				border-radius: 2px;
+				border: 1px solid #2A82E4;
+			}
+			.leaveType0 {
+				color: #FF8D1A;
+				padding: 3px;
+				font-size: 13px;
+				border-radius: 2px;
+				border: 1px solid #FF8D1A;
+			}
+			.leaveType1 {
+				color: #00CFBD;
+				padding: 3px;
+				font-size: 13px;
+				border-radius: 2px;
+				border: 1px solid #00CFBD;
+			}
+			.leaveType2 {
+				color: #D4308D;
+				padding: 3px;
+				font-size: 13px;
+				border-radius: 2px;
+				border: 1px solid #D4308D;
+			}
+			
+			
+			
+			
+			.mui-plus .plus{
+				display: inline;
+			}
+			
+			.plus{
+				display: none;
+			}
+			
+			 
+			p {
+				text-indent: 22px;
+			}
+			span.mui-icon {
+				font-size: 14px;
+				color: #007aff;
+				margin-left: -15px;
+				padding-right: 10px;
+			}
+			.mui-popover {
+				height: 95px;
+				width: 150px;
+			}
+			.mui-content {
+				padding: 10px;
+			}
+		</style>
+	</head>
+
+	<body style="background: white;">
+		<header class="mui-bar mui-bar-nav" id="tempHead">
+			<a v-cloak v-if="showBack==2" @click="clickLeftImg" class="mui-icon mui-pull-left">
+				<img v-cloak :src=headImg style="width: 26px;height: 26px;border-radius: 50%;" />
+			</a>
+			<h1 v-cloak class="mui-title">{{headTitle}}</h1>
+			<a  @tap="add" class="mui-pull-right" style="font-size: 25px;">+</a>
+		</header>
+		<div v-cloak class="mui-content" style="margin-top: 0px;background: white;" id="contentData">
+			<div style="padding: 10px 10px;">
+				<div id="segmentedControl" class="mui-segmented-control">
+					<a @tap="clickSeg(0)" class="mui-control-item mui-active" href="#item1">已发起</a>
+					<a @tap="clickSeg(1)" class="mui-control-item" href="#item2">已通过</a>
+				</div>
+			</div>
+			<div class="mui-slider-group">
+				<div id="item1" class="mui-control-content mui-active">
+					<div class="mui-scroll-wrapper" style="margin-top: 100px;">
+						<div class="mui-scroll">
+							<div class="mui-row">
+								<template v-if="receive0.data.length>0" v-for="item in receive0.data">
+									<div class="mui-row" @tap="toDetails(0,item)" style="padding: 10px 0 0;">
+										<div class="mui-col-xs-12 mui-navigate-right">
+											<div class="leaveContent">{{item.comment?item.comment:'暂无内容'}}</div>
+											<div style="height: 0.5px;background-color: #e5e5e5;margin: 5px 20px;"></div>
+											<div style="margin-top: 5px;margin-left: 20px;font-size: 13px;">{{item.begin_time}} ~ {{item.end_time}}</div>
+											<div style="margin-top: 5px;margin-left: 20px;font-size: 13px;">
+												<span>共计：{{item.apply_time}}</span>
+												<span class="leaveType" style="margin-left: 5px;">{{item.item_code=='sickLeave'?'病假':item.item_code=='absenceLeave'?'事假':''}}</span>
+												<span :class="[item.status==0?'leaveType0':item.status==1?'leaveType1':item.status==2?'leaveType2':'']" style="margin-left: 5px;">{{item.status==0?'待审':item.status==1?'通过':item.status==2?'拒绝':''}}</span>
+											</div>
+											<div style="height: 1px;background: rgba(153,153,153,0.5);margin: 10px 0 0;"></div>
+										</div>
+										<!-- <div class="mui-col-xs-1 mui-navigate-right" style="height: 95px;"></div> -->
+									</div>
+								</template>
+								<template v-else>
+									<div></div>
+								</template>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div id="item2" class="mui-control-content">
+					<div class="mui-scroll-wrapper" style="margin-top: 100px;">
+						<div class="mui-scroll">
+							<div class="mui-row">
+								<template v-if="receive1.data.length>0" v-for="item in receive1.data">
+									<div class="mui-row" @tap="toDetails(1,item)" style="padding: 10px 0 0;">
+										<div class="mui-col-xs-12 mui-navigate-right">
+											<div class="leaveContent">{{item.comment?item.comment:'暂无内容'}}</div>
+											<div style="height: 0.5px;background-color: #e5e5e5;margin: 5px 20px;"></div>
+											<div style="margin-top: 5px;margin-left: 20px;font-size: 13px;">{{item.begin_time}} ~ {{item.end_time}}</div>
+											<div style="margin-top: 5px;margin-left: 20px;font-size: 13px;">
+												<span>{{item.grd_name}} {{item.cls_name}}&ensp;{{item.stu_name}}</span>
+												<span>{{item.apply_time}}</span>
+												<span class="leaveType" style="margin-left: 5px;">{{item.item_code=='sickLeave'?'病假':item.item_code=='absenceLeave'?'事假':''}}</span>
+											</div>
+											<div style="height: 1px;background: rgba(153,153,153,0.5);margin: 10px 0 0;"></div>
+										</div>
+										<!-- <div class="mui-col-xs-1 mui-navigate-right" style="height: 95px;"></div> -->
+									</div>
+								</template>
+								<template v-else>
+									<div></div>
+								</template>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<script src="../../js/utils/mui.min.js"></script>
+		<script src="../../js/utils/storageKeyName.js"></script>
+		<script src="../../js/utils/vconsole.min.js"></script>
+		<script src="../../js/utils/mui.pullToRefresh.js"></script>
+		<script src="../../js/utils/mui.pullToRefresh.material.js"></script>
+		<script src="../../js/utils/vue.js"></script>
+		<!--加密-->
+		<script src="../../js/libs/RSA/Barrett.js"></script>
+		<script src="../../js/libs/RSA/BigInt.js"></script>
+		<script src="../../js/libs/RSA/RSA.js"></script>
+		<script src="../../js/libs/encryption/RSAEncrypt.js"></script>
+		<script src='../../js/libs/crypto-js/require.js'></script>
+		<script src='../../js/libs/encryption/signHmacSHA1.js'></script>
+		<script src='../../js/libs/jquery.js'></script>
+		<script src='../../js/libs/encryption/sortSign.js'></script>
+		<!---->
+		<script src="../../js/utils/showMenu.js"></script>
+		<script src="../../js/utils/publicProtocol.js"></script>
+		<script src="../../js/utils/store.js"></script>
+		<script src="../../js/utils/utils.js"></script>
+		<script src="../../js/utils/events.js"></script>
+		<script src='../../js/utils/md5.js'></script>
+
+		<script type="text/javascript">
+			mui.init();
+			//获取个人信息
+			var personal = store.get(window.storageKeyName.PERSONALINFO);
+			var curPage ={}
+			console.log('personal:' + JSON.stringify(personal));
+			var tempHead = new Vue({
+				el: "#tempHead", 
+				data: {
+					showBack:0,
+					headTitle: '',
+					headImg: setImg(personal.img_url, 9)
+				},
+				methods: {
+					clickLeftImg: function() {
+						appPay.openMenu();
+					},
+					add:function(){
+						utils.mOpenWithData("../../html/leave/parLeave_Add.html", {index_code:curPage.access.split('#')[1]});
+					},
+				}
+			});
+
+			//vue数据
+			var contentData = new Vue({
+				el: "#contentData",
+				data: {
+					showAdd:0,
+					pageSize:10,//每页条数
+					semFlag: 0, //点击的seg索引
+					receive0: {//待审批
+						data: [],
+						refrushFlag: 0, //0刷新，1加载更多
+						pageNumber: 1, //第几页
+						TotalPage: 1 //总页数
+					},
+					receive1: {//已审批
+						data: [],
+						refrushFlag: 0,
+						pageNumber: 1,
+						TotalPage: 1
+					},
+				},
+				methods: {
+					clickSeg: function(flag) {
+						if (contentData.semFlag != flag) {
+							contentData.semFlag = flag;
+							if (flag == 0 ) {
+								contentData.receive0.refrushFlag = 0; //0刷新1加载更多
+								contentData.receive0.pageNumber = 1; 
+								contentData.receive0.TotalPage = 0; 
+								events.showWaiting();
+								getLeaveList();
+							} else if (flag == 1 ) {
+								contentData.receive1.refrushFlag = 0; //0刷新1加载更多								contentData.receive1.pageNumber = 1; 								contentData.receive1.TotalPage = 0; 
+								events.showWaiting();
+								getLeaveList(1);
+							} 
+						}
+					},
+					toDetails:function(semFlag,item){
+						console.log(JSON.stringify(item));
+						utils.mOpenWithData("../../html/leave/parLeave_Detail.html", [semFlag,item,curPage.access.split('#')[1]]);
+					},
+				},
+			});
+			
+			var self = 0;
+			mui.plusReady(function() {
+				(function($) {
+					var deceleration = mui.os.ios ? 0.003 : 0.0009;
+					$('.mui-scroll-wrapper').scroll({
+						bounce: false,
+						indicators: true, //是否显示滚动条
+						deceleration: deceleration
+					});
+					
+					if(curPage&&JSON.stringify(curPage)=='{}'){//前四个页面时，不显示返回按钮
+						var ws = plus.webview.currentWebview();
+						if (ws.preload) {
+							curPage = ws.preload;
+							tempHead.headTitle = ws.preload.name;
+						}
+						if (ws.preload.index == 0) {
+							tempHead.showBack = 2;
+						}
+					}else{
+						tempHead.showBack = 1;//更多页面打开时，显示返回按钮
+					}
+					
+					$.ready(function() {
+						$.each(document.querySelectorAll('.mui-slider-group .mui-scroll'), function(index, pullRefreshEl) {
+							$(pullRefreshEl).pullToRefresh({
+								down: {
+									callback: function() {
+										self = this;
+										if (contentData.semFlag == 0) {
+											contentData.receive0.refrushFlag = 0; //0刷新1加载更多
+											contentData.receive0.pageNumber = 1; 
+											contentData.receive0.TotalPage = 0; 
+											getLeaveList();
+										} else if (contentData.semFlag == 1) {
+											contentData.receive1.refrushFlag = 0; //0刷新1加载更多
+											contentData.receive1.pageNumber = 1; 
+											contentData.receive1.TotalPage = 0; 
+											getLeaveList(1);
+										} 
+									}
+								},
+								up: {
+									callback: function() {
+										self = this;
+										if (contentData.semFlag == 0) {
+											contentData.receive0.refrushFlag = 1; //0刷新1加载更多
+											if (contentData.receive0.pageNumber <= contentData.receive0.total_page) {
+												getLeaveList();
+											}else{
+												setTimeout(()=>{
+													self.endPullUpToRefresh();
+													showPullDownTitle(0,"没有更多了")
+												},1000)
+											}
+										} else if (contentData.semFlag == 1) {
+											contentData.receive1.refrushFlag = 1; //0刷新1加载更多
+											if (contentData.receive1.pageNumber <= contentData.receive1.total_page) {
+												getLeaveList(1);
+											}else{
+												self.endPullUpToRefresh();
+												showPullDownTitle(1,"没有更多了")
+											}
+										} 
+									}
+								}
+							});
+						});
+					});
+				})(mui);
+
+				window.addEventListener('refreshList', function(data) {
+					events.showWaiting();
+					if(contentData.semFlag==0){
+						contentData.receive0.refrushFlag = 0; //0刷新1加载更多
+						contentData.receive0.pageNumber = 1; 
+						contentData.receive0.TotalPage = 0; 
+						getLeaveList();
+					}else{
+						contentData.receive1.refrushFlag = 0; //0刷新1加载更多
+						contentData.receive1.pageNumber = 1; 
+						contentData.receive1.TotalPage = 0; 
+						getLeaveList(1);
+					}
+					 
+				});
+				//获取权限
+				getPermissionByPosition('add', curPage.access, function(data) {
+					console.log('getPermissionByPosition:' + JSON.stringify(data));
+					if (data.code == 0 && data.data.result == 1) {
+						contentData.showAdd = 1;
+					}
+				});
+				events.showWaiting();
+				getLeaveList();
+			});
+			
+			
+			function hidePullDownTitle(index){
+				mui(".mui-pull-loading")[index].style.height="none"
+				mui(".mui-pull-bottom-tips")[index].style.display="none"
+			}
+			
+			function showPullDownTitle(index,text){
+				mui(".mui-pull-bottom-tips")[index].style.display="inherit"
+				mui(".mui-pull-loading")[index].style.display="inherit"
+				mui(".mui-pull-loading")[index].innerHTML = text;
+			}
+			 
+			
+			//获取申请列表
+			function getLeaveList(_status){
+				let receiveObj='receive'+contentData.semFlag
+				comData = {
+					page_size: contentData.pageSize,
+					page_number:contentData[receiveObj].pageNumber,
+					status:_status?_status:'',
+					index_code: curPage.access.split('#')[1],
+				}
+				postDataEncry(window.storageKeyName.STULEAVE_API + 'apply/qryApply', {}, comData, 2, function(data) {
+					events.closeWaiting();
+					if (data.code == 0) {
+						if (contentData[receiveObj].refrushFlag == 0) {
+							contentData[receiveObj].data = [].concat(data.data.list);
+							if(data.data.list.length<contentData.pageSize){
+								hidePullDownTitle(contentData.semFlag)
+							}
+							setTimeout(() => {
+								self && self.endPullDownToRefresh();
+							}, 1000)
+						} else {
+							contentData[receiveObj].data = contentData[receiveObj].data.concat(data.data.list);
+							setTimeout(() => {
+								self && self.endPullUpToRefresh();
+								if (data.data.page_number >= data.data.total_page) {
+									showPullDownTitle(contentData.semFlag,"没有更多了")
+								}
+							}, 1000)
+						}
+						contentData[receiveObj].pageNumber++;
+					} else {
+						mui.toast(data.msg);
+					}
+				});
+			}
+			
+		</script>
+	</body>
+
+</html>

@@ -12,88 +12,6 @@ window.onerror = function(errorMessage, scriptURI, lineNumber, columnNumber, err
 
 //公共方法
 var utils = (function(mod) {
-	//设置app角标,flag=0直接设置角标数字，flag=1角标减1,falg=2角标加1
-	mod.setBadgeNumber = function(flag, count) {
-		var isAndorid,PushManager,context;
-		if(plus.os.name == 'Android') {  
-		    isAndorid = true;  
-		} else {  
-		    isAndorid = false;  
-		}   
-		if(isAndorid) {
-		} else {  
-		    GeTuiSdk = plus.ios.importClass("GeTuiSdk");  
-		}  
-		
-		if(flag == 0) {
-			console.log('1234567890')
-			store.set(window.storageKeyName.BADGENUMBER, count);
-			plus.runtime.setBadgeNumber(count);
-			if(isAndorid) {} else {  
-			  	GeTuiSdk.setBadge(count);
-			}  
-			console.log('1234567890qwertyuiop')
-		} else if(flag == 1) {
-			var badgeNumber = store.get(window.storageKeyName.BADGENUMBER);
-			badgeNumber--;
-			if(badgeNumber >= 0) {
-
-			} else {
-				badgeNumber = 0;
-			}
-			store.set(window.storageKeyName.BADGENUMBER, badgeNumber);
-			plus.runtime.setBadgeNumber(badgeNumber);
-			if(isAndorid) {} else {  
-			  	GeTuiSdk.setBadge(count);
-			}  
-		} else if(flag == 2) {
-			var badgeNumber = store.get(window.storageKeyName.BADGENUMBER);
-			badgeNumber++;
-			store.set(window.storageKeyName.BADGENUMBER, badgeNumber);
-			plus.runtime.setBadgeNumber(badgeNumber);
-			if(isAndorid) {} else {  
-			  	GeTuiSdk.setBadge(count);
-			}  
-		}
-	}
-	
-	//是否可以新增修改，flag=0只班主任，flag=1班主任和任课老师都可以
-	mod.canNotAddModify = function(flag) {
-		var personal = store.get(window.storageKeyName.PERSONALINFO);
-		var tempFlag = 0;
-		for (var i = 0; i < personal.clss.length; i++) {
-			var tempModel = personal.clss[i];
-			if (flag == 0) {
-				//是班主任，并且班级没有毕业
-				if (tempModel.isms == 1&&tempModel.isfinish == 0) {
-					tempFlag++;
-				}
-			} else{
-				//班级没有毕业
-				if (tempModel.isfinish == 0) {
-					tempFlag++;
-				}
-			}
-		}
-		if(tempFlag>0) {
-			return true;
-		}
-		return false;
-	}
-	
-	//比对时间大小
-	mod.compairTime = function(startTime, endTime) {
-		if(startTime == '请选择' || endTime == '请选择') {
-			return true;
-		}
-		var start = new Date(startTime.replace("-", "/").replace("-", "/"));
-		var end = new Date(endTime.replace("-", "/").replace("-", "/"));
-		if(end > start) {
-			return true;
-		}
-		return false;
-	}
-
 	mod.getUUID = function() {
 		var s = [];
 		var hexDigits = "0123456789abcdef";
@@ -128,8 +46,14 @@ var utils = (function(mod) {
 		var data = {};
 		var index = url.indexOf("&");
 		if(index != -1) {
-			var dataStr = url.substring(index + 6, url.length);
-			data = JSON.parse(decodeURIComponent(dataStr));
+			let endStr=url.substring(url.length-1, url.length)
+			if(endStr=='#'){
+				let dataStr = url.substring(index + 6, url.length-1);
+				data = JSON.parse(decodeURIComponent(dataStr));
+			}else{
+				let dataStr = url.substring(index + 6, url.length);
+				data = JSON.parse(decodeURIComponent(dataStr));
+			}
 		}
 		return data;
 	}
@@ -228,54 +152,7 @@ var utils = (function(mod) {
 		return tempStr;
 	}
 
-	/**
-	 * 获取时间 YYYY-MM-DD HH-MM-SS(2017-9-8 11:56:40)
-	 */
-	mod.getCurentTime = function() {
-		var myDate = new Date();
-		var year = myDate.getFullYear(); //年
-		var month = myDate.getMonth() + 1; //月
-		var day = myDate.getDate(); //日
-		var hh = myDate.getHours(); //时
-		var mm = myDate.getMinutes(); //分
-		var ss = myDate.getSeconds(); //秒
-		var clock = year + "-";
-		if(month < 10) {
-			clock += "0";
-		}
-		clock += month + "-";
-		if(day < 10) {
-			clock += "0";
-		}
-		clock += day + " ";
-		if(hh < 10) {
-			clock += "0";
-		}
-		clock += hh + ":";
-		if(mm < 10) {
-			clock += '0';
-		}
-		clock += mm + ":";
-		if(ss < 10) {
-			clock += '0';
-		}
-		clock += ss;
-		return clock;
-	}
-
-	/**
-	 * 格式化时间
-	 * @param {String} data 201712061523
-	 * @return {String} data 2017-12-06 15:23
-	 */
-	mod.initTime = function(data) {
-		var year = data.substring(0, data.length - 8);
-		var month = data.substring(data.length - 8, data.length - 6);
-		var day = data.substring(data.length - 6, data.length - 4);
-		var hour = data.substring(data.length - 4, data.length - 2);
-		var minute = data.substring(data.length - 2);
-		return year + "-" + month + "-" + day + " " + hour + ":" + minute;
-	}
+ 
 
 	/**
 	 * href 打开一个页面，并保存SessionStorage数据
