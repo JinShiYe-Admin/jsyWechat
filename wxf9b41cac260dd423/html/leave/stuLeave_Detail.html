@@ -11,6 +11,7 @@
 		<link href="../../css/common.css" rel="stylesheet" />
 		<link rel="stylesheet" href="../../css/mui.picker.min.css" />
 		<link href="../../css/mui.poppicker.css" rel="stylesheet" />
+		<link rel="stylesheet" type="text/css" href="../../css/weui.min.css"/>
 		<style>
 			[v-cloak] {
 				visibility: hidden;
@@ -240,7 +241,6 @@
 				},
 			});
 
-			mui.plusReady(function() {
 				curPage = utils.getDataFromUrl(window.location.href);
 				console.log('2222:' + JSON.stringify(curPage));
 				datasource.flag=curPage[0]
@@ -263,7 +263,6 @@
 					deceleration: deceleration
 				});
 				getLeaveDetail();
-			});
 			
 			//获取请假详情
 			function getLeaveDetail(){
@@ -317,34 +316,6 @@
 						mui.toast(data.msg);
 					}
 				});
-			}
-			
-			//审核发送的请假
-			function approveLeave(status){
-				if(datasource.canSub){
-					datasource.canSub=false
-					events.showWaiting();
-					comData = {
-						id:datasource.detailData.id,
-						approve_content:datasource.detailData.approve_comment,
-						status:status,
-						index_code:datasource.index_code
-					}
-					console.log("comData: " + JSON.stringify(comData));
-					postDataEncry(window.storageKeyName.STULEAVE_API + 'apply/setApprove', {}, comData, 2, function(data) {
-						datasource.canSub=true
-						events.closeWaiting();
-						if (data.code == 0) {
-							mui.toast('操作成功');
-							setTimeout(function(){
-								 mui.fire(plus.webview.currentWebview().opener(), 'refreshList', {});
-								 mui.back()
-							},1500)
-						} else {
-							mui.toast(data.msg);
-						}
-					});
-				}
 			}
 		</script>
 	</body>

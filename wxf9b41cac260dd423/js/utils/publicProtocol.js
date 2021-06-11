@@ -327,30 +327,12 @@ var jQAjaxPost = function(url, data, callback) {
 					//获取个人信息
 					var personal = store.get(window.storageKeyName.PERSONALINFO);
 					//设置app角标,flag=0直接设置角标数字，flag=1角标减1,falg=2角标加1
-					utils.setBadgeNumber(0, 0);
 					
 					//获取所有已打开的webview 实例————重新打开login.html————循环关闭页面
 					store.remove(window.storageKeyName.PERSONALINFO);
-					plus.webview.open('../../html/login/loginIndex.html', '../../html/login/loginIndex.html', {
-						statusbar: {
-							background: "#00CFBD"
-						}
-					});
-					// utils.mOpenWithData("../../html/login/loginIndex.html", {});
-					var curr = plus.webview.currentWebview();
-					var wvs = plus.webview.all();
-					try {
-						for (var i = 0, len = wvs.length; i < len; i++) {
-							//关闭除login页面外的其他页面
-							if (wvs[i].getURL().indexOf('loginIndex.html') != -1) {
-								continue;
-							}
-							plus.webview.close(wvs[i]);
-						}
-					} catch (e) {
-						console.log(e)
-					}
-					curr.close();
+					
+					utils.mOpenWithData("../../html/login/index.html", {});
+					
 					// events.closeWaiting();
 				}, 1000);
 			} else {

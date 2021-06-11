@@ -11,6 +11,7 @@
 		<link href="../../css/common.css" rel="stylesheet" />
 		<link rel="stylesheet" href="../../css/mui.picker.min.css" />
 		<link href="../../css/mui.poppicker.css" rel="stylesheet" />
+		<link rel="stylesheet" type="text/css" href="../../css/weui.min.css"/>
 		<style>
 			[v-cloak] {
 				visibility: hidden;
@@ -255,7 +256,6 @@
 				},
 			});
 
-			mui.plusReady(function() {
 				curPage = utils.getDataFromUrl(window.location.href);
 				console.log('2222:' + JSON.stringify(curPage));
 				datasource.flag=curPage[0]
@@ -278,7 +278,6 @@
 					deceleration: deceleration
 				});
 				getLeaveDetail();
-			});
 			
 			//获取请假详情
 			function getLeaveDetail(){

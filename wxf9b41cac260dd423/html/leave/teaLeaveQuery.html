@@ -11,6 +11,7 @@
 		<link href="../../css/common.css" rel="stylesheet" />
 		<link rel="stylesheet" href="../../css/mui.picker.min.css" />
 		<link href="../../css/mui.poppicker.css" rel="stylesheet" />
+		<link rel="stylesheet" type="text/css" href="../../css/weui.min.css"/>
 		<style>
 			[v-cloak] {
 				visibility: hidden;
@@ -506,7 +507,6 @@
 				}
 			});
 
-			mui.plusReady(function() {
 				curPage = utils.getDataFromUrl(window.location.href);
 				console.log('2222:' + JSON.stringify(curPage));
 				tempVue.titleName = curPage.name;
@@ -575,7 +575,6 @@
 				events.showWaiting();
 				//获取数据范围授权：年级
 				getGrdList();
-			});
 
 			// 获取数据范围授权：年级
 			function getGrdList() {

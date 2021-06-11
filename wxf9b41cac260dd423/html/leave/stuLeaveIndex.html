@@ -6,6 +6,7 @@
 		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
 		<link href="../../css/mui.min.css" rel="stylesheet" />
 		<link href="../../css/common.css" rel="stylesheet" />
+		<link rel="stylesheet" type="text/css" href="../../css/weui.min.css"/>
 		<style type="text/css">
 			[v-cloak] {
 				display: none !important;
@@ -319,7 +320,6 @@
 			});
 			
 			var self = 0;
-			mui.plusReady(function() {
 				(function($) {
 					var deceleration = mui.os.ios ? 0.003 : 0.0009;
 					$('.mui-scroll-wrapper').scroll({
@@ -328,18 +328,18 @@
 						deceleration: deceleration
 					});
 					
-					if(curPage&&JSON.stringify(curPage)=='{}'){//前四个页面时，不显示返回按钮
-						var ws = plus.webview.currentWebview();
-						if (ws.preload) {
-							curPage = ws.preload;
-							tempHead.headTitle = ws.preload.name;
-						}
-						if (ws.preload.index == 0) {
-							tempHead.showBack = 2;
-						}
-					}else{
-						tempHead.showBack = 1;//更多页面打开时，显示返回按钮
-					}
+					// if(curPage&&JSON.stringify(curPage)=='{}'){//前四个页面时，不显示返回按钮
+					// 	var ws = plus.webview.currentWebview();
+					// 	if (ws.preload) {
+					// 		curPage = ws.preload;
+					// 		tempHead.headTitle = ws.preload.name;
+					// 	}
+					// 	if (ws.preload.index == 0) {
+					// 		tempHead.showBack = 2;
+					// 	}
+					// }else{
+					// 	tempHead.showBack = 1;//更多页面打开时，显示返回按钮
+					// }
 					
 					$.ready(function() {
 						$.each(document.querySelectorAll('.mui-slider-group .mui-scroll'), function(index, pullRefreshEl) {
@@ -413,7 +413,6 @@
 				});
 				events.showWaiting();
 				getLeaveList();
-			});
 			
 			
 			function hidePullDownTitle(index){

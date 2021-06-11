@@ -9,7 +9,7 @@
 		<link href="../../css/mui.min.css" rel="stylesheet" />
 		<link href="../../css/common.css" rel="stylesheet" />
 		<link href="../../js/layui/css/layui.css" rel="stylesheet" />
-		<link href="layu" rel="stylesheet" />
+		<link rel="stylesheet" type="text/css" href="../../css/weui.min.css"/>
 		<style>
 			[v-cloak] {
 				visibility: hidden;
@@ -45,6 +45,13 @@
 				padding: 6px 0;
 				height: 35px;
 			}
+			.weui-cell{
+				padding: 8px;
+			}
+			
+			.weui-icon-checked{
+				color: #00cfbd !important;
+			}
 		</style>
 	</head>
 
@@ -71,14 +78,16 @@
 							<div class="scroll-body" >
 								<template v-if="dptClicked">
 									<template v-if="tecArray.length>0">
-										<form class="mui-input-group">
-											<template v-for="item in tecArray">
-												<div class="mui-input-row mui-checkbox mui-left">
-													<label>{{item.user_name}}</label>
-													<input name="checkbox" :value="item.stu_code" type="checkbox" :checked="item.checked" @click="userClick(item)">
-												</div>
-											</template>
-										</form>
+											<div class="weui-cells weui-cells_checkbox">
+												<template v-for="item in tecArray">
+													<label class="weui-cell weui-cell_active weui-check__label" :for="item.user_code">
+														<div class="weui-cell__hd">
+															<input type="checkbox" class="weui-check" name="checkbox1" :id="item.user_code" :checked="item.checked" @click="userClick(item)"/><i class="weui-icon-checked"></i>
+														</div>
+														<div class="weui-cell__bd"><p>{{item.user_name}}</p></div>
+													</label>
+												</template>
+											</div>
 									</template>
 									<template v-else>
 										<div style="margin:10px 10px 0;">暂无人员</div>
@@ -93,7 +102,7 @@
 				</div>
 			</div>
 		</div>
-		<script src="../../js/utils/mui.js"></script>
+		<script src="../../js/utils/muionlyselectpeopleuse.js"></script>
 		<script src="../../js/utils/storageKeyName.js"></script>
 		<script src="../../js/utils/vconsole.min.js"></script>
 		<script src="../../js/utils/vue.js"></script>
@@ -122,7 +131,7 @@
 			var tempVue = new Vue({
 				el: "#tempVue",
 				data: {
-					titleName: ''
+					titleName: '选择抄送人'
 				},
 				methods: {
 					sure: function() {
@@ -130,6 +139,7 @@
 						datasource.selectPeoples.forEach((value,key)=>{
 							checkTec.push({text:value.user_name,value:value.user_code})
 						})
+						console.log("checkTec: " + JSON.stringify(checkTec));
 						mui.fire(plus.webview.currentWebview().opener(), 'refreshCopy', checkTec);
 						setTimeout(function() {
 							mui.back()
@@ -150,6 +160,7 @@
 				},
 				methods: {
 					userClick:function(user){
+						console.log("user: " + JSON.stringify(user));
 						user.checked=!user.checked
 						if(user.checked){
 							this.selectPeoples.set(user.user_code,user)
@@ -161,11 +172,9 @@
 			});
 			mui.init();
 
-			mui.plusReady(function() {
 				curPage = utils.getDataFromUrl(window.location.href);
 				// console.log('2222:' + JSON.stringify(curPage));
 				datasource.windowHeight = document.body.clientHeight-45  + 'px'
-				tempVue.titleName = curPage.name;
 				let copy_list=curPage.copy_list;
 				let copy_map=new Map();
 				copy_list.map(item=>{ 
@@ -180,7 +189,6 @@
 				});
 				events.showWaiting();
 				getDpt();
-			});
 			
 			//获取学校部门
 			function getDpt(){

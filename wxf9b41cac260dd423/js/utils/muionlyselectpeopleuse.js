@@ -988,7 +988,7 @@ Function.prototype.bind = Function.prototype.bind || function(to) {
 		}
 		if (target && (target.type === 'radio' || target.type === 'checkbox')) {
 			if (!target.disabled) { //disabled
-				return target;
+				// return target;
 			}
 		}
 		return false;
