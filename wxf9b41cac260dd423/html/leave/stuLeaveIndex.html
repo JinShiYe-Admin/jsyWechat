@@ -159,11 +159,12 @@
 
 	<body style="background: white;">
 		<header class="mui-bar mui-bar-nav" id="tempHead">
-			<a v-cloak v-if="showBack==2" @click="clickLeftImg" class="mui-icon mui-pull-left">
+			<!-- <a v-cloak v-if="showBack==2" @click="clickLeftImg" class="mui-icon mui-pull-left">
 				<img v-cloak :src=headImg style="width: 26px;height: 26px;border-radius: 50%;" />
 			</a>
+			<a v-cloak v-if="showBack==1" class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a> -->
 			<h1 v-cloak class="mui-title">{{headTitle}}</h1>
-			<a  @tap="add" class="mui-pull-right" style="font-size: 25px;">+</a>
+			<a v-show="showAdd" @tap="add" class="mui-pull-right" style="font-size: 25px;">+</a>
 		</header>
 		<div v-cloak class="mui-content" style="margin-top: 0px;background: white;" id="contentData">
 			<div style="padding: 10px 10px;">
@@ -261,8 +262,9 @@
 			var tempHead = new Vue({
 				el: "#tempHead", 
 				data: {
+					showAdd:0,
 					showBack:0,
-					headTitle: '',
+					headTitle: '学生请假',
 					headImg: setImg(personal.img_url, 9)
 				},
 				methods: {
@@ -279,7 +281,6 @@
 			var contentData = new Vue({
 				el: "#contentData",
 				data: {
-					showAdd:0,
 					pageSize:10,//每页条数
 					semFlag: 0, //点击的seg索引
 					receive0: {//待审批
@@ -408,7 +409,7 @@
 				getPermissionByPosition('add', curPage.access, function(data) {
 					console.log('getPermissionByPosition:' + JSON.stringify(data));
 					if (data.code == 0 && data.data.result == 1) {
-						contentData.showAdd = 1;
+						tempHead.showAdd = 1;
 					}
 				});
 				events.showWaiting();

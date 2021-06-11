@@ -167,7 +167,7 @@
 
 	<body>
 		<header class="mui-bar mui-bar-nav" id="tempVue">
-			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<!-- <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a> -->
 			<h1 v-cloak class="mui-title">{{titleName}}</h1>
 			<a @click="submit()" class="mui-pull-right" style="font-size: 0.875rem">确定</a>
 		</header>
@@ -280,6 +280,7 @@
 		<script src="../../js/utils/mui.poppicker.js"></script>
 		<script src="../../js/utils/moment.min.js"></script>
 		<script src="../../js/utils/SMS-Utils.js"></script>
+		<script src="../../js/utils/vue-router.js" type="text/javascript" charset="utf-8"></script>
 		<!--加密--> 
 		<script src="../../js/libs/RSA/Barrett.js"></script>
 		<script src="../../js/libs/RSA/BigInt.js"></script>
@@ -326,6 +327,7 @@
 					}
 				}
 			});
+			
 			var datasource = new Vue({
 				el: "#datasource",
 				data: {
@@ -566,7 +568,6 @@
 					}
 				}
 			});
-
 				curPage = utils.getDataFromUrl(window.location.href);
 				// tempVue.titleName = '添加'+curPage.title;
 				//阻尼系数、初始化刷新加载更多
