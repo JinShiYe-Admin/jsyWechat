@@ -68,8 +68,8 @@ var events = (function(mod) {
 	 */
 	mod.showWaiting = function(string) {
 		clearTimeout(timeOut);
-		var times = 30000;
-		var title = '加载中...';
+		let times = 30000;
+		let title = '加载中...';
 		if (string) {
 			times = 120000;
 			title = string;
@@ -80,8 +80,6 @@ var events = (function(mod) {
 			events.closeWaiting();
 		}, times);
 		return $('#loadingToast')
-			
-		
 	}
 	
 	function addToast(string){
@@ -89,7 +87,7 @@ var events = (function(mod) {
 		if($('#loadingToast')[0]){
 			$('#loadingToast-text')[0].innerHTML=str
 		}else{
-			var html="<div id='loadingToast' style='display: none;'>"+
+			let html="<div id='loadingToast' style='display: none;'>"+
 				"<div class='weui-mask_transparent'></div>"+
 				"<div class='weui-toast'>"+
 					"<span class='weui-primary-loading weui-icon_toast'>"+
@@ -98,14 +96,17 @@ var events = (function(mod) {
 					"<p id='loadingToast-text' class='weui-toast__content'>"+str+"</p>"+
 				"</div>"+
 			"</div>"
-			var body=document.getElementsByTagName("body")[0]
-			body.innerHTML=body.innerHTML+html
+			let toast_div = document.createElement("div");  
+			toast_div.id='toast'
+			document.body.appendChild(toast_div);
+			let toast=document.getElementById("toast")
+			toast.innerHTML=toast.innerHTML+html
 		}
 	}
-	function removeToast(){
-		var toast=document.getElementById("loadingToast")
-		toast.parentNode.removeChild(toast)
-	}
+	// function removeToast(){
+	// 	let toast=document.getElementById("loadingToast")
+	// 	toast.parentNode.removeChild(toast)
+	// }
 
 	/**
 	 * 关闭一个或所有的等待框
@@ -117,7 +118,7 @@ var events = (function(mod) {
 		} else {
 			$('#loadingToast').fadeOut(100);
 		}
-		removeToast();
+		// removeToast();
 	}
 
 	 
