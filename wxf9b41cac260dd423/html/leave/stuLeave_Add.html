@@ -19,9 +19,7 @@
 		<link href="../../css/mui.poppicker.css" rel="stylesheet" />
 		<link rel="stylesheet" href="../../fonts/iconfont1.css" />
 		<link rel="stylesheet" type="text/css" href="../../css/icons-extra.css"/>
-		<link rel="stylesheet" href="../../css/utils/MultiMedia.css" />
-		<link rel="stylesheet" href="../../css/utils/preview.css" />
-		<link rel="stylesheet" href="../../css/utils/audiopopover.css" />
+		<link rel="stylesheet" type="text/css" href="../../css/weui.min.css"/>
 		<style>
 			[v-cloak] {
 				visibility: hidden;
@@ -169,7 +167,7 @@
 
 	<body>
 		<header class="mui-bar mui-bar-nav" id="tempVue">
-			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<!-- <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a> -->
 			<h1 v-cloak class="mui-title">{{titleName}}</h1>
 			<a @click="submit()" class="mui-pull-right" style="font-size: 0.875rem">确定</a>
 		</header>
@@ -250,26 +248,15 @@
 		<script src="../../js/utils/publicProtocol.js"></script>
 		<script src="../../js/utils/events.js"></script>
 		
-		<script src="../../js/picVideoAudio/MultiMedia.js"></script>
-		<script src="../../js/cloud/AndroidFileSystem.js"></script>
-		<script src="../../js/qiniu/qiniu.js"></script>
 		<script src="../../js/utils/cryption.js"></script>
-		<script src="../../js/cloud/CloudFileUtil.js"></script>
 		<script src="../../js/cloud/qn_upload.js"></script>
 		<script src="../../js/utils/mui.zoom.js"></script>
 		<script src="../../js/utils/mui.previewimage.js"></script>
-		<script src="../../js/picVideoAudio/compress.js"></script>
-		<script src="../../js/picVideoAudio/recordvideoutil.js"></script>
-		<script src="../../js/picVideoAudio/playutil.js"></script>
-		<script src="../../js/picVideoAudio/showvideoutil.js"></script>
-		<script src="../../js/picVideoAudio/showaudio.js"></script>
-		<script src="../../js/picVideoAudio/gallerypick.js"></script>
 		<script src="../../js/utils/store.js"></script>
 		<script src="../../js/utils/utils.js"></script>
 		<script src="../../js/utils/vconsole.min.js"></script>
-		<script src='../../js/picVideoAudio/compressVideo.js'></script>
-		<script src="../../js/qiniu/cloudutil.js"></script>
 		<script src="../../js/utils/mui.picker.js"></script>
+		<script src="../../js/utils/mui.poppicker.js"></script>
 		<script src="../../js/utils/moment.min.js"></script>
 		<script src="../../js/utils/SMS-Utils.js"></script>
 		<!--加密-->
@@ -491,7 +478,6 @@
 				}
 			});
 
-			mui.plusReady(function() {
 				curPage = utils.getDataFromUrl(window.location.href);
 				// tempVue.titleName = '添加'+curPage.title;
 
@@ -530,7 +516,6 @@
 				})
 				getLeaveFlows();
 				getClsTec();
-			});
 			
 			//获取班级任教
 			function getClsTec(){

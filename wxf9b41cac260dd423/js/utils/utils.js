@@ -46,6 +46,7 @@ var utils = (function(mod) {
 		var data = {};
 		var index = url.indexOf("&");
 		if(index != -1) {
+			console.log(url);
 			let endStr=url.substring(url.length-1, url.length)
 			if(endStr=='#'){
 				let dataStr = url.substring(index + 6, url.length-1);

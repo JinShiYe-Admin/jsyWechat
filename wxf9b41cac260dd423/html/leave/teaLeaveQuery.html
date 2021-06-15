@@ -11,6 +11,7 @@
 		<link href="../../css/common.css" rel="stylesheet" />
 		<link rel="stylesheet" href="../../css/mui.picker.min.css" />
 		<link href="../../css/mui.poppicker.css" rel="stylesheet" />
+		<link rel="stylesheet" type="text/css" href="../../css/weui.min.css"/>
 		<style>
 			[v-cloak] {
 				visibility: hidden;
@@ -268,7 +269,7 @@
 
 	<body>
 		<header class="mui-bar mui-bar-nav" id="tempVue">
-			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<!-- <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a> -->
 			<h1 class="mui-title" v-cloak>{{titleName}}</h1>
 		</header>
 		<div v-cloak id="datasource" class="mui-content mui-fullscreen" style="z-index:0;background-color: #FFFFFF;">
@@ -506,7 +507,6 @@
 				}
 			});
 
-			mui.plusReady(function() {
 				curPage = utils.getDataFromUrl(window.location.href);
 				console.log('2222:' + JSON.stringify(curPage));
 				tempVue.titleName = curPage.name;
@@ -575,7 +575,6 @@
 				events.showWaiting();
 				//获取数据范围授权：年级
 				getGrdList();
-			});
 
 			// 获取数据范围授权：年级
 			function getGrdList() {

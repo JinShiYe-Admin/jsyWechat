@@ -141,11 +141,11 @@
 
 	<body style="background: white;">
 		<header class="mui-bar mui-bar-nav" id="tempHead">
-			<a v-cloak class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<!-- <a v-cloak class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a> -->
 			<h1 v-cloak class="mui-title">{{headTitle}}</h1>
 			<a v-show="showAdd" @tap="add()" class="mui-pull-right top-btn">+代学生请假</a>
 		</header>
-		<div v-cloak class="mui-content" style="margin-top: 0px;background: white;" id="contentDataabc">
+		<div v-cloak class="mui-content" style="margin-top: 0px;background: white;" id="contentData">
 			<div style="padding: 10px 10px;">
 				<div id="segmentedControl" class="mui-segmented-control">
 					<a @tap="clickSeg(0)" class="mui-control-item mui-active" href="#item1">待审批</a>
@@ -298,7 +298,7 @@
 				el: "#tempHead", 
 				data: {
 					showAdd:0,
-					headTitle: '学生请假',
+					headTitle: '教师代请假',
 					headImg: setImg(personal.img_url, 9)
 				},
 				methods: {
@@ -310,7 +310,7 @@
 
 			//vue数据
 			var contentData = new Vue({
-				el: "#contentDataabc",
+				el: "#contentData",
 				data: {
 					pageSize:10,//每页条数
 					semFlag: 0, //点击的seg索引
@@ -353,7 +353,7 @@
 							} else if (flag == 1 ) {
 								contentData.receive1.refrushFlag = 0; //0刷新1加载更多								contentData.receive1.pageNumber = 1; 								contentData.receive1.TotalPage = 0; 
 								events.showWaiting();
-								getLeaveApproveList();
+								getLeaveApproveList1();
 							} else if (flag == 2 ) {
 								contentData.receive2.refrushFlag = 0; //0刷新1加载更多
 								contentData.receive2.pageNumber = 1; 
@@ -466,7 +466,7 @@
 					});
 				});
 			})(mui);
-
+			
 			window.addEventListener('refreshList', function(data) {
 				events.showWaiting();
 				if(contentData.semFlag==0){

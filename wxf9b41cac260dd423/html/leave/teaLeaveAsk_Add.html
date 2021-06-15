@@ -17,11 +17,9 @@
 		<link href="../../css/common.css" rel="stylesheet" />
 		<link rel="stylesheet" href="../../css/mui.picker.min.css" />
 		<link href="../../css/mui.poppicker.css" rel="stylesheet" />
+		<link href="../../css/weui.min.css" rel="stylesheet" />
 		<link rel="stylesheet" href="../../fonts/iconfont1.css" />
-		<link rel="stylesheet" type="text/css" href="../../css/icons-extra.css"/>
-		<link rel="stylesheet" href="../../css/utils/MultiMedia.css" />
-		<link rel="stylesheet" href="../../css/utils/preview.css" />
-		<link rel="stylesheet" href="../../css/utils/audiopopover.css" />
+		<link rel="stylesheet" href="../../css/icons-extra.css" />
 		<style>
 			[v-cloak] {
 				visibility: hidden;
@@ -169,7 +167,7 @@
 
 	<body>
 		<header class="mui-bar mui-bar-nav" id="tempVue">
-			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<!-- <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a> -->
 			<h1 v-cloak class="mui-title">{{titleName}}</h1>
 			<a @click="submit()" class="mui-pull-right" style="font-size: 0.875rem">确定</a>
 		</header>
@@ -194,7 +192,7 @@
 							<input  type="text" @tap="showStu()" rows="1" placeholder="请选择" v-model="formData.stu.text" readonly>
 							<!-- <h6 style=" float: right; width: 68%;line-height: 1.25rem;margin-right: 2%" v-if="formData.stu.text">已选择:	{{formData.stu.text}}</h6> -->
 							<span class="mui-icon mui-icon-arrowdown icon-right"></span>
-						</div>
+						</div> 
 						<div class="line"></div>
 						<div v-cloak class="mui-input-row">
 							<label class="aCss" @tap="showBeginDate()">开始时间</label>
@@ -266,35 +264,24 @@
 				</div>
 			</div>
 		</div>
-		<script src="../../js/utils/mui.min.js"></script>
+		<script src="../../js/utils/mui.js"></script>
 		<script src="../../js/utils/vue.js"></script>
 		<script src="../../js/utils/storageKeyName.js"></script>
 		<script src="../../js/utils/publicProtocol.js"></script>
 		<script src="../../js/utils/events.js"></script>
 		
-		<script src="../../js/picVideoAudio/MultiMedia.js"></script>
-		<script src="../../js/cloud/AndroidFileSystem.js"></script>
-		<script src="../../js/qiniu/qiniu.js"></script>
 		<script src="../../js/utils/cryption.js"></script>
-		<script src="../../js/cloud/CloudFileUtil.js"></script>
-		<script src="../../js/cloud/qn_upload.js"></script>
 		<script src="../../js/utils/mui.zoom.js"></script>
 		<script src="../../js/utils/mui.previewimage.js"></script>
-		<script src="../../js/picVideoAudio/compress.js"></script>
-		<script src="../../js/picVideoAudio/recordvideoutil.js"></script>
-		<script src="../../js/picVideoAudio/playutil.js"></script>
-		<script src="../../js/picVideoAudio/showvideoutil.js"></script>
-		<script src="../../js/picVideoAudio/showaudio.js"></script>
-		<script src="../../js/picVideoAudio/gallerypick.js"></script>
 		<script src="../../js/utils/store.js"></script>
 		<script src="../../js/utils/utils.js"></script>
 		<script src="../../js/utils/vconsole.min.js"></script>
-		<script src='../../js/picVideoAudio/compressVideo.js'></script>
-		<script src="../../js/qiniu/cloudutil.js"></script>
 		<script src="../../js/utils/mui.picker.js"></script>
+		<script src="../../js/utils/mui.poppicker.js"></script>
 		<script src="../../js/utils/moment.min.js"></script>
 		<script src="../../js/utils/SMS-Utils.js"></script>
-		<!--加密-->
+		<script src="../../js/utils/vue-router.js" type="text/javascript" charset="utf-8"></script>
+		<!--加密--> 
 		<script src="../../js/libs/RSA/Barrett.js"></script>
 		<script src="../../js/libs/RSA/BigInt.js"></script>
 		<script src="../../js/libs/RSA/RSA.js"></script>
@@ -340,6 +327,7 @@
 					}
 				}
 			});
+			
 			var datasource = new Vue({
 				el: "#datasource",
 				data: {
@@ -580,12 +568,8 @@
 					}
 				}
 			});
-
-			mui.plusReady(function() {
 				curPage = utils.getDataFromUrl(window.location.href);
 				// tempVue.titleName = '添加'+curPage.title;
-
-
 				//阻尼系数、初始化刷新加载更多
 				var deceleration = mui.os.ios ? 0.003 : 0.0009;
 				mui('.mui-scroll-wrapper').scroll({
@@ -622,7 +606,6 @@
 					}
 				})
 				getGrdList();
-			});
 			
 			
 			// 获取数据范围授权：年级
@@ -651,7 +634,7 @@
 							// //获取数据范围授权：班级
 							// getClsList(grd_id) 
 						}else{
-							mui.toast('无数据授权 无法获取年级');
+							mui.toast('获取年级为空');
 						}
 					} else {
 						mui.toast(data.msg);
@@ -685,7 +668,7 @@
 							// //获取数据范围授权：学生  
 							// getStuList(grd_id,cls_id) 
 						}else{
-							mui.toast('无数据授权 无法获取班级');
+							mui.toast('获取班级为空');
 						}
 					}else{
 						mui.toast(data.msg);
@@ -716,7 +699,7 @@
 						if(stuList.length>0 ){
 							datasource.stuList=stuList;
 						}else{
-							mui.toast('无数据授权 无法获取学生');
+							mui.toast('获取学生为空');
 						}
 					}else{
 						mui.toast(data.msg);
@@ -809,7 +792,6 @@
 						copy_list:_copy_list,
 						index_code: curPage.index_code,
 					}
-					console.log(": " + JSON.stringify(comData));
 					postDataEncry(window.storageKeyName.STULEAVE_API + 'apply/addApply', {}, comData, 2, function(data) {
 						if (data.code == 0) {
 							approveLeave(data.data.id,function(){
