@@ -291,6 +291,8 @@
 		<script src='../../js/libs/jquery.js'></script>
 		<script src='../../js/libs/encryption/sortSign.js'></script>
 		<script type="text/javascript">
+			const SESSIONNAME='teaLeaveAsk_Add.HTML'
+			const SESSIONNAME_SELECT='selectDptUser.HTML'
 			var $M = mui.init();
 			//获取个人信息
 			var personal = store.get(window.storageKeyName.PERSONALINFO);
@@ -568,6 +570,19 @@
 					}
 				}
 			});
+			
+			
+				let datasourceData=	store.get(SESSIONNAME)
+				if(datasourceData){
+					Object.assign(datasource.$data,datasourceData);
+					store.remove(SESSIONNAME)
+				}
+
+				let checkTec=store.get(SESSIONNAME_SELECT)
+				if(checkTec && checkTec.length>0){
+					datasource.formData.copy_list=checkTec
+					store.remove(SESSIONNAME_SELECT)
+				}
 				curPage = utils.getDataFromUrl(window.location.href);
 				// tempVue.titleName = '添加'+curPage.title;
 				//阻尼系数、初始化刷新加载更多
@@ -577,13 +592,6 @@
 					indicators: true, //是否显示滚动条
 					deceleration: deceleration
 				});
-
-
-				window.addEventListener('refreshCopy', function(data) {
-					console.log("data.detail: " + JSON.stringify(data.detail));
-					datasource.formData.copy_list=data.detail
-				});
-				
 
 				SMSUtils.INDEX_CODE=curPage.index_code;
 				SMSUtils.MSG_TYPE=window.storageKeyName.STUKQ_MSG_SMS.ASKLEAVE.MSG_TYPE;
@@ -728,6 +736,7 @@
 			
 			//获取班级任教跳转选人页面
 			function toSelectPage(){
+				store.set(SESSIONNAME,datasource.$data)
 				utils.mOpenWithData("../../html/leave/selectDptUser.html",{copy_list:datasource.formData.copy_list,index_code:curPage.index_code});
 			}
 			
@@ -799,7 +808,6 @@
 								events.closeWaiting()
 								mui.toast(data.msg);
 								setTimeout(function(){
-									mui.fire(plus.webview.currentWebview().opener(), 'refreshList', {});
 									mui.back()
 								},1500)
 							})
