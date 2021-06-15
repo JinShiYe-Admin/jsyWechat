@@ -26,19 +26,50 @@
 
 
 	<body>
-		<nav v-show="showArray.length>1" v-cloak class="mui-bar mui-bar-tab" id="indexPage">
-			<template v-cloak v-for="(model,index) in showArray">
-				<a v-cloak :id=model.tempID :class='index==0?"mui-tab-item mui-active":"mui-tab-item"' :href=model.href>
-					<span v-cloak :class=model.cls><span class="mui-badge"
-							v-if="model.NoReadCnt>0">{{model.NoReadCnt}}</span></span>
-					<span v-cloak class="mui-tab-label">{{model.name}}</span>
-				</a>
-			</template>
-		</nav>
+		<header class="mui-bar mui-bar-nav" id="tempHead">
+			<h1 class="mui-title">{{headTitle}}</h1>
+		</header>
+		<div v-cloak class="mui-content" id="indexPage" style="background-color: #f2f2f2;padding-bottom: 5px;">
+			<div v-cloak class="mui-card" v-for="(model,index) in showArray">
+				<div v-cloak class="mui-card-header">{{model.name}}</div>
+				<div v-cloak class="mui-card-content">
+					<div v-cloak class="mui-card-content-inner">
+						<template v-if="model.childList.length>0">
+							<!-- 如果有子菜单 -->
+							<ul class="mui-table-view mui-grid-view mui-grid-9"
+								style="background-color: white;padding-left: 7px;margin-top: 0px;">
+								<li v-for="(childModel,childIndex) in model.childList" @tap="clickFunction(childModel)"
+									class="mui-table-view-cell mui-media mui-col-sm-3 mui-col-xs-3"
+									style="border: 0px;padding:10px 5px">
+									<a href="javascript:void(0)">
+										<img class="circular-square2" :src=childModel.icon />
+										<div class="mui-media-body divNameCss">{{childModel.name}}</div>
+									</a>
+								</li>
+							</ul>
+						</template>
+						<template v-if="model.childList.length==0">
+							<!-- 如果没有子菜单 -->
+							<ul class="mui-table-view mui-grid-view mui-grid-9"
+								style="background-color: white;padding-left: 7px;margin-top: 0px;">
+								<li v-cloak @tap="clickFunction(model)"
+									class="mui-table-view-cell mui-media mui-col-sm-3 mui-col-xs-3"
+									style="border: 0px;padding:10px 5px">
+									<a href="javascript:void(0)">
+										<img class="circular-square" :src=model.img_href />
+										<div class="mui-media-body divNameCss">{{model.name}}</div>
+									</a>
+								</li>
+							</ul>
+						</template>
+					</div>
+				</div>
+			</div>
+		</div>
 		<script src="../../js/utils/storageKeyName.js"></script>
 		<script src="../../js/utils/mui.min.js"></script>
-		<script src="../../js/utils/vue.js"></script>
 		<script src="../../js/utils/store.js"></script>
+		<script src="../../js/utils/vue.js"></script>
 		<script src="../../js/utils/vconsole.min.js"></script>
 		<script src="../../js/utils/utils.js"></script>
 		<script src="../../js/libs/jquery.js"></script>
@@ -69,18 +100,82 @@
 				}
 			});
 
+			var tempHead = new Vue({
+				el: "#tempHead",
+				data: {
+					headTitle: '智慧校园'
+				}
+			});
+
+			// var contentData = new Vue({
+			// 	el: "#contentData",
+			// 	data: {
+			// 		gridList: []
+			// 	},
+			// 	methods: {
+			// 		clickFunction: function(model) {
+			// 			console.log("model: " + JSON.stringify(model));
+			// 			// var personal0 = store.get(window.storageKeyName.PERSONALINFO);
+			// 			utils.mOpenWithData(model.href, model);
+			// 		}
+			// 	}
+			// });
+
+			mui.plusReady(function() {
+				var ws = plus.webview.currentWebview();
+				console.log("当前Webview窗口：" + JSON.stringify(ws.preload));
+				//创建子页面，首个选项卡页面显示，其它均隐藏；
+				var tempMenu = store.get(window.storageKeyName.MENULIST);
+				console.log('tempMenu:' + JSON.stringify(tempMenu));
+				var tempA = [];
+				// for (var i = 0; i < tempMenu.list[0].childList.length; i++) { //一级菜单循环
+				// 	var web_first_item = tempMenu.list[0].childList[i];
+				// 	for (var a = 0; a < indexPage.pageArray.length; a++) {
+				// 		var local_first_item = indexPage.pageArray[a];
+				// 		if (local_first_item.url == web_first_item.url) {
+				// 			local_first_item.name = web_first_item.name;
+				// 			local_first_item.access = web_first_item.access;
+				// 			let childList = []
+				// 			for (var b = 0; b < web_first_item.childList.length; b++) { //二级菜单循环
+				// 				var web_second_item = web_first_item.childList[b];
+				// 				for (var c = 0; c < local_first_item.childList.length; c++) {
+				// 					var local_second_item = local_first_item.childList[c];
+				// 					if (local_second_item.url == web_second_item.url) {
+				// 						local_second_item.access = web_second_item.access;
+				// 						local_second_item.redspot_url = web_second_item.redspot_url;
+				// 						local_second_item.childList = web_second_item.childList;
+				// 						local_second_item.name = web_second_item.name;
+				// 						childList.push(local_second_item)
+				// 					}
+				// 				}
+				// 			}
+				// 			local_first_item.childList = childList
+				// 			tempA.push(local_first_item);
+				// 		}
+				// 	}
+				// }
+				// for (var i = 0; i < tempA.length; i++) {
+				// 	tempA[i].index = i;
+				// }
+				// console.log('tempA:'+JSON.stringify(tempA));
+				// indexPage.showArray = [].concat(tempA);
+				// var personal = store.get(window.storageKeyName.PERSONALINFO);
+				// if (indexPage.showArray.length == 0) {
+				// 	mui.toast('暂无可用菜单');
+				// } 
+			});
+
 			var indexPage = new Vue({
 				el: "#indexPage",
 				data: {
 					showArray: [],
-					pageArray: [
-						{
+					pageArray: [{
 							name: "stuLeave", //学生请假
 							href: "../leave/stuLeaveIndex.html",
 							img_href: "../../image/leave/kaowu_tab.png",
 							tempID: 'leave-student',
 							cls: 'mui-icon iconfont icon-kaowuxitong',
-							url: 'schapp_stuLeave',
+							url: 'wechatapp_stuLeave',
 							childList: []
 						},
 						{
@@ -89,7 +184,7 @@
 							img_href: "../../image/leave/kaowu_tab.png",
 							tempID: 'leave-parent',
 							cls: 'mui-icon iconfont icon-kaowuxitong',
-							url: 'schapp_parLeave',
+							url: 'wechatapp_parLeave',
 							childList: []
 						},
 						{
@@ -98,142 +193,51 @@
 							img_href: "../../image/leave/kaowu_tab.png",
 							tempID: 'leave-teacher',
 							cls: 'mui-icon iconfont icon-kaowuxitong',
-							url: 'schapp_teaLeave',
+							url: 'wechatapp_teaLeave',
 							childList: [{
 									name: '教师代请假',
 									icon: '../../image/leave/zhouce.png',
 									href: "../leave/teaLeaveAsk.html",
-									url: 'schapp_teaLeave_askForLeave'
+									url: 'wechatapp_teaLeave_askForLeave'
 								},
 								{
 									name: '代请假查询',
 									icon: '../../image/leave/yuekao.png',
 									href: "../leave/teaLeaveQuery.html",
-									url: 'schapp_teaLeave_leaveSelect'
+									url: 'wechatapp_teaLeave_leaveSelect'
+								},
+							]
+						},
+						{
+							name: "markingPapers", //阅卷--老师
+							href: "../../html/markingPapers/index.html",
+							img_href: "../../img/markingPapers/markingPapers_tab.png",
+							tempID: 'markingPapers',
+							cls: 'mui-icon iconfont icon-yuejuan',
+							url: 'wechatapp_markingPapers',
+							childList: [{
+									name: '周测',
+									icon: '../../img/markingPapers/zhouce.png',
+									href: "../../html/markingPapers/weekTest_index.html",
+									url: 'wechatapp_markingPapers_weekTest'
+								},
+								{
+									name: '月考',
+									icon: '../../img/markingPapers/yuekao.png',
+									href: "../../html/markingPapers/monthTest_index.html",
+									url: 'wechatapp_markingPapers_monthTest'
+								},
+								{
+									name: '期中期末',
+									icon: '../../img/markingPapers/qizhongqimo.png',
+									href: "../../html/markingPapers/termTest_index.html",
+									url: 'wechatapp_markingPapers_termTest'
 								},
 							]
 						},
 					]
 				}
 			});
-
-			//创建子页面，首个选项卡页面显示，其它均隐藏；
-				var tempMenu = store.get(window.storageKeyName.MENULIST);
-				console.log('tempMenu:' + JSON.stringify(tempMenu));
-				var tempA = [];
-				for (var i = 0; i < tempMenu.list[0].childList.length; i++) { //一级菜单循环
-					var web_first_item = tempMenu.list[0].childList[i];
-					for (var a = 0; a < indexPage.pageArray.length; a++) {
-						var local_first_item = indexPage.pageArray[a];
-						if (local_first_item.url == web_first_item.url) {
-							local_first_item.name = web_first_item.name;
-							local_first_item.access = web_first_item.access;
-							let childList = []
-							for (var b = 0; b < web_first_item.childList.length; b++) { //二级菜单循环
-								var web_second_item = web_first_item.childList[b];
-								for (var c = 0; c < local_first_item.childList.length; c++) {
-									var local_second_item = local_first_item.childList[c];
-									if (local_second_item.url == web_second_item.url) {
-										local_second_item.access = web_second_item.access;
-										local_second_item.redspot_url = web_second_item.redspot_url;
-										local_second_item.childList = web_second_item.childList;
-										local_second_item.name = web_second_item.name;
-										childList.push(local_second_item)
-									}
-								}
-							}
-							local_first_item.childList = childList
-							tempA.push(local_first_item);
-						}
-					}
-				}
-				for (var i = 0; i < tempA.length; i++) {
-					tempA[i].index = i;
-				}
-				indexPage.showArray = [].concat(tempA);
-				var personal = store.get(window.storageKeyName.PERSONALINFO);
-				if (indexPage.showArray.length == 0) {
-					mui.toast('暂无可用菜单');
-				}else{
-					let childOrParent=indexPage.showArray[0]
-					if(childOrParent.childList.length>0){
-						childOrParent=childOrParent.childList
-					}
-					 utils.mOpenWithData("../leave/teaLeaveIndex.html", childOrParent);
-					
-					/** 请阅读最后一句话 */
-					// if (tempA.length > 5) {
-					// 	var tempArrayM = tempA.slice(4);
-					// 	store.set(window.storageKeyName.MOREMENU, tempArrayM);
-					// 	tempA = tempA.slice(0, 4);
-					// 	tempA.push({
-					// 		name: "更多",
-					// 		href: "../html/more/index.html",
-					// 		tempID: 'kejiao4',
-					// 		cls: 'mui-icon iconfont icon-gengduo',
-					// 		url: 'more',
-					// 	});
-					// }
-					// if (indexPage.showArray.length == 1) {
-					// 	subpage_style.bottom = '0px';
-					// }
-					// var defaultUrl = indexPage.showArray[0].href;
-					// var self = plus.webview.currentWebview();
-					// var tempM = indexPage.showArray[0];
-					// var sub = plus.webview.create(defaultUrl, defaultUrl, subpage_style, {
-					// 	preload: tempM
-					// });
-					// self.append(sub);
-					// //当前激活选项
-					// activeTab = defaultUrl;
-					// var title = document.getElementById("title");
-					// console.log('11111111');
-					// //选项卡点击事件
-					// mui('.mui-bar-tab').on('tap', 'a', function(e) {
-					// 	var targetTab = this.getAttribute('href');
-					// 	console.log('11111111222:' + targetTab);
-					// 	if (targetTab == activeTab) {
-					// 		return;
-					// 	} else {
-					// 		var viewIsExists = plus.webview.getWebviewById(targetTab);
-					// 		if (viewIsExists == null || viewIsExists == '' || viewIsExists == undefined) {
-					// 			for (var i = 0; i < indexPage.showArray.length; i++) {
-					// 				var tempM = indexPage.showArray[i];
-					// 				if (targetTab == tempM.href) {
-					// 					var pageIndex = plus.webview.getWebviewById(targetTab);
-					// 					var newSub = plus.webview.create(targetTab, targetTab, subpage_style, {
-					// 						preload: tempM
-					// 					});
-					// 					newSub.hide();
-					// 					self.append(newSub);
-					// 				}
-					// 			}
-					
-					// 		}
-					// 	}
-					// 	//更换标题
-					// 	//title.innerHTML = this.querySelector('.mui-tab-label').innerHTML;
-					// 	plus.webview.show(targetTab, "fade-in", 00);
-					// 	//隐藏当前;
-					// 	plus.webview.hide(activeTab);
-					// 	//更改当前活跃的选项卡 
-					// 	activeTab = targetTab;
-					// });
-					// setTimeout(function() {
-					// 	var defaultTab = document.getElementById(indexPage.showArray[0].tempID);
-					// 	console.log('11111111defaultTab:' + defaultTab);
-					// 	//模拟首页点击
-					// 	mui.trigger(defaultTab, 'tap');
-					// 	//切换选项卡高亮
-					// 	var current = document.querySelector(".mui-bar-tab>.mui-tab-item.mui-active");
-					// 	if (defaultTab !== current) {
-					// 		current.classList.remove('mui-active');
-					// 		defaultTab.classList.add('mui-active');
-					// 	}
-					// }, 1000);
-					
-					/** 以上内容均在微信H5页面内容中无法使用用，需要使用其他方案替代底部tab栏，因需求单一，时间紧迫，不做了 */
-				}
 		</script>
 	</body>
 

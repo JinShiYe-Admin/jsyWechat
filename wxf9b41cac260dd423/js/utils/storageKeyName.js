@@ -5,7 +5,7 @@ var storageKeyName = (function(mod) {
 	switch(mod.key) {
 		case 1: //山东开发
 			mod.PLATFORMCODE = 'PT0002'; //平台代码
-			mod.APPCODE = 'schapp#'; //应用系统代码
+			mod.APPCODE = 'wechatapp#'; //应用系统代码
 			mod.THIRD_FORMCODE = 'WX'; //第三方平台
 			mod.INTERFACE_SSO_SKIN = 'http://develop309.jiaobaowang.net/ssotoskin/api/skin/'; //单点登录,供PC外皮及APP用户登录,管理
 			mod.INTERFACE_SSO_HR = 'http://develop309.jiaobaowang.net/ssotohr/api/hr/'; //单点登录,供人事系统使用
@@ -37,7 +37,7 @@ var storageKeyName = (function(mod) {
 			break;
 		case 2: //广西开发
 			mod.PLATFORMCODE = 'PT0002'; //平台代码
-			mod.APPCODE = 'schapp#'; //应用系统代码
+			mod.APPCODE = 'wechatapp#'; //应用系统代码
 			mod.THIRD_FORMCODE = 'WX'; //第三方平台
 			mod.INTERFACE_SSO_SKIN = 'http://139.129.252.49/suptohrsso/api/skin/'; //单点登录,供PC外皮及APP用户登录,管理
 			mod.INTERFACE_SSO_HR = 'http://139.129.252.49/suptohrsso/api/hr/'; //单点登录,供人事系统使用
@@ -69,7 +69,7 @@ var storageKeyName = (function(mod) {
 			break;
 		case 3: //联测
 			mod.PLATFORMCODE = 'PT0001'; //平台代码
-			mod.APPCODE = 'schapp#'; //应用系统代码
+			mod.APPCODE = 'wechatapp#'; //应用系统代码
 			mod.THIRD_FORMCODE = 'WX'; //第三方平台
 			mod.INTERFACE_SSO_SKIN = 'http://nwifapp.jiaobaowang.net/ssotoskin/api/skin/'; //单点登录,供PC外皮及APP用户登录,管理
 			mod.INTERFACE_SSO_HR = 'http://nwifapp.jiaobaowang.net/ssotohr/api/hr/'; //单点登录,供人事系统使用
@@ -101,7 +101,7 @@ var storageKeyName = (function(mod) {
 			break;
 		case 4: //云测
 			mod.PLATFORMCODE = 'PT0002'; //平台代码
-			mod.APPCODE = 'schapp#'; //应用系统代码
+			mod.APPCODE = 'wechatapp#'; //应用系统代码
 			mod.THIRD_FORMCODE = 'WX'; //第三方平台
 			mod.INTERFACE_SSO_SKIN = 'http://nwifapp.jiaobaowang.net/ssotoskin/api/skin/'; //单点登录,供PC外皮及APP用户登录,管理  单点对人事及登录皮肤接口
 			mod.INTERFACE_SSO_HR = 'http://nwifapp.jiaobaowang.net/ssotohr/api/hr/'; //单点登录,供人事系统使用                  单点对人事及登录皮肤接口
@@ -133,7 +133,7 @@ var storageKeyName = (function(mod) {
 			break;
 		case 5://正式
 			mod.PLATFORMCODE = 'PT0001'; //平台代码
-			mod.APPCODE = 'schapp#'; //应用系统代码
+			mod.APPCODE = 'wechatapp#'; //应用系统代码
 			mod.THIRD_FORMCODE = 'WX'; //第三方平台
 			mod.INTERFACE_SSO_SKIN = 'http://sso.108800.com:8080/ssotoskin/api/skin/'; // 单点对登录框接口
 			mod.INTERFACE_SSO_HR = 'http://sso.108800.com:8080/ssotohr/api/hr/'; // 单点对人事接口 (gu )
@@ -165,7 +165,7 @@ var storageKeyName = (function(mod) {
 			break;
 		case 6://性能测试
 			mod.PLATFORMCODE = 'PT0002'; //平台代码
-			mod.APPCODE = 'schapp#'; //应用系统代码
+			mod.APPCODE = 'wechatapp#'; //应用系统代码
 			mod.THIRD_FORMCODE = 'WX'; //第三方平台
 			mod.INTERFACE_SSO_SKIN = 'http://cs1.108800.com/suptohr2/api/skin/'; //单点登录,供PC外皮及APP用户登录,管理  单点对人事及登录皮肤接口
 			mod.INTERFACE_SSO_HR = 'http://cs1.108800.com/suptohr2/api/hr/'; //单点登录,供人事系统使用                  单点对人事及登录皮肤接口
