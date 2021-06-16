@@ -325,7 +325,7 @@ var jQAjaxPost = function(url, data, callback) {
 				mui.toast(success_data.msg);
 				setTimeout(function() {
 					//获取个人信息
-					var personal = store.get(window.storageKeyName.PERSONALINFO);
+					// var personal = store.get(window.storageKeyName.PERSONALINFO);
 					//设置app角标,flag=0直接设置角标数字，flag=1角标减1,falg=2角标加1
 					
 					//获取所有已打开的webview 实例————重新打开login.html————循环关闭页面
