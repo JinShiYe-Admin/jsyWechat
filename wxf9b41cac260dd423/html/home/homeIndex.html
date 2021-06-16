@@ -184,7 +184,7 @@
 										<li v-for="(childModel,childIndex) in model.childList"
 											@tap="clickFunction(childModel)"
 											class="mui-table-view-cell mui-media mui-col-sm-3 mui-col-xs-3"
-											style="border: 0px;padding:10px 5px">
+											style="border: 0px;padding:0px 5px">
 											<a href="javascript:void(0)">
 												<img class="circular-square2" :src=childModel.icon />
 												<div class="mui-media-body divNameCss">{{childModel.name}}</div>
@@ -198,7 +198,7 @@
 										style="background-color: white;padding-left: 7px;margin-top: 0px;">
 										<li v-cloak @tap="clickFunction(model)"
 											class="mui-table-view-cell mui-media mui-col-sm-3 mui-col-xs-3"
-											style="border: 0px;padding:10px 5px">
+											style="border: 0px;padding:0px 5px">
 											<a href="javascript:void(0)">
 												<img class="circular-square" :src=model.img_href />
 												<div class="mui-media-body divNameCss">{{model.name}}</div>
