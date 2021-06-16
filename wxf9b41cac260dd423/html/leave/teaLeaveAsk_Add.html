@@ -291,6 +291,19 @@
 		<script src='../../js/libs/jquery.js'></script>
 		<script src='../../js/libs/encryption/sortSign.js'></script>
 		<script type="text/javascript">
+			$(function() {
+				var isPageHide = false;
+				window.addEventListener('pageshow', function() {
+					console.log('pageshowpageshowpageshow3');
+					if (isPageHide) {
+						window.location.reload();
+					}
+				});
+				window.addEventListener('pagehide', function() {
+					console.log('pagehidepagehidepagehidepagehide4');
+					isPageHide = true;
+				});
+			})
 			const SESSIONNAME='teaLeaveAsk_Add.HTML'
 			const SESSIONNAME_SELECT='selectDptUser.HTML'
 			var $M = mui.init();
@@ -570,7 +583,6 @@
 					}
 				}
 			});
-			
 			
 				let datasourceData=	store.get(SESSIONNAME)
 				if(datasourceData){
