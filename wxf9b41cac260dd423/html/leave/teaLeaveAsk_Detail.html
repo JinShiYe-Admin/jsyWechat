@@ -375,7 +375,6 @@
 						if (data.code == 0) {
 							mui.toast('操作成功');
 							setTimeout(function(){
-								 mui.fire(plus.webview.currentWebview().opener(), 'refreshList', {});
 								 mui.back()
 							},1500)
 						} else {

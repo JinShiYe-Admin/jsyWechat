@@ -121,6 +121,7 @@
 		<script src='../../js/libs/jquery.js'></script>
 		<script src='../../js/libs/encryption/sortSign.js'></script>
 		<script type="text/javascript">
+			const SESSIONNAME_SELECT='selectDptUser.HTML'
 			//获取个人信息
 			var personal = store.get(window.storageKeyName.PERSONALINFO);
 			// console.log('personal:' + JSON.stringify(personal));
@@ -136,14 +137,13 @@
 				methods: {
 					sure: function() {
 						let checkTec=[]
+						console.log(datasource.selectPeoples);
 						datasource.selectPeoples.forEach((value,key)=>{
-							checkTec.push({text:value.user_name,value:value.user_code})
+							checkTec.push({text:value.text,value:value.value})
 						})
-						console.log("checkTec: " + JSON.stringify(checkTec));
-						mui.fire(plus.webview.currentWebview().opener(), 'refreshCopy', checkTec);
-						setTimeout(function() {
-							mui.back()
-						}, 100)
+						console.log(JSON.stringify(checkTec));
+						store.set(SESSIONNAME_SELECT,checkTec)
+						mui.back()
 					}
 				}
 			});
@@ -160,7 +160,6 @@
 				},
 				methods: {
 					userClick:function(user){
-						console.log("user: " + JSON.stringify(user));
 						user.checked=!user.checked
 						if(user.checked){
 							this.selectPeoples.set(user.user_code,user)
@@ -170,10 +169,8 @@
 					}
 				}
 			});
-			mui.init();
-
+				mui.init();
 				curPage = utils.getDataFromUrl(window.location.href);
-				// console.log('2222:' + JSON.stringify(curPage));
 				datasource.windowHeight = document.body.clientHeight-45  + 'px'
 				let copy_list=curPage.copy_list;
 				let copy_map=new Map();
@@ -238,6 +235,10 @@
 				postDataEncry(window.storageKeyName.INTERFACE_HR_SUB + 'dptUser', {}, params, 2, function(data) {
 					events.closeWaiting();
 					if (data.code == 0) {
+						data.data.list.map(item=>{
+								item.text=item.user_name
+								item.value=item.user_code
+							})
 						 datasource.selectPeoples.forEach((value,key)=>{
 							data.data.list.map(item=>{
 								if(key===item.user_code){
