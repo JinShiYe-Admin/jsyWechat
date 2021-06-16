@@ -1,0 +1,990 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>Hello MUI</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+		<link href="../../css/mui.min.css" rel="stylesheet" />
+		<link rel="stylesheet" type="text/css" href="../../css/common.css" />
+		<link rel="stylesheet" href="../../css/mui.picker.min.css" />
+		<link href="../../css/mui.poppicker.css" rel="stylesheet" />
+		<style>
+			/* [v-cloak] {
+				visibility: hidden;
+				display:none !important;
+			} */
+
+			.mui-table-view:before {
+				height: 0px !important;
+			}
+
+			.mui-table-view:after {
+				height: 0px !important;
+			}
+
+			.mui-table-view-cell:before {
+				height: 0px !important;
+			}
+
+			.mui-table-view-cell:after {
+				height: 0px !important;
+			}
+
+			.scoreDetail {
+				font-size: 13px;
+				color: #000;
+				text-align: center;
+				margin-top: 0px;
+				background-color: #e5e5e5;
+			}
+
+			.mui-popover {
+				height: 220px;
+			}
+
+			.chart {
+				min-height: 350px;
+				margin: 0px;
+				padding: 0px;
+			}
+		</style>
+	</head>
+
+	<body style="background: white;">
+		<!--侧滑菜单容器-->
+		<div id="offCanvasWrapper" class="mui-off-canvas-wrap mui-draggable">
+			<!--菜单部分-->
+			<aside id="offCanvasSide" class="mui-off-canvas-right">
+				<div id="offCanvasSideScroll" class="mui-scroll-wrapper">
+					<div style="background-color: #333;position: absolute;z-index: 9999;width: 100%;">
+						<div style="margin-top: -20px;" class="content">
+							<button id='showUserPicker' class="mui-btn" style="width: 100px;"
+								@tap="showGrd()">{{grdTempValue.text}}</button>
+							<button id='showUserPicker' class="mui-btn" style="width: 100px;margin-left: 10px;"
+								@tap="showCls()">{{clsTempValue.text}}</button>
+						</div>
+						<div style="color: white;margin: 15px 0 0 15px;">考试统计范围</div>
+					</div>
+					<div class="mui-scroll" style="position: absolute;z-index: 0;">
+						<ul class="mui-table-view mui-table-view-chevron mui-table-view-inverted" style="margin-top: 100px;margin-bottom: 60px;">
+							<li class="mui-table-view-cell" style="padding: 5px 0 5px 0;"
+								v-for="paperModel in fullPaperTempList" @click="selectPaper(paperModel)">
+								<div class="mui-input-row mui-checkbox mui-left">
+									<label style="font-size: 14px;">{{paperModel.name}}</label>
+									<span v-if="paperModel.selectFlag == false">
+										<input name="checkbox1" v-model="paperModel.selectFlag" value="Item 1" type="checkbox"
+											style="margin-top: 10px;">
+									</span>
+									<span v-if="paperModel.selectFlag == true">
+										<input name="checkbox2" v-model="paperModel.selectFlag" value="Item 2" type="checkbox" style="margin-top: 10px;" checked>
+									</span>
+								</div>
+							</li>
+						</ul>
+					</div>
+					<div v-if="fullPaperTempList.length>0" style="background-color: #333;position: absolute;z-index: 9999;width: 100%;margin-top: calc(100vh - 60px);height: 60px;" class="content">
+						<button class="mui-btn mui-btn-outlined" style="width: 100px;color: white;margin-top: -30px;"
+							@tap="sure(0)">取消</button>
+						<button class="mui-btn" style="width: 100px;margin-left: 10px;background-color: #00cfbd;border-color: #00cfbd;color: white;margin-top: -30px;"
+							@tap="sure(1)">确定</button>
+					</div>
+				</div>
+			</aside>
+			<div class="mui-inner-wrap">
+				<header class="mui-bar mui-bar-nav" id="tempHead">
+					<a v-if="showBack==1" class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+					<h1 class="mui-title">{{headTitle}}</h1>
+					<a href="#offCanvasSide"
+						class="mui-icon mui-action-menu mui-icon-bars mui-pull-right"></a>
+				</header>
+				<div class="mui-content" id="contentData" style="margin-top: 0px;background: white;">
+					<div style="padding: 10px 10px;">
+						<div id="segmentedControl" class="mui-segmented-control">
+							<a @tap="clickSeg(0)" class="mui-control-item mui-active" href="#item1">历次成绩</a>
+							<a @tap="clickSeg(1)" class="mui-control-item" href="#item2">一分两率</a>
+							<a @tap="clickSeg(2)" class="mui-control-item" href="#item3">分数段</a>
+							<a @tap="clickSeg(3)" class="mui-control-item" href="#item4">上线率</a>
+						</div>
+					</div>
+					<div class="mui-scroll-wrapper" id="tempScroll" style="margin-top: 100px;">
+						<div class="mui-scroll">
+							<div class="mui-slider-group">
+								<div id="item1" class="mui-control-content mui-active">
+									<ul class="mui-table-view">
+										<li v-for="(model,index) in sem0Data.scoreList" class="mui-table-view-cell">
+											<div style="font-size: 15px;font-weight: bold;">{{model.cls_name}}
+												{{model.stu_name}}
+											</div>
+											<div v-for="(showModel,index) in model.childrenShow"
+												style="border: 1px solid #66c1bb;margin-top: 10px;">
+												<div
+													style="height: 20px;background-color: #66c1bb;margin: 0px 0 0 0;font-size: 13px;color: white;padding-left: 10px;">
+													{{showModel.title}}</div>
+												<div class="mui-row" style="margin: 0px 0px 0px 0px;">
+													<div style="" class="mui-col-xs-3">
+														<p class="scoreDetail">分数</p>
+													</div>
+													<div style="" class="mui-col-xs-3">
+														<p class="scoreDetail" style="background-color: white;">
+															{{showModel.score}}
+														</p>
+													</div>
+													<div style="" class="mui-col-xs-3">
+														<p class="scoreDetail">排名</p>
+													</div>
+													<div style="" class="mui-col-xs-3">
+														<p class="scoreDetail" style="background-color: white;">
+															{{showModel.order}}
+														</p>
+													</div>
+												</div>
+											</div>
+											<a href="#middlePopover" v-if="model.childrenMore.length>0"
+												@tap='lookMore(model.childrenMore)'
+												style="color: #00cfbd;text-align: center;font-size: 14px;margin-top: 0px;">查看更多</a>
+											<div
+												style="height: 10px;background-color: #e5e5e5;margin: 10px -20px -10px -20px;">
+											</div>
+										</li>
+									</ul>
+								</div>
+								<div id="item2" class="mui-control-content">
+									<div style="text-align: center;margin-top: 10px;font-size: 15px;" class="mui-control-item" @tap="sem1ShowSub()"><span>{{sem1Data.subValue.text}}</span><span
+										 class="mui-icon mui-icon-arrowdown"></span></div>
+									<div style="font-size: 15px;font-weight: bold;margin-left: 15px;margin-top: 10px;">平均分变化趋势</div>
+									<div style="height: 2px;background-color: #00cfbd;margin: 2px 0 0 15px;width: 105px;"></div>
+									<div class="chart" style="margin-top: -30px;" id="pjfChart"></div>
+									<div style="font-size: 15px;font-weight: bold;margin-left: 15px;margin-top: 10px;">各指标变化趋势</div>
+									<div style="height: 2px;background-color: #00cfbd;margin: 2px 0 10px 15px;width: 105px;"></div>
+									<div class="chart" id="qushiChart"></div>
+								</div>
+								<div id="item3" class="mui-control-content">
+									<div style="text-align: center;margin-top: 10px;font-size: 15px;" class="mui-control-item" @tap="sem2ShowSub()"><span>{{sem2Data.subValue.text}}</span><span
+										 class="mui-icon mui-icon-arrowdown"></span></div>
+									<div style="font-size: 15px;font-weight: bold;margin-left: 15px;margin-top: 10px;">分数段变化趋势(人数)</div>
+									<div style="height: 2px;background-color: #00cfbd;margin: 2px 0 10px 15px;width: 145px;"></div>
+									<div class="chart" id="fenshuduanChart"></div>
+								</div>
+								<div id="item4" class="mui-control-content">
+									<div style="font-size: 15px;font-weight: bold;margin-left: 15px;margin-top: 10px;">上线率变化趋势(人数)</div>
+									<div style="height: 2px;background-color: #00cfbd;margin: 2px 0 10px 15px;width: 145px;"></div>
+									<div class="chart" id="shangxianlvChart"></div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<!-- off-canvas backdrop -->
+					<div id="backdrop" class="mui-off-canvas-backdrop"></div>
+				</div>
+			</div>
+		</div>
+		<div id="middlePopover" class="mui-popover" style="width: 350px;">
+			<div class="mui-popover-arrow"></div>
+			<div id='scroll1' class="mui-scroll-wrapper">
+				<div class="mui-scroll">
+					<ul class="mui-table-view">
+						<li class="mui-table-view-cell">
+							<div v-for="(showModel,index) in showMoreList"
+								style="border: 1px solid #66c1bb;margin-top: 10px;">
+								<div
+									style="height: 20px;background-color: #66c1bb;margin: 0px 0 0 0;font-size: 13px;color: white;padding-left: 10px;">
+									{{showModel.title}}</div>
+								<div class="mui-row" style="margin: 0px 0px 0px 0px;">
+									<div style="" class="mui-col-xs-3">
+										<p class="scoreDetail">分数</p>
+									</div>
+									<div style="" class="mui-col-xs-3">
+										<p class="scoreDetail" style="background-color: white;">{{showModel.score}}
+										</p>
+									</div>
+									<div style="" class="mui-col-xs-3">
+										<p class="scoreDetail">排名</p>
+									</div>
+									<div style="" class="mui-col-xs-3">
+										<p class="scoreDetail" style="background-color: white;">{{showModel.order}}
+										</p>
+									</div>
+								</div>
+							</div>
+							<div style="text-align: center;font-size: 13px;color: gray;">以上排名均为年级排名</div>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+		<script src="../../js/utils/utils.js"></script>
+		<script src="../../js/utils/mui.min.js"></script>
+		<script src="../../js/utils/storageKeyName.js"></script>
+		<script src="../../js/utils/vconsole.min.js"></script>
+		<script src="../../js/utils/vue.js"></script>
+		<script src="../../js/utils/mui.picker.min.js"></script>
+		<script src="../../js/utils/mui.poppicker.js"></script>
+		<!---->
+		<script src="../../js/utils/store.js"></script>
+		<script src="../../js/utils/events.js"></script>
+		<script src="../../js/libs/jquery.js"></script>
+		<script src='../../js/utils/big.min.js'></script>
+		<!-- <script src="../../js/swiper/swiper-bundle.min.js"></script> -->
+		<script src="../../js/utils/publicProtocol.js"></script>
+		<!-- <script src="../../js/utils/showMenu.js"></script> -->
+		<script src="../../js/utils/echarts-all.js"></script>
+		<script src="../../js/echarts/echarts-en.min.js"></script>
+		<!--加密-->
+		<script src="../../js/libs/RSA/Barrett.js"></script>
+		<script src="../../js/libs/RSA/BigInt.js"></script>
+		<script src="../../js/libs/RSA/RSA.js"></script>
+		<script src="../../js/libs/encryption/RSAEncrypt.js"></script>
+		<script src='../../js/libs/crypto-js/require.js'></script>
+		<script src='../../js/libs/encryption/signHmacSHA1.js'></script>
+		<script src='../../js/libs/encryption/sortSign.js'></script>
+		<script>
+			var $M = mui.init();
+			var curPage = {};
+			//获取个人信息
+			var personal = store.get(window.storageKeyName.PERSONALINFO);
+			console.log('personal:' + JSON.stringify(personal));
+			var tempHead = new Vue({
+				el: "#tempHead",
+				data: {
+					showBack: 2,
+					headTitle: 'qqqq',
+				}
+			});
+
+			var middlePopover = new Vue({
+				el: "#middlePopover",
+				data: {
+					showMoreList: [],
+				}
+			});
+
+			var canvasSideData = new Vue({
+				el: "#offCanvasSide",
+				data: {
+					grdList: [], //年级数组
+					clsList: [], //班级数组
+					clsTempList: [], //班级数组
+					grdValue: {}, //年级选择值
+					clsValue: {}, //班级选择值
+					grdTempValue: {}, //年级选择值，在侧滑弹出选择后，如果取消，则给选择框重新赋值
+					clsTempValue: {}, //班级选择值，在侧滑弹出选择后，如果取消，则给选择框重新赋值
+					fullPaperList: [], //考试范围列表
+					fullPaperTempList: [], //考试范围列表
+					selectParperIdList: [], //所选择的考试id数组
+				},
+				methods: {
+					showGrd: function() {
+						var userPicker = new $M.PopPicker();
+						userPicker.setData(canvasSideData.grdList);
+						setTimeout(function() {
+							userPicker.pickers[0].setSelectedValue(canvasSideData.grdTempValue.value);
+						}, 100);
+						userPicker.show(function(items) {
+							console.log(JSON.stringify(items[0]))
+							if (JSON.stringify(items[0]) == '{}') {
+								mui.toast('未选择年级')
+							} else {
+								canvasSideData.grdTempValue = items[0]
+								// events.showWaiting();
+								// pageIndex = 1;
+								// flagRef = 0;
+								// canvasSideData.pageArray = [];
+								getClsList(items[0].value)
+								userPicker.dispose();
+								userPicker = null;
+							}
+						});
+					},
+					showCls: function() {
+						var userPicker = new $M.PopPicker();
+						userPicker.setData(canvasSideData.clsTempList);
+						setTimeout(function() {
+							userPicker.pickers[0].setSelectedValue(canvasSideData.clsTempValue.value);
+						}, 100);
+						userPicker.show(function(items) {
+							console.log(JSON.stringify(items[0]))
+							if (JSON.stringify(items[0]) == '{}') {
+								mui.toast('未选择班级')
+							} else {
+								canvasSideData.clsTempValue = items[0]
+								// //获取课堂考勤列表
+								// events.showWaiting();
+								// pageIndex = 1;
+								// flagRef = 0;
+								// canvasSideData.pageArray = [];
+								//1.17.考情分析-班级成绩趋势-考试范围
+								getFullPaperList(1);
+								userPicker.dispose();
+								userPicker = null;
+							}
+						});
+					},
+					selectPaper: function(model) {
+						var tempSelectCount = 0;
+						for (var a = 0; a < canvasSideData.fullPaperTempList.length; a++) {
+							var tempM = canvasSideData.fullPaperTempList[a];
+							if(tempM.selectFlag == true){
+								tempSelectCount++;
+							}
+						}
+						if(tempSelectCount>10){
+							mui.toast('最多只能选择10个考试范围');
+							model.selectFlag = false;
+						}
+					},
+					sure: function(flag) {
+						if (flag == 0) { //取消
+							offCanvasWrapper.offCanvas('close');
+							canvasSideData.grdTempValue = canvasSideData.grdValue;
+							canvasSideData.clsTempValue = canvasSideData.clsValue;
+							canvasSideData.clsTempList = [].concat(canvasSideData.clsList);
+							canvasSideData.fullPaperTempList = [].concat(canvasSideData.fullPaperList);
+							mui('#offCanvasSideScroll').scroll().scrollTo(0, 0);
+						} else { //确定
+							var tempArr = [];
+							for (var a = 0; a < canvasSideData.fullPaperTempList.length; a++) {
+								var tempM = canvasSideData.fullPaperTempList[a];
+								if (tempM.selectFlag == true) {
+									tempArr.push(tempM.id);
+								}
+							}
+							if (tempArr.length == 0) {
+								mui.toast('请选择考试范围');
+								return;
+							}
+							offCanvasWrapper.offCanvas('close');
+							// 如果年级、班级、考试范围数组，是否发生变化
+							var tempFlag = 0;
+							if (canvasSideData.grdValue.value != canvasSideData.grdTempValue.value) {
+								tempFlag++;
+							}
+							if (canvasSideData.clsValue.value != canvasSideData.clsTempValue.value) {
+								tempFlag++;
+							}
+							if (canvasSideData.selectParperIdList.join(',') != tempArr.join(',')) {
+								tempFlag++;
+							}
+							if (tempFlag == 0) {
+
+							} else {
+								canvasSideData.grdValue = canvasSideData.grdTempValue;
+								canvasSideData.clsValue = canvasSideData.clsTempValue;
+								canvasSideData.clsList = [].concat(canvasSideData.clsTempList);
+								canvasSideData.fullPaperList = [].concat(canvasSideData.fullPaperTempList);
+								canvasSideData.selectParperIdList = [].concat(tempArr);
+								// 清掉界面所有数据
+								contentData.sem0Data.scoreList = [];
+								contentData.sem1Data.subList = [];
+								contentData.sem1Data.subValue = [];
+								contentData.sem1Data.scoreList = [];
+								contentData.sem2Data.subList = [];
+								contentData.sem2Data.subValue = [];
+								contentData.sem2Data.scoreList = [];
+								contentData.sem3Data.scoreList = [];
+								// 获取现在索引页数据
+								clickSureGetPageData(contentData.semFlag);
+							}
+							mui('#offCanvasSideScroll').scroll().scrollTo(0, 0);
+						}
+					}
+				}
+			});
+
+			//点击确定按钮时，获取现在索引页数据
+			var clickSureGetPageData = function(flag) {
+				if(canvasSideData.grdList.length==0){
+					// 获取数据范围授权：年级
+					getGrdList();
+					return;
+				}
+				if (flag == 0 && contentData.sem0Data.scoreList.length == 0) {
+					//1.25.考情分析-班级成绩趋势-历次成绩
+					getScoreList();
+				} else if (flag == 1) {
+					if(contentData.sem1Data.subList.length==0){
+						// 获取数据范围授权：科目
+						getSubList();
+					}else if(contentData.sem1Data.scoreList.length == 0){
+						//1.26.考情分析-班级成绩趋势-一分两率趋势
+						getTwoRateList();
+					}
+				} else if (flag == 2) {
+					if(contentData.sem2Data.subList.length==0){
+						// 获取数据范围授权：科目
+						getSubList();
+					}else if(contentData.sem2Data.scoreList.length == 0){
+						//1.27.考情分析-班级成绩趋势-分数段趋势
+						getScoreSectionList();
+					}
+				} else if (flag == 3 && contentData.sem3Data.scoreList.length == 0) {
+					//1.28.考情分析-班级成绩趋势-上线率趋势
+					getPassRateList();
+				}
+			}
+
+			//vue数据
+			var contentData = new Vue({
+				el: "#contentData",
+				data: {
+					semFlag: 0, //点击的seg索引
+					sem0Data: { //历次成绩
+						scoreList: [], //历次成绩列表
+					},
+					sem1Data: { //一分两率
+						subList: [],
+						subValue: {},
+						scoreList: []
+					},
+					sem2Data: {
+						subList: [],
+						subValue: {},
+						scoreList: []
+					},
+					sem3Data: {
+						scoreList: []
+					}
+				},
+				methods: {
+					clickSeg: function(flag) {
+						if (contentData.semFlag != flag) {
+							mui('#tempScroll').scroll().scrollTo(0, 0);
+							console.log('clickSeg:' + flag);
+							contentData.semFlag = flag;
+							clickSureGetPageData(contentData.semFlag);
+						}
+					},
+					lookMore: function(array) {
+						middlePopover.showMoreList = [].concat(array);
+					},
+					sem1ShowSub:function(){
+						var userPicker = new $M.PopPicker();
+						userPicker.setData(contentData.sem1Data.subList);
+						setTimeout(function() {
+							userPicker.pickers[0].setSelectedValue(contentData.sem1Data.subValue.value);
+						}, 100);
+						userPicker.show(function(items) {
+							console.log(JSON.stringify(items[0]))
+							if (JSON.stringify(items[0]) == '{}') {
+								mui.toast('未选择科目')
+							} else {
+								contentData.sem1Data.subValue = items[0]
+								//1.26.考情分析-班级成绩趋势-一分两率趋势
+								getTwoRateList();
+								userPicker.dispose();
+								userPicker = null;
+							}
+						});
+					},
+					sem2ShowSub:function(){
+						var userPicker = new $M.PopPicker();
+						userPicker.setData(contentData.sem2Data.subList);
+						setTimeout(function() {
+							userPicker.pickers[0].setSelectedValue(contentData.sem2Data.subValue.value);
+						}, 100);
+						userPicker.show(function(items) {
+							console.log(JSON.stringify(items[0]))
+							if (JSON.stringify(items[0]) == '{}') {
+								mui.toast('未选择科目')
+							} else {
+								contentData.sem2Data.subValue = items[0]
+								//1.27.考情分析-班级成绩趋势-分数段趋势
+								getScoreSectionList();
+								userPicker.dispose();
+								userPicker = null;
+							}
+						});
+					}
+				},
+			});
+
+			window.onload = function() {
+				(function($) {
+					setTimeout(function() {
+						curPage = utils.getDataFromUrl(window.location.href);
+						tempHead.headTitle = curPage.name;
+						tempHead.showBack = 1; //更多页面打开时，显示返回按钮
+						var deceleration = mui.os.ios ? 0.003 : 0.0009;
+						$('.mui-scroll-wrapper').scroll({
+							bounce: false,
+							indicators: true, //是否显示滚动条
+							deceleration: deceleration
+						});
+						//主界面和侧滑菜单界面均支持区域滚动；
+						mui('#offCanvasSideScroll').scroll();
+						mui('#tempScroll').scroll();
+						mui('#scroll1').scroll();
+						
+						// 获取数据范围授权：年级
+						getGrdList();
+					}, 100);
+					
+				})(mui);
+			};
+			
+			//侧滑容器父节点
+			var offCanvasWrapper = mui('#offCanvasWrapper');
+			//主界面容器
+			var offCanvasInner = offCanvasWrapper[0].querySelector('.mui-inner-wrap');
+			//菜单容器
+			var offCanvasSide = document.getElementById("offCanvasSide");
+			offCanvasWrapper[0].insertBefore(offCanvasSide, offCanvasWrapper[0].firstElementChild);
+			//侧滑容器的class列表，增加.mui-slide-in即可实现菜单移动、主界面不动的效果；
+			var classList = offCanvasWrapper[0].classList;
+			classList.add('mui-slide-in');
+			//禁止滑动主界面的时候出现侧滑菜单
+			document.getElementsByClassName('mui-inner-wrap')[0].addEventListener('drag', function(event) {
+				event.stopPropagation();
+			})
+			// 点击遮罩层
+			document.getElementById('backdrop').addEventListener('tap', function() {
+				// console.log('backdropTap');
+				// offCanvasWrapper.offCanvas('close');
+				canvasSideData.grdTempValue = canvasSideData.grdValue;
+				canvasSideData.clsTempValue = canvasSideData.clsValue;
+				canvasSideData.clsTempList = [].concat(canvasSideData.clsList);
+				canvasSideData.fullPaperTempList = [].concat(canvasSideData.fullPaperList);
+				mui('#offCanvasSideScroll').scroll().scrollTo(0, 0);
+			});
+
+			// 获取数据范围授权：年级
+			function getGrdList() {
+				comData = {
+					op_code: 'index',
+					get_grd: true,
+					all_grd: false,
+					index_code: curPage.access.split('#')[1],
+				}
+				events.showWaiting();
+				postDataEncry(window.storageKeyName.INTERFACE_HR_SUB + 'acl/dataRange', {}, comData, 2, function(data) {
+					if (data.code == 0) {
+						let grds = data.data.grd_list;
+						let grdList = [];
+						grds.map(function(currentValue) {
+							let name = currentValue.name.indexOf('全部') == -1 ? currentValue.name : '全部年级';
+							let obj = {};
+							obj.value = currentValue.value;
+							obj.text = name;
+							grdList.push(obj)
+						})
+						if (grdList.length > 0) {
+							canvasSideData.grdList = grdList;
+							canvasSideData.grdValue = grdList[0];
+							canvasSideData.grdTempValue = grdList[0];
+							let grd_code = grds[0].value;
+							//获取数据范围授权：班级
+							getClsList(grd_code, 0)
+						} else {
+							events.closeWaiting();
+							mui.toast('无数据授权 无法获取年级');
+						}
+					} else {
+						events.closeWaiting();
+						mui.toast(data.msg);
+					}
+				});
+			}
+			//获取数据范围授权：班级，flag默认获取0，主动获取1
+			function getClsList(grd_code, flag) {
+				const params = {
+					op_code: 'index',
+					grd_code: grd_code ? grd_code : '-1',
+					get_cls: true,
+					all_cls: true,
+					index_code: curPage.access.split('#')[1],
+				}
+				postDataEncry(window.storageKeyName.INTERFACE_HR_SUB + 'acl/dataRange', {}, params, 2, function(data) {
+					if (data.code == 0) {
+						let clss = data.data.cls_list;
+						let clsList = [];
+						clss.map(function(currentValue) {
+							let name = currentValue.name.indexOf('全部') == -1 ? currentValue.name : '全部班级';
+							let obj = {};
+							obj.value = currentValue.value;
+							obj.text = name;
+							clsList.push(obj)
+						})
+
+						if (clsList.length > 0) {
+							canvasSideData.clsTempList = clsList;
+							canvasSideData.clsTempValue = clsList[0];
+							if (flag == 0) {
+								canvasSideData.clsList = clsList;
+								canvasSideData.clsValue = clsList[0];
+								//1.25.考情分析-班级成绩趋势-历次成绩
+								// getScoreList();
+							} else {
+								
+							}
+							//1.17.考情分析-班级成绩趋势-考试范围
+							getFullPaperList(flag);
+						} else {
+							events.closeWaiting();
+							mui.toast('无数据授权 无法获取班级');
+						}
+					} else {
+						events.closeWaiting();
+						mui.toast(data.msg);
+					}
+				});
+			}
+
+			// 获取数据范围授权：科目
+			function getSubList() {
+				comData = {
+					op_code: 'index',
+					all_sub: true,
+					get_sub: true,
+					grd_code: canvasSideData.grdTempValue.value,
+					cls_code: canvasSideData.clsTempValue.value,
+					index_code: curPage.access.split('#')[1],
+				}
+				postDataEncry(window.storageKeyName.INTERFACE_HR_SUB + 'acl/dataRange', {}, comData, 2, function(data) {
+					if (data.code == 0) {
+						let subs = data.data.sub_list;
+						let subList = [];
+						subs.map(function(currentValue) {
+							let name = currentValue.name.indexOf('全部') == -1 ? currentValue.name : '全部科目';
+							let obj = {};
+							obj.value = currentValue.value;
+							obj.text = name;
+							subList.push(obj)
+						})
+						if (subList.length > 0) {
+							contentData.sem1Data.subList = [].concat(subList);
+							contentData.sem1Data.subValue = subList[0];
+							contentData.sem2Data.subList = [].concat(subList);
+							contentData.sem2Data.subValue = subList[0];
+							if (contentData.semFlag == 1) {
+								//1.26.考情分析-班级成绩趋势-一分两率趋势
+								getTwoRateList();
+							} else if (contentData.semFlag == 2) {
+								//1.27.考情分析-班级成绩趋势-分数段趋势
+								getScoreSectionList();
+							}
+						} else {
+							events.closeWaiting();
+							mui.toast('无数据授权 无法获取科目');
+						}
+					} else {
+						events.closeWaiting();
+						mui.toast(data.msg);
+					}
+				});
+			}
+
+			//1.17.考情分析-班级成绩趋势-考试范围
+			function getFullPaperList(flag) {
+				comData = {
+					grd_code: canvasSideData.grdTempValue.value,
+					cls_code: canvasSideData.clsTempValue.value,
+					index_code: curPage.access.split('#')[1],
+				}
+				postDataEncry(window.storageKeyName.INTERFACE_MARKINGPAPERS + 'paper/getFullPaperList', {}, comData, 2,
+					function(
+						data) {
+						events.closeWaiting();
+						if (data.code == 0) {
+							var tempIds = [];
+							data.data.list.reverse();
+							for (var a = 0; a < data.data.list.length; a++) {
+								var tempM = data.data.list[a];
+								if (flag == 0&&tempIds.length<10) {
+									tempIds.push(tempM.id);
+									tempM.selectFlag = true;
+								} else {
+									tempM.selectFlag = false;
+								}
+							}
+							canvasSideData.fullPaperTempList = [].concat(data.data.list);
+							if (flag == 0) {
+								canvasSideData.fullPaperList = [].concat(data.data.list);
+								canvasSideData.selectParperIdList = [].concat(tempIds);
+								//1.25.考情分析-班级成绩趋势-历次成绩
+								getScoreList();
+							} else {
+
+							}
+							if (data.data.list.length == 0) {
+								mui.toast('可选考试范围为空');
+							}
+						} else {
+							mui.toast(data.msg);
+						}
+					});
+			}
+
+			//1.25.考情分析-班级成绩趋势-历次成绩
+			function getScoreList() {
+				comData = {
+					grd_code: canvasSideData.grdValue.value,
+					cls_codes: canvasSideData.clsValue.value,
+					paper_ids: canvasSideData.selectParperIdList.join(','),
+					sub_code: '',
+					index_code: curPage.access.split('#')[1],
+				}
+				postDataEncry(window.storageKeyName.INTERFACE_MARKINGPAPERS + 'clsTrend/scoreList', {}, comData, 2, function(
+					data) {
+					events.closeWaiting();
+					if (data.code == 0) {
+						for (var a = 0; a < data.data.list.length; a++) {
+							var tempM = data.data.list[a];
+							tempM.childrenShow = [];
+							tempM.childrenMore = [];
+							for (var b = 0; b < data.data.head.length; b++) {
+								var tempHead = data.data.head[b];
+								if (tempHead.children) {
+									var tempChildren = {
+										title: tempHead.title
+									}
+									for (var c = 0; c < tempHead.children.length; c++) {
+										var tempKey = tempHead.children[c].key;
+										if (tempKey.indexOf("score") != -1) {
+											if (tempM[tempKey]) {
+												tempChildren.score = tempM[tempKey];
+											} else {
+												tempChildren.score = '0';
+											}
+										}
+										if (tempKey.indexOf("grd_order") != -1) {
+											tempChildren.order = tempM[tempKey];
+											if (tempM[tempKey]) {
+												tempChildren.order = tempM[tempKey];
+											} else {
+												tempChildren.order = '无';
+											}
+										}
+									}
+									if (tempM.childrenShow.length < 2) {
+										tempM.childrenShow.push(tempChildren);
+									} else {
+										tempM.childrenMore.push(tempChildren);
+									}
+								}
+							}
+						}
+						contentData.sem0Data.scoreList = [].concat(data.data.list);
+						console.log('contentData.sem0Data.scoreList:' + JSON.stringify(contentData.sem0Data.scoreList));
+						if (contentData.sem0Data.scoreList.length == 0) {
+							mui.toast('暂无数据');
+						}
+					} else {
+						mui.toast(data.msg);
+					}
+				});
+			}
+
+			//1.26.考情分析-班级成绩趋势-一分两率趋势
+			function getTwoRateList() {
+				comData = {
+					grd_code: canvasSideData.grdValue.value,
+					cls_codes: canvasSideData.clsValue.value,
+					paper_ids: canvasSideData.selectParperIdList.join(','),
+					sub_code: contentData.sem1Data.subValue.value,
+					index_code: curPage.access.split('#')[1],
+				}
+				if(comData.sub_code == '-1'){
+					comData.sub_code = '';
+				}
+				postDataEncry(window.storageKeyName.INTERFACE_MARKINGPAPERS + 'clsTrend/twoRateList', {}, comData, 2, function(
+					data) {
+					events.closeWaiting();
+					if (data.code == 0) {
+						var tempAvgArray = [];
+						for (var a = 0; a < data.data.list.length; a++) {
+							var tempM = data.data.list[a];
+							tempAvgArray.push(tempM.avg);
+						}
+						var pjfChart = echarts.init($('#pjfChart')[0]);
+						pjfChart.setOption({
+							xAxis: {
+								type: 'category',
+								data: []
+							},
+							yAxis: {
+								type: 'value'
+							},
+							// legend: {
+							// 	data: ['平均分']
+							// },
+							series: [{
+								label: {
+									show: true,
+									position: 'top'
+								},
+								name: '平均分',
+								data: tempAvgArray,
+								type: 'bar',
+							}]
+						});
+						
+						var tempNameArray = [];
+						var tempSecArray = [];
+						for (var a = 0; a < data.data.tag_list.length; a++) {
+							var tempM = data.data.tag_list[a];
+							tempNameArray.push(tempM.name);
+							var tempSecModel = {
+								label: {
+									show: true,
+									position: 'top'
+								},
+								name: tempM.name,
+								data: [],
+								type: 'line',
+							}
+							var childrenNum = [];
+							for (var b = 0; b < data.data.list.length; b++) {
+								var tempList = data.data.list[b];
+								childrenNum.push(tempList['num'+tempM.key]);
+							}
+							tempSecModel.data = [].concat(childrenNum);
+							tempSecArray.push(tempSecModel);
+						}
+						var qushiChart = echarts.init($('#qushiChart')[0]);
+						qushiChart.setOption({
+							xAxis: {
+								type: 'category',
+								data: []
+							},
+							yAxis: {
+								type: 'value'
+							},
+							legend: {
+								data: tempNameArray
+							},
+							series: tempSecArray
+						});
+						if (data.data.list.length == 0) {
+							mui.toast('暂无数据');
+						}
+					} else {
+						mui.toast(data.msg);
+					}
+				});
+			}
+			
+			//1.27.考情分析-班级成绩趋势-分数段趋势
+			function getScoreSectionList() {
+				comData = {
+					grd_code: canvasSideData.grdValue.value,
+					cls_codes: canvasSideData.clsValue.value,
+					paper_ids: canvasSideData.selectParperIdList.join(','),
+					sub_code: contentData.sem2Data.subValue.value,
+					index_code: curPage.access.split('#')[1],
+				}
+				if(comData.sub_code == '-1'){
+					comData.sub_code = '';
+				}
+				postDataEncry(window.storageKeyName.INTERFACE_MARKINGPAPERS + 'clsTrend/scoreSectionList', {}, comData, 2, function(
+					data) {
+					events.closeWaiting();
+					if (data.code == 0) {
+						var tempNameArray = [];
+						var tempSecArray = [];
+						for (var a = 0; a < data.data.tag_list.length; a++) {
+							var tempM = data.data.tag_list[a];
+							tempNameArray.push(tempM.name);
+							var tempSecModel = {
+								label: {
+									show: true,
+									position: 'top'
+								},
+								name: tempM.name,
+								data: [],
+								type: 'line',
+							}
+							var childrenNum = [];
+							// var childrenRadio = [];
+							for (var b = 0; b < data.data.list.length; b++) {
+								var tempList = data.data.list[b];
+								childrenNum.push(tempList['num'+tempM.key]);
+								// childrenRadio.push(tempList['radio'+tempM.key]);
+							}
+							tempSecModel.data = [].concat(childrenNum);
+							tempSecArray.push(tempSecModel);
+						}
+						var fenshuduanChart = echarts.init($('#fenshuduanChart')[0]);
+						fenshuduanChart.setOption({
+							xAxis: {
+								type: 'category',
+								data: []
+							},
+							yAxis: {
+								type: 'value'
+							},
+							legend: {
+								data: tempNameArray
+							},
+							series: tempSecArray
+						});
+						contentData.sem2Data.scoreList = [].concat(tempSecArray);
+						console.log('contentData.sem2Data.scoreList:' + JSON.stringify(contentData.sem2Data.scoreList));
+					} else {
+						mui.toast(data.msg);
+					}
+				});
+			}
+			
+			//1.28.考情分析-班级成绩趋势-上线率趋势
+			function getPassRateList() {
+				comData = {
+					grd_code: canvasSideData.grdValue.value,
+					cls_codes: canvasSideData.clsValue.value,
+					paper_ids: canvasSideData.selectParperIdList.join(','),
+					sub_code: '',
+					index_code: curPage.access.split('#')[1],
+				}
+				postDataEncry(window.storageKeyName.INTERFACE_MARKINGPAPERS + 'clsTrend/passRateList', {}, comData, 2, function(
+					data) {
+					events.closeWaiting();
+					if (data.code == 0) {
+						var tempNameArray = [];
+						var tempSecArray = [];
+						for (var a = 0; a < data.data.tag_list.length; a++) {
+							var tempM = data.data.tag_list[a];
+							tempNameArray.push(tempM.name);
+							var tempSecModel = {
+								label: {
+									show: true,
+									position: 'top'
+								},
+								name: tempM.name,
+								data: [],
+								type: 'line',
+							}
+							var childrenNum = [];
+							for (var b = 0; b < data.data.list.length; b++) {
+								var tempList = data.data.list[b];
+								childrenNum.push(tempList['num'+tempM.key]);
+							}
+							tempSecModel.data = [].concat(childrenNum);
+							tempSecArray.push(tempSecModel);
+						}
+						var shangxianlvChart = echarts.init($('#shangxianlvChart')[0]);
+						shangxianlvChart.setOption({
+							xAxis: {
+								type: 'category',
+								data: []
+							},
+							yAxis: {
+								type: 'value'
+							},
+							legend: {
+								data: tempNameArray
+							},
+							series: tempSecArray
+						});
+						contentData.sem3Data.scoreList = [].concat(tempSecArray);
+						console.log('contentData.sem3Data.scoreList:' + JSON.stringify(contentData.sem3Data.scoreList));
+					} else {
+						mui.toast(data.msg);
+					}
+				});
+			}
+		</script>
+	</body>
+
+</html>

@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>通知</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+		<link rel="stylesheet" href="../../css/mui.min.css">
+		<link rel="stylesheet" type="text/css" href="../../css/common.css" />
+		<style>
+			[v-cloak] {
+				visibility: hidden;
+				display: none !important;
+			}
+
+			html,
+			body {
+				background-color: #efeff4;
+			}
+
+			.mui-bar~.mui-content .mui-fullscreen {
+				top: 44px;
+				height: auto;
+			}
+
+			.leaveSum {
+				margin-top: 10px;
+				margin-left: 20px;
+				margin-bottom: 0px;
+				font-size: 14px;
+				color: #505050;
+			}
+
+			.mui-table-view:before {
+				height: 0px !important;
+			}
+
+			.mui-table-view:after {
+				height: 0px !important;
+			}
+
+			.mui-table-view-cell:before {
+				height: 0px !important;
+			}
+
+			.mui-table-view-cell:after {
+				height: 0px !important;
+			}
+
+			.mui-navigate-right:after,
+			.mui-push-left:after,
+			.mui-push-right:after {
+				color: #00cfbd;
+			}
+
+			.mui-slider .mui-segmented-control.mui-segmented-control-inverted~.mui-slider-group .mui-slider-item {
+				border-top: 0px solid #c8c7cc;
+				border-bottom: 0px solid #c8c7cc;
+			}
+		</style>
+	</head>
+
+	<body style="background-color: white;">
+		<header class="mui-bar mui-bar-nav" id="tempVue">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title">{{titleName}}</h1>
+		</header>
+		<div class="mui-content">
+			<div id="slider" class="mui-slider mui-fullscreen" v-cloak>
+				<div id="sliderSegmentedControl"
+					class="mui-scroll-wrapper mui-slider-indicator mui-segmented-control mui-segmented-control-inverted">
+					<div class="mui-scroll">
+						<template v-for="(classModel,index) in classList">
+							<a @tap="clickSlider(index)" class="mui-control-item"
+								:class="classIndex==index?'mui-active':''" href="">
+								{{classModel.cls_name}}
+							</a>
+						</template>
+					</div>
+				</div>
+				<div class="mui-slider-group">
+					<div class="mui-slider-item mui-control-content mui-active">
+						<div id='scroll2' class="mui-scroll-wrapper">
+							<div class="mui-scroll">
+								<p style="margin: 5px 0px 0px 20px;color: #505050;font-size: 14px;font-weight: bold;">
+									成绩统计</p>
+								<div style="height: 0.5px;background-color: #00cfbd;margin: 5px 28px 0px 15px;"></div>
+								<div v-if="nowClass" class="mui-row" style="text-align: left;">
+									<div style="" class="mui-col-xs-6">
+										<p class="leaveSum">总人数：{{nowClass.stu_count}}</p>
+									</div>
+									<div style="" class="mui-col-xs-6">
+										<p class="leaveSum">平均分：{{nowClass.avg_score}}</p>
+									</div>
+									<div style="" class="mui-col-xs-6">
+										<p class="leaveSum">有成绩人数：{{nowClass.res_count}}</p>
+									</div>
+									<div style="" class="mui-col-xs-6">
+										<p class="leaveSum">无成绩人数：{{nowClass.miss_stu_count}}</p>
+									</div>
+									<div style="" class="mui-col-xs-6">
+										<p class="leaveSum">最高分：{{nowClass.max_score}}</p>
+									</div>
+									<div style="" class="mui-col-xs-6">
+										<p class="leaveSum">最低分：{{nowClass.min_score}}</p>
+									</div>
+								</div>
+								<div style="height: 10px;background-color: #e5e5e5;margin: 5px 0px 0px 0px;"></div>
+								<p style="margin: 5px 0px 0px 20px;color: #505050;font-size: 14px;font-weight: bold;">
+									学生得分详情</p>
+								<div style="height: 0.5px;background-color: #00cfbd;margin: 5px 28px 0px 15px;"></div>
+								<ul class="mui-table-view" v-cloak>
+									<li v-for="model in nowScoreList" class="mui-table-view-cell" @tap="clickLi(model)">
+										<a class="mui-navigate-right">
+											<div style="margin-top: 0px;">
+												<span
+													style="color: #505050;font-size: 14px;font-weight: bold;margin-left: 15px;">{{model.stu_name}}</span>
+												<span
+													style="color: #505050;font-size: 14px;margin-left: 30px;">{{model.sex}}</span>
+												<span
+													style="color: #505050;font-size: 14px;margin-left: 30px;">考号：{{model.sno}}</span>
+											</div>
+											<div style="margin-top: 5px;">
+												<span style="float: left;">
+													<div
+														style="width: 60px;height: 50px;border:1px solid #00aba1;text-align: center;vertical-align: middle;display: table-cell;color: #00aba1;">
+														{{model.total_score}}
+													</div>
+													<div
+														style="width: 60px;height: 20px;color: white;background-color: #00aba1;font-size: 12px;text-align: center;">
+														总分</div>
+												</span>
+												<span style="float: left;margin-left: 10px;">
+													<div
+														style="width: 60px;height: 50px;border:1px solid #00aba1;text-align: center;vertical-align: middle;display: table-cell;color: #00aba1;">
+														{{model.object_score}}
+													</div>
+													<div
+														style="width: 60px;height: 20px;color: white;background-color: #00aba1;font-size: 12px;text-align: center;">
+														客观题</div>
+												</span>
+												<span style="float: left;margin-left: 10px;">
+													<div
+														style="width: 60px;height: 50px;border:1px solid #00aba1;text-align: center;vertical-align: middle;display: table-cell;color: #00aba1;">
+														{{model.subject_score}}
+													</div>
+													<div
+														style="width: 60px;height: 20px;color: white;background-color: #00aba1;font-size: 12px;text-align: center;">
+														主观题</div>
+												</span>
+												<span style="float: left;margin-left: 10px;">
+													<div
+														style="width: 60px;height: 50px;border:1px solid #00aba1;text-align: center;vertical-align: middle;display: table-cell;color: #00aba1;">
+														{{model.cls_order}}
+													</div>
+													<div
+														style="width: 60px;height: 20px;color: white;background-color: #00aba1;font-size: 12px;text-align: center;">
+														班级排名</div>
+												</span>
+											</div>
+											<div
+												style="height: 0.5px;background-color: gray;margin: 90px -20px -10px -20px;">
+											</div>
+										</a>
+									</li>
+								</ul>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<script src="../../js/utils/mui.min.js"></script>
+		<script src="../../js/utils/storageKeyName.js"></script>
+		<script src="../../js/utils/vconsole.min.js"></script>
+		<script src="../../js/utils/vue.js"></script>
+		<!--加密-->
+		<script src="../../js/libs/RSA/Barrett.js"></script>
+		<script src="../../js/libs/RSA/BigInt.js"></script>
+		<script src="../../js/libs/RSA/RSA.js"></script>
+		<script src="../../js/libs/encryption/RSAEncrypt.js"></script>
+		<script src='../../js/libs/crypto-js/require.js'></script>
+		<script src='../../js/libs/encryption/signHmacSHA1.js'></script>
+		<script src='../../js/libs/jquery.js'></script>
+		<script src='../../js/libs/encryption/sortSign.js'></script>
+		<!---->
+
+		<script src="../../js/utils/publicProtocol.js"></script>
+		<script src="../../js/utils/store.js"></script>
+		<script src="../../js/utils/utils.js"></script>
+		<script src="../../js/utils/events.js"></script>
+		<script src='../../js/utils/md5.js'></script>
+		<script>
+			var personal = store.get(window.storageKeyName.PERSONALINFO);
+			console.log('personal:' + JSON.stringify(personal));
+			var tempVue = new Vue({
+				el: "#tempVue",
+				data: {
+					titleName: '',
+				},
+				methods:{
+					downLoad:function(){
+						comData = {
+							cls_code:datasource.nowClass.cls_code,
+							index_code: curPage.access.split('#')[1],
+							task_id: curPage.id, //任务id
+						}
+						//导出成绩
+						postDataEncry(window.storageKeyName.INTERFACE_MARKINGPAPERS + 'taskResult/exportScoreListExcel', {}, comData, 2, function(
+							data) {
+							events.closeWaiting();
+							if (data.code == 0) {
+								
+							} else {
+								mui.toast(data.msg);
+							}
+						});
+					}
+				}
+			});
+			var datasource = new Vue({
+				el: "#slider",
+				data: {
+					classIndex: 0, //选择班级的索引
+					nowClass: {}, //当前选择的班级成绩统计
+					classList: [], //班级列表
+					nowScoreList: {}, //当前选择的班级学生得分列表
+					scoreList: [], //学生得分列表
+				},
+				methods: {
+					clickSlider: function(index) {
+						mui('#scroll2').scroll().scrollTo(0, 0);
+						console.log('clickSlider:' + index);
+						datasource.classIndex = index;
+						datasource.nowClass = datasource.classList[index];
+						// 获取当前班级对应的学生得分列表
+						getNowStuScore();
+					},
+					clickLi: function(model) {
+						console.log('clickLi.model:' + JSON.stringify(model));
+						model.access = curPage.access;
+						model.sub_name = curPage.sub_name;
+						model.exam_date = curPage.exam_date;
+						utils.mOpenWithData("../../html/markingPapers/stuMarkDetail.html", model);
+					}
+				}
+			});
+
+			mui.init();
+			var curPage = {};
+
+			window.onload = function() {
+				(function($) {
+					//阻尼系数
+					var deceleration = mui.os.ios ? 0.003 : 0.0009;
+					$('.mui-scroll-wrapper').scroll({
+						bounce: false,
+						indicators: true, //是否显示滚动条
+						deceleration: deceleration
+					});
+					$.ready(function() {
+						curPage = utils.getDataFromUrl(window.location.href);
+						console.log('2222:' + JSON.stringify(curPage));
+						// tempVue.titleName = curPage.name;
+						tempVue.titleName = '成绩查看';
+						events.showWaiting();
+						//1.8.阅卷成绩统计
+						getPageDataArray();
+					});
+				})(mui);
+			};
+			//1.8.阅卷成绩统计
+			function getPageDataArray() {
+				//需要加密的数据
+				comData = {
+					index_code: curPage.access.split('#')[1],
+					task_id: curPage.id, //任务id
+				}
+				//1.8.阅卷成绩统计
+				postDataEncry(window.storageKeyName.INTERFACE_MARKINGPAPERS + 'taskResult/clsAnalysis', {}, comData, 2, function(
+					data) {
+					events.closeWaiting();
+					if (data.code == 0) {
+						datasource.classList = [].concat(data.data.list);
+						if (data.data.list && data.data.list.length > 0) {
+							datasource.classIndex = 0;
+							datasource.nowClass = datasource.classList[0];
+						}
+						//1.9.学生得分列表
+						getScoreList();
+					} else {
+						mui.toast(data.msg);
+					}
+				});
+			};
+
+			//1.9.学生得分列表
+			function getScoreList() {
+				//需要加密的数据
+				comData = {
+					index_code: curPage.access.split('#')[1],
+					task_id: curPage.id, //任务id
+				}
+				//1.9.学生得分列表
+				postDataEncry(window.storageKeyName.INTERFACE_MARKINGPAPERS + 'taskResult/scoreList', {}, comData, 2, function(
+					data) {
+					events.closeWaiting();
+					if (data.code == 0) {
+						datasource.scoreList = [].concat(data.data.list);
+						// 获取当前班级对应的学生得分列表
+						getNowStuScore();
+					} else {
+						mui.toast(data.msg);
+					}
+				});
+			};
+			// 获取当前班级对应的学生得分列表
+			function getNowStuScore() {
+				var tempCls = datasource.classList[datasource.classIndex];
+				datasource.nowScoreList = [];
+				for (var a = 0; a < datasource.scoreList.length; a++) {
+					var tempScore = datasource.scoreList[a];
+					if (tempCls.cls_code == tempScore.cls_code) {
+						datasource.nowScoreList.push(tempScore);
+					}
+				}
+			}
+		</script>
+	</body>
+
+</html>

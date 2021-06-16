@@ -1,0 +1,766 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport"
+			content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover" />
+		<link href="../../css/mui.min.css" rel="stylesheet" />
+		<link href="../../css/common.css" rel="stylesheet" />
+		<link href="../../css/mui.picker.css" rel="stylesheet" />
+		<link href="../../css/mui.poppicker.css" rel="stylesheet" />
+		<style>
+			[v-cloak] {
+				visibility: hidden;
+				display: none !important;
+			}
+
+			html,
+			body {
+				background-color: #efeff4;
+			}
+
+			.divleft {
+				float: left;
+				width: calc(100% - 160px);
+				height: calc(100vh - 0px);
+				background-color: #000000;
+				overflow: auto;
+			}
+
+			.divright {
+				float: left;
+				width: calc(160px);
+				height: calc(100vh - 0px);
+				background-color: #505050;
+				overflow: auto;
+			}
+
+			.mui-popover {
+				height: 200px;
+			}
+
+			.tempImg {
+				position: absolute;
+				left: calc(100% - 210px);
+				top: calc(100vh - 50px);
+				width: 40px;
+				height: 40px;
+				z-index: 999;
+			}
+
+			.mui-navigate-right:after,
+			.mui-push-left:after,
+			.mui-push-right:after {
+				font-family: Muiicons;
+				font-size: inherit;
+				line-height: 1;
+				position: absolute;
+				top: 50%;
+				display: inline-block;
+				-webkit-transform: translateY(-50%);
+				transform: translateY(-50%);
+				text-decoration: none;
+				color: black;
+				-webkit-font-smoothing: antialiased;
+			}
+		</style>
+	</head>
+
+	<body>
+		<!-- <header class="mui-bar mui-bar-nav" id="tempVue">
+			<a @click="muiback" class="mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title">{{titleName}}</h1>
+		</header> -->
+		<div id="datasource" class="mui-content mui-fullscreen" v-cloak>
+			<!-- <div class="mui-scroll-wrapper" style="" v-cloak> -->
+			<!-- <div class="mui-scroll" v-cloak> -->
+			<div class="divleft" id="divleft">
+				<a @click="muiback" class="mui-icon mui-icon-left-nav mui-pull-left"
+					style="margin-top: 10px;margin-left: 10px;"></a>
+				<p v-if="currentInfoData.count_info" style="margin-top: 10px;text-align: center;color: white;">
+					该题组已阅{{currentInfoData.count_info.view_count}}份，当前第{{currentInfoData.count_info.count}}份，任务量{{currentInfoData.count_info.group_count}}份
+				</p>
+				<canvas id="myCanvas">你的浏览器不支持canvas!</canvas>
+				<img @tap='clickClear' src="../../img/markingPapers/clearType.png" class="tempImg" />
+			</div>
+			<div class="divright">
+				<a href="#middlePopover" class="mui-btn mui-btn-primary mui-btn-block mui-navigate-right"
+					style="padding: 5px 20px;width: 90%;margin-top: 10px;margin-left: 5%;text-align: left;background-color: #00CFBD;border-color: #00CFBD;font-size: 14px;">题组{{nowGroupNumber}}</a>
+				<div v-if="currentInfoData.evaluation"
+					style="background-color: #000000;margin-left: 10px;width: 135px;height: 46px;border-radius: 5px;">
+					<span>
+						<img @tap='clickType(1)'
+							style="width: 40px;height: 40px;margin-top: 3px;margin-left: 3px;border-radius: 3px;"
+							:src=typeFlag==1?"../../img/markingPapers/right1.png":"../../img/markingPapers/right0.png" />
+					</span>
+					<span>
+						<img @tap='clickType(2)' style="width: 40px;height: 40px;border-radius: 3px;"
+							:src=typeFlag==2?"../../img/markingPapers/wrong1.png":"../../img/markingPapers/wrong0.png" />
+					</span>
+					<span>
+						<img @tap='clickType(3)' style="width: 40px;height: 40px;border-radius: 3px;"
+							:src=typeFlag==3?"../../img/markingPapers/rightHalf1.png":"../../img/markingPapers/rightHalf0.png" />
+					</span>
+				</div>
+				<div v-if="currentInfoData.eqs" style="margin-left: 10px;margin-top: 10px;"
+					v-for="eqsModel in currentInfoData.eqs">
+					<span
+						style="color: white;border: 1px solid white;border-radius: 3px;font-size: 13px;">第{{eqsModel.question_number}}题得分</span>
+					<div v-if="eqsModel.step_score_list">
+						<div style="margin-top: 5px;">
+							<!-- <button class="mui-btn" style="font-size: 13px;color: #00CFBD;width: 140px;height: 40px;margin-left: -7px;">20.0/{{eqsModel.score}}</button> -->
+							<div style="margin-top: 5px;" v-for="(stepModel,index) in eqsModel.step_score_list">
+								<span style="color: white;">({{index+1}})</span>
+								<input type="number" @blur="inputChange(stepModel)" style="width: 50px;font-size: 13px;"
+									v-model="stepModel.stu_score">
+								<button class="mui-btn" @tap='clickScore(stepModel)'
+									style="font-size: 13px;color: #00CFBD;width: 50px;height: 40px;margin-left: -7px;">/{{stepModel.score}}</button>
+							</div>
+						</div>
+					</div>
+					<div v-else>
+						<div style="margin-top: 5px;">
+							<input type="number" @blur="inputChange(eqsModel)" style="width: 90px;font-size: 13px;"
+								v-model="eqsModel.stu_score">
+							<button class="mui-btn" @tap='clickScore(eqsModel)'
+								style="font-size: 13px;color: #00CFBD;width: 50px;height: 40px;margin-left: -7px;">/{{eqsModel.score}}</button>
+						</div>
+					</div>
+				</div>
+				<div v-if="currentInfoData.evaluation" @tap='clickSubmit'
+					style="width: 80px;margin-left: 40px;background-color: #00CFBD;border-color: #00CFBD;margin-bottom: 20px;"
+					class="mui-btn mui-btn-primary">
+					提交
+				</div>
+			</div>
+			<!-- </div> -->
+			<!-- </div> -->
+		</div>
+		<div id="middlePopover" class="mui-popover" style="width: 150px;" v-cloak>
+			<div class="mui-popover-arrow"></div>
+			<div class="mui-scroll-wrapper">
+				<div class="mui-scroll">
+					<ul class="mui-table-view">
+						<li v-for="(number,index) in groupNumberArray" class="mui-table-view-cell"
+							@tap="clickLi(number,index)">
+							<a href="#">题组{{number}}</a>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+
+		<script src="../../js/utils/mui.min.js"></script>
+		<script src="../../js/utils/storageKeyName.js"></script>
+		<script src="../../js/utils/vconsole.min.js"></script>
+		<script src="../../js/utils/vue.js"></script>
+		<script src="../../js/utils/publicProtocol.js"></script>
+		<script src="../../js/utils/store.js"></script>
+		<script src="../../js/utils/utils.js"></script>
+		<script src="../../js/utils/events.js"></script>
+		<!-- <script src='../../js/markingPapers/hammer.min.js'></script> -->
+		<!-- <script src='../../js/markingPapers/easeljs-0.8.1.min.js'></script>
+		<script src='../../js/markingPapers/style.js'></script> -->
+		<!--加密-->
+		<script src="../../js/libs/RSA/Barrett.js"></script>
+		<script src="../../js/libs/RSA/BigInt.js"></script>
+		<script src="../../js/libs/RSA/RSA.js"></script>
+		<script src="../../js/libs/encryption/RSAEncrypt.js"></script>
+		<script src='../../js/libs/crypto-js/require.js'></script>
+		<script src='../../js/libs/encryption/signHmacSHA1.js'></script>
+		<script src='../../js/libs/jquery.js'></script>
+		<script src='../../js/libs/encryption/sortSign.js'></script>
+		<script src="../../js/utils/mui.picker.js"></script>
+		<script src="../../js/utils/mui.poppicker.js"></script>
+
+
+		<!-- <script src='../../js/markingPapers/easeljs-0.8.1.min.js'></script> -->
+		<script type="text/javascript">
+			// var detectOrient = function() {
+			// 	var width = document.documentElement.clientWidth,
+			// 		height = document.documentElement.clientHeight,
+			// 		$wrapper = document.getElementById("datasource"),
+			// 		style = "";
+			// 	if (width >= height) { // 横屏
+			// 		style += "width:100%"; // 注意旋转后的宽高切换
+			// 		style += "height:100%px;";
+			// 		style += "-webkit-transform: rotate(0); transform: rotate(0);";
+			// 		style += "-webkit-transform-origin: 0 0;";
+			// 		style += "transform-origin: 0 0;";
+			// 	} else { // 竖屏
+			// 		style += "width:" + height + "px;";
+			// 		style += "height:" + width + "px;";
+			// 		style += "-webkit-transform: rotate(90deg); transform: rotate(90deg);";
+			// 		// 注意旋转中点的处理
+			// 		style += "-webkit-transform-origin: " + width / 2 + "px " + width / 2 + "px;";
+			// 		style += "transform-origin: " + width / 2 + "px " + width / 2 + "px;";
+			// 	}
+			// 	$wrapper.style.cssText = style;
+			// }
+			//获取个人信息
+			var personal = store.get(window.storageKeyName.PERSONALINFO);
+			console.log('personal:' + JSON.stringify(personal));
+			var curPage = {};
+			var canvas;
+			var context;
+			var img, //图片是否加载完成;
+				imgX = 0,
+				imgY = 0,
+				dragging = false,
+				posl = {},
+				scale = 1,
+				tempPos = {
+					x: 0,
+					y: 0
+				},
+				pos = {
+					x: 0,
+					y: 0
+				},
+				newPos = {
+					x: 0,
+					y: 0
+				};
+			var start, end = 0;
+			var canvasClickFlag = 0; //判断是否点击事件，0否，1是
+
+			// mui.init();
+			mui.init({
+				//重写物理/虚拟返回按钮，防止与弹出层冲突
+				beforeback: function() {
+					// plus.screen.lockOrientation('portrait-primary');
+				}
+			});
+
+			window.onload = function() {
+				var datasource = new Vue({
+					el: "#datasource",
+					data: {
+						nowGroupNumber: 0, //当前题组
+						currentInfoData: {},
+						typeFlag: 0, //0未选择对错标识，1对，2错，3半对
+						typeArray: [], //点的标识数组
+					},
+					methods: {
+						muiback: function() {
+							// plus.screen.lockOrientation('portrait-primary');
+							mui.back();
+						},
+						clickType: function(tempType) {
+							console.log('tempType:' + tempType);
+							if (datasource.typeFlag == tempType) {
+								datasource.typeFlag = 0;
+							} else {
+								datasource.typeFlag = tempType;
+							}
+						},
+						clickScore: function(model) {
+							model.stu_score = model.score;
+						},
+						clickClear: function() {
+							datasource.typeArray = [];
+							context.clearRect(0, 0, canvas.width, canvas.height);
+							context.drawImage(
+								img, //规定要使用的图像、画布或视频。
+								0, 0, //开始剪切的 x 坐标位置。
+								img.width, img.height, //被剪切图像的高度。
+								imgX, imgY, //在画布上放置图像的 x 、y坐标位置。
+								img.width * scale, img.height * scale //要使用的图像的宽度、高度
+							);
+						},
+						inputChange: function(model) {
+							console.log('inputChange.model:' + JSON.stringify(model));
+							model.stu_score = parseFloat(model.stu_score).toFixed(1);
+							if (parseFloat(model.stu_score).toFixed(1) >= 0 && parseFloat(model.stu_score)
+								.toFixed(1) <= parseFloat(model.score).toFixed(1)) {
+								console.log('正常')
+							} else {
+								mui.toast('请输入正确的分数');
+							}
+						},
+						clickSubmit: function() {
+							console.log('clickSubmit:' + JSON.stringify(datasource.currentInfoData));
+							var tempFlag = 0; //判断分数是否输入正确
+							var tempA = [];
+							for (var i = 0; i < datasource.currentInfoData.eqs.length; i++) {
+								var tempE = datasource.currentInfoData.eqs[i];
+								var tempEqs = {};
+								var tempScore = 0; //
+								if (tempE.step_score_list) {
+									for (var a = 0; a < tempE.step_score_list.length; a++) {
+										var tempS = tempE.step_score_list[a];
+										if (parseFloat(tempS.stu_score).toFixed(1) >= 0 && parseFloat(tempS
+												.stu_score).toFixed(1) <= parseFloat(tempS.score).toFixed(1)) {
+											tempScore = parseFloat(tempScore) + parseFloat(tempS.stu_score);
+										} else {
+											tempFlag++;
+										}
+									}
+									tempE.stu_score = tempScore;
+								}
+								if (parseFloat(tempE.stu_score).toFixed(1) >= 0 && parseFloat(tempE.stu_score)
+									.toFixed(1) <= parseFloat(tempE.score)) {
+									tempEqs.evaluation_id = tempE.evaluation_id;
+									tempEqs.id = tempE.id;
+									tempEqs.question_number = tempE.question_number;
+									tempEqs.score = tempE.score;
+									if (tempE.step_score_list) {
+										tempEqs.step_score_list = [].concat(tempE.step_score_list);
+										var tempScore = 0;
+										for (var a = 0; a < tempE.step_score_list.length; a++) {
+											var tempS = tempE.step_score_list[a];
+											tempScore = tempScore + parseFloat(tempS.stu_score).toFixed(1);
+										}
+										tempEqs.stu_score = tempE.stu_score;
+									} else {
+										tempEqs.step_score_list = [];
+										tempEqs.stu_score = tempE.stu_score;
+									}
+									tempEqs.task_id = tempE.task_id;
+								} else {
+									tempFlag++;
+								}
+								tempA.push(tempEqs);
+							}
+							if (tempFlag == 0) {
+								var tempMMM = {
+									id: datasource.currentInfoData.evaluation.id, //题组id
+									symbols: datasource.typeArray, //标记坐标信息
+									task_id: datasource.currentInfoData.evaluation.task_id, //任务id
+								};
+								comData = {
+									index_code: curPage.access.split('#')[1],
+									task_id: curPage.id, //任务id
+									user_code: personal.user_code, //用户代码
+									evaluation: tempMMM,
+									eqs: tempA, //题组下题目
+								}
+								//1.6.保存批改
+								postDataEncry(window.storageKeyName.INTERFACE_MARKINGPAPERS +
+									'evaluation/save', {}, comData, 2,
+									function(
+										data) {
+										events.closeWaiting();
+										if (data.code == 0) {
+											datasource.typeFlag = 0;
+											datasource.typeArray = [];
+											//1.5.阅卷任务题组的批改情况
+											getCurrentInfoData();
+										} else {
+											mui.toast(data.msg);
+										}
+									});
+							} else {
+								mui.toast('请输入正确的分数');
+							}
+						}
+					}
+				});
+				var middlePopover = new Vue({
+					el: "#middlePopover",
+					data: {
+						nowGroupNumber: 0, //当前题组
+						groupNumberArray: [] //题组列表
+					},
+					methods: {
+						clickLi: function(number, index) {
+							mui('#middlePopover').popover('toggle');
+							if (middlePopover.nowGroupNumber != number) {
+								middlePopover.nowGroupNumber = number;
+								datasource.nowGroupNumber = number;
+								datasource.currentInfoData = {};
+								datasource.typeFlag = 0;
+								datasource.typeArray = [];
+								//1.5.阅卷任务题组的批改情况
+								getCurrentInfoData();
+							}
+						}
+					}
+				});
+
+				mui('.mui-scroll-wrapper').scroll();
+				// plus.screen.lockOrientation('landscape');
+				curPage = utils.getDataFromUrl(window.location.href);
+				console.log('2222:' + JSON.stringify(curPage));
+				// loadImg();
+				// tempVue.titleName = curPage.name;
+				// events.showWaiting();
+				var orientationFlag = 0;
+				$(window).bind('orientationchange', function(e){
+					if((window.orientation == 90||window.orientation==-90)&&orientationFlag==0){
+						orientationFlag = 1;
+						//1.4.阅卷任务题组列表
+						getGroupNumberData();
+					}
+					if(window.orientation == 0){
+						mui.toast('请打开手机竖排方向锁定后，将手机横屏');
+					}
+				});
+				if(window.orientation == 0){
+					mui.toast('请打开手机竖排方向锁定后，将手机横屏');
+				}
+
+				canvas = document.getElementById('myCanvas'); //获得画布
+				context = canvas.getContext('2d'); //注意：2d小写，3d：webgl
+				img = new Image();
+
+				function drawImage(params) {
+					context.clearRect(0, 0, canvas.width, canvas.height);
+					// console.log('scalescale:'+scale);
+					// 保证 imgX 在 [img.width*(1-scale),0] 区间内
+					// console.log('imgXimgX00:'+imgX+',imgY:'+imgY);
+					// console.log('img.width0000:'+img.width * (1 - scale)+',img.height:'+img.height * (1 - scale));
+					// if(scale>1){
+					// 	if (imgX < img.width * (1 - scale)) {
+					// 		imgX = img.width * (1 - scale);
+					// 	} else if (imgX > 0) {
+					// 		imgX = 0
+					// 	}
+					// 	// 保证 imgY 在 [img.height*(1-scale),0] 区间内
+					// 	if (imgY < img.height * (1 - scale)) {
+					// 		imgY = img.height * (1 - scale);
+					// 	} else if (imgY > 0) {
+					// 		imgY = 0
+					// 	}
+					// }else{
+					// 	console.log('img.width:'+img.width +',img.height:'+img.height );
+					// 	if (canvas.width < img.width) {
+					// 		imgX = img.width * (1 - scale);
+					// 	} else if (imgX > 0) {
+					// 		imgX = 0
+					// 	}
+					// 	// 保证 imgY 在 [img.height*(1-scale),0] 区间内
+					// 	if (canvas.height < img.height) {
+					// 		imgY = img.height * (1 - scale);
+					// 	} else if (imgY > 0) {
+					// 		imgY = 0
+					// 	}
+					// }
+
+					// console.log('imgXimgX11:'+imgX+',imgY:'+imgY);
+					// console.log('mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm');
+					context.drawImage(
+						img, //规定要使用的图像、画布或视频。
+						0, 0, //开始剪切的 x 坐标位置。
+						img.width, img.height, //被剪切图像的高度。
+						imgX, imgY, //在画布上放置图像的 x 、y坐标位置。
+						img.width * scale, img.height * scale //要使用的图像的宽度、高度
+					);
+
+					// 添加页面标识
+					addTypeImg(0);
+
+					// 设置图片右上角文字
+					// 设置字体
+					// context.fillStyle = "#FF0000";
+					// context.textBaseline = "top";
+					// context.textAlign = 'center';
+					// context.textBaseline = 'middle'
+					// context.font = "30px Arial";
+					// context.fillText('NewMessageNo', 100, 20);
+
+					// context.font = '10 Arial';
+					// context.strokeStyle = 'rgb(0,233,0)';
+					// context.strokeText('九段刀客',100,100);
+				}
+
+
+
+				canvas.addEventListener('touchstart', function(e) {
+					e.preventDefault();
+					// console.log('touchstart');
+					canvasClickFlag = 1;
+					var x = canvas.getBoundingClientRect().left;
+					var y = e.clientY - canvas.getBoundingClientRect().top;
+					// console.log('xxxxxxx:'+x);
+					if (e.touches.length === 1) {
+						// console.log('touchstart111111111');
+						dragging = true;
+						pos = windowToCanvas(e.touches[0].clientX, e.touches[0].clientY); //坐标转换，将窗口坐标转换成canvas的坐标
+						tempPos = windowToCanvas(e.touches[0].clientX, e.touches[0]
+						.clientY); //坐标转换，将窗口坐标转换成canvas的坐标
+						// console.log('pospospos000:'+e.touches[0].clientX+','+e.touches[0].clientY);
+						// console.log('pospospos111:'+JSON.stringify(pos));
+						// const localXY = {
+						// 		x: e.clientX - canvas.getBoundingClientRect().left,
+						//     	y: e.clientY - canvas.getBoundingClientRect().top
+						// 	}
+						// console.log('localXY:'+canvas.getBoundingClientRect().left);
+					}
+					if (e.touches.length === 2) {
+						console.log('touchstart2222222222');
+						var t1 = e.touches[0];
+						var t2 = e.touches[1];
+						var pos1 = {
+							x: t1.clientX,
+							y: t1.clientY
+						}
+						var pos2 = {
+							x: t2.clientX,
+							y: t2.clientY
+						}
+						pos = windowToCanvas((pos1.x + pos2.x) / 2, (pos1.y + pos2.y) / 2);
+					}
+				});
+				canvas.addEventListener('touchmove', function(e) {
+					e.preventDefault()
+					// canvasClickFlag = 0;
+					// console.log('touchmove');
+					if (e.touches.length === 1) {
+						// 加上dragging区分pos和posl的值，一个为双指，这里为单指的值
+						if (dragging) {
+							posl = windowToCanvas(e.touches[0].clientX, e.touches[0].clientY);
+							if (Math.abs((Math.abs(tempPos.x) - Math.abs(posl.x))) > 20 || Math.abs((Math.abs(tempPos
+									.y) - Math.abs(posl.y))) > 20) {
+								// console.log('1111111111111111111111111111111111111111111111111111111111');
+								canvasClickFlag = 0;
+							}
+							var x = posl.x - pos.x;
+							var y = posl.y - pos.y;
+							// console.log('1111111111111111111111111111111111111111111111111111111111:'+x+','+y);
+							imgX += x;
+							imgY += y;
+							pos = JSON.parse(JSON.stringify(posl));
+							drawImage(); //重新绘制图片
+						}
+					}
+					// 双指中有可能存在移动，所以不加dragging判断，都是用的同一个中心点
+					// if (e.touches.length === 2) {
+					// 	posl = JSON.parse(JSON.stringify(pos));
+					// 	var s1 = end;
+					// 	var t1 = e.touches[0];
+					// 	var t2 = e.touches[1];
+					// 	var pos1 = {
+					// 		x: t1.clientX,
+					// 		y: t1.clientY
+					// 	}
+					// 	var pos2 = {
+					// 		x: t2.clientX,
+					// 		y: t2.clientY
+					// 	}
+					// 	pos = windowToCanvas((pos1.x + pos2.x) / 2, (pos1.y + pos2.y) / 2);
+					// 	end = Math.sqrt(Math.pow((pos1.x - pos2.x), 2) + Math.pow((pos1.y - pos2.y), 2));
+					// 	var pianX = posl.x - pos.x;
+					// 	var pianY = posl.y - pos.y;
+
+					// 	newPos = {
+					// 		x: ((pos.x - imgX + pianX) / scale),
+					// 		y: ((pos.y - imgY + pianY) / scale)
+					// 	};
+					// 	// 缩小
+					// 	if (s1 > end) {
+					// 		scale = scale - 0.05;
+					// 		imgX = (1 - scale) * newPos.x + (pos.x -
+					// 			newPos.x);
+					// 		imgY = (1 - scale) * newPos.y + (pos.y - newPos.y);
+					// 		if (scale < 0.1) { //最小缩放1
+					// 			scale = 0.1;
+					// 			drawImage(); //重新绘制图片
+					// 			return
+					// 		}
+					// 		// drawImage(); //重新绘制图片
+					// 		// 放大
+					// 	} else {
+					// 		scale = scale + 0.05;
+					// 		imgX = (1 - scale) * newPos.x + (pos.x -
+					// 			newPos.x);
+					// 		imgY = (1 - scale) * newPos.y + (pos.y - newPos.y);
+					// 		// drawImage();
+					// 	}
+					// 	drawImage();
+
+					// }
+				});
+				canvas.addEventListener('touchend', function(e) {
+					e.preventDefault();
+					// console.log('touchend');
+					if (canvasClickFlag == 1 && datasource.typeFlag > 0) {
+						// console.log('canvasClickFlagcanvasClickFlag');
+						// console.log('e.touches3:'+e.touches.length);
+						// pos = windowToCanvas(e.touches[0].clientX, e.touches[0].clientY); //坐标转换，将窗口坐标转换成canvas的坐标
+						// console.log('pospospos222:'+JSON.stringify(pos));
+						// console.log('imgX:'+imgX+',imgY:'+imgY);
+						var tempM = {
+							type: datasource.typeFlag,
+							x: pos.x - imgX,
+							y: pos.y - imgY
+						}
+						// if(imgX>0){
+						// 	tempM.x = pos.x-imgX;
+						// }else{
+						// 	tempM.x = pos.x+Math.abs(imgX);
+						// }
+						// if(imgY>0){
+						// 	tempM.y = pos.y-imgY;
+						// }else{
+						// 	tempM.y = pos.y+Math.abs(imgY);
+						// }
+						datasource.typeArray.push(tempM);
+						// 
+						var tempImg = new Image();
+						// 设置图片
+						if (tempM.type == 1) {
+							tempImg.src = '../../img/markingPapers/img_right.png';
+						} else if (tempM.type == 2) {
+							tempImg.src = '../../img/markingPapers/img_wrong.png';
+						} else if (tempM.type == 3) {
+							tempImg.src = '../../img/markingPapers/img_halfRight.png';
+						}
+						tempImg.onload = function() {
+							context.drawImage(tempImg, tempM.x + imgX - 40, tempM.y + imgY - 40);
+						}
+					}
+					canvasClickFlag = 0;
+					if (e.touches.length === 1) {
+						dragging = false;
+					}
+				})
+
+
+				function windowToCanvas(x, y) {
+					var box = canvas.getBoundingClientRect();
+					//这个方法返回一个矩形对象，包含四个属性：left、top、right和bottom。分别表示元素各边与页面上边和左边的距离
+					return {
+						x: x - box.left - (box.width - canvas.width) / 2,
+						y: y - box.top - (box.height - canvas.height) / 2
+					};
+				}
+
+				// 添加页面标识
+				var addTypeImg = function(index) {
+					// console.log('datasource.typeArray:'+JSON.stringify(datasource.typeArray));
+					if (datasource.typeArray.length > index) {
+						var tempM = datasource.typeArray[index];
+						// console.log('tempM:'+JSON.stringify(tempM));
+						var tempImg = new Image();
+						// 设置图片
+						if (tempM.type == 1) {
+							tempImg.src = '../../img/markingPapers/img_right.png';
+						} else if (tempM.type == 2) {
+							tempImg.src = '../../img/markingPapers/img_wrong.png';
+						} else if (tempM.type == 3) {
+							tempImg.src = '../../img/markingPapers/img_halfRight.png';
+						}
+
+						tempImg.onload = function() {
+							context.drawImage(tempImg, tempM.x + imgX - 40, tempM.y + imgY - 40);
+							addTypeImg(index + 1);
+						}
+					}
+				}
+
+				//1.4.阅卷任务题组列表
+				function getGroupNumberData() {
+					//需要加密的数据
+					comData = {
+						index_code: curPage.access.split('#')[1],
+						task_id: curPage.id, //任务id
+						user_code: personal.user_code, //用户代码
+					}
+					//1.4.阅卷任务题组列表
+					postDataEncry(window.storageKeyName.INTERFACE_MARKINGPAPERS + 'evaluation/getGroupNumber', {}, comData,
+						2,
+						function(
+							data) {
+							events.closeWaiting();
+							if (data.code == 0) {
+								if (data.data.list && data.data.list.length > 0) {
+									middlePopover.groupNumberArray = [].concat(data.data.list);
+									middlePopover.nowGroupNumber = data.data.list[0];
+									datasource.nowGroupNumber = data.data.list[0];
+									//1.5.阅卷任务题组的批改情况
+									getCurrentInfoData();
+								} else {
+									mui.toast('当前试卷没有可阅题组');
+								}
+							} else {
+								mui.toast(data.msg);
+							}
+						});
+				};
+
+				//1.5.阅卷任务题组的批改情况
+				function getCurrentInfoData() {
+					//需要加密的数据
+					comData = {
+						index_code: curPage.access.split('#')[1],
+						task_id: curPage.id, //任务id
+						user_code: personal.user_code, //用户代码
+						group_number: datasource.nowGroupNumber, //题组号码
+					}
+					//1.5.阅卷任务题组的批改情况
+					postDataEncry(window.storageKeyName.INTERFACE_MARKINGPAPERS + 'evaluation/currentInfo', {}, comData, 2,
+						function(
+							data) {
+							events.closeWaiting();
+							if (data.code == 0) {
+								if (data.data.evaluation) {
+									for (var i = 0; i < data.data.eqs.length; i++) {
+										var tempE = data.data.eqs[i];
+										if (tempE.stu_score) {
+
+										} else {
+											tempE.stu_score = '';
+										}
+										if (tempE.step_score_list) {
+											for (var a = 0; a < tempE.step_score_list.length; a++) {
+												var tempS = tempE.step_score_list[a];
+												if (tempS.stu_score) {
+
+												} else {
+													tempS.stu_score = '';
+												}
+											}
+										}
+									}
+									datasource.currentInfoData = data.data;
+
+									if (data.data.evaluation.symbols && data.data.evaluation.symbols.length > 0) {
+										for (var i = 0; i < data.data.evaluation.symbols.length; i++) {
+											var tempS = data.data.evaluation.symbols[i];
+											var tempM = {
+												x: tempS.x,
+												y: tempS.y,
+												type: tempS.type
+											}
+											datasource.typeArray.push(tempM);
+										}
+									}
+									// 设置图片
+									img.src = datasource.currentInfoData.evaluation.stu_answer_img;
+									img.onload = function() {
+										console.log('image00:' + img.width);
+										console.log('image01:' + img.height);
+										var tempLeft = document.getElementById('divleft');
+										canvas.width = tempLeft.offsetWidth;
+										canvas.height = tempLeft.offsetHeight;
+										console.log('tempLeft.offsetWidth:' + tempLeft.offsetWidth);
+										console.log('tempLeft.offsetHeight:' + tempLeft.offsetHeight);
+										// context.drawImage(img, 0, 0, tempLeft.offsetWidth, img.height * (tempLeft.offsetWidth /img.width));
+										// // context.drawImage(img, 0, 0);
+										// scale = tempLeft.offsetWidth / img.width;
+										// console.log('scalescale:' + scale);
+										var bg = context.createPattern(img,
+										"no-repeat"); //createPattern() 方法在指定的方向内重复指定的元素。
+										context.fillStyle = bg; //fillStyle 属性设置或返回用于填充绘画的颜色、渐变或模式。
+										context.fillRect(0, 0, canvas.width, canvas
+										.height); //绘制已填充矩形fillRect(左上角x坐标, 左上角y坐标, 宽, 高)
+										// 添加页面标识
+										addTypeImg(0);
+									}
+								} else {
+									img.src = '';
+									drawImage();
+								}
+							} else {
+								mui.toast(data.msg);
+							}
+						});
+				};
+			};
+		</script>
+	</body>
+
+</html>

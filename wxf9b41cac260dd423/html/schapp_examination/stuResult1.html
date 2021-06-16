@@ -1,0 +1,529 @@
+<!doctype html>
+<html>
+	<!-- 考务模块  列表页
+
+ -->
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport"
+			content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../../css/mui.min.css" rel="stylesheet" />
+		<link href="../../css/common.css" rel="stylesheet" />
+		<link href="../../css/mui.picker.css" rel="stylesheet" />
+		<link href="../../css/mui.poppicker.css" rel="stylesheet" />
+		<style>
+			[v-cloak] {
+				visibility: hidden;
+				display: none !important;
+			}
+
+			html,
+			body {
+				background-color: #efeff4;
+			}
+
+			.mui-bar~.mui-content .mui-fullscreen {
+				top: 44px;
+				height: auto;
+			}
+
+			.mui-segmented-control {
+				border: 0px;
+				background: #F0F0F0;
+			}
+
+			.mui-segmented-control .mui-control-item {
+				border: 0px;
+				color: #666;
+				font-size: 12px;
+			}
+
+			.mui-segmented-control .mui-control-item.mui-active {
+				background-color: transparent;
+				color: #666;
+				font-size: 12px;
+			}
+
+			.mui-segmented-control .mui-control-item span {
+				font-size: 12px;
+				padding: 0 0 0 5px;
+				color: #666;
+			}
+
+			.select {
+				position: fixed;
+				z-index: 20;
+			}
+
+			.leaveSum {
+				margin-top: 10px;
+				margin-left: 15px;
+				margin-bottom: 0px;
+				font-size: 13px;
+				color: #505050;
+			}
+
+			.mui-popover {
+				height: 220px;
+			}
+
+			.scoreDetail {
+				font-size: 14px;
+				color: white;
+				text-align: center;
+				margin-top: 10px;
+			}
+
+			.stuScoreDetail {
+				font-size: 14px;
+				color: #505050;
+				text-align: center;
+				background-color: #e5e5e5;
+				border-radius: 5px;
+				margin-left: 2px;
+				margin-right: 2px;
+			}
+			.mui-table-view:before {
+				height: 0px !important;
+			}
+			
+			.mui-table-view:after {
+				height: 0px !important;
+			}
+			
+			.mui-table-view-cell:before {
+				height: 0px !important;
+			}
+			
+			.mui-table-view-cell:after {
+				height: 0px !important;
+			}
+		</style>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav" id="tempVue">
+			<a v-cloak v-if="showBack==1" class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 v-cloak class="mui-title" style="font-size: 14px;">{{titleName}}</h1>
+		</header>
+		<div id="datasource" class="mui-content mui-fullscreen">
+			<div id='scroll2' class="mui-scroll-wrapper" style="margin-top: 44px;">
+				<div class="select">
+					<div class="mui-segmented-control" v-cloak>
+						<a class="mui-control-item" v-cloak href="javascript:void(0)"
+							@tap="showCls()"><span>{{clsModel.text}}</span><span
+								class="mui-icon mui-icon-arrowdown"></span></a>
+						<a v-if="singleFlag==2" class="mui-control-item" v-cloak href="javaScript:void(0)"
+							@tap="showSub()"><span>{{subModel.text}}</span><span
+								class="mui-icon mui-icon-arrowdown"></span></a>
+						<a class="mui-control-item" v-cloak href="javaScript:void(0)" @tap="showExam()">
+							<!-- <span class="">{{examModel.text}}</span> -->
+							<span class="">对比考次</span>
+							<span class="mui-icon mui-icon-arrowdown"></span>
+						</a>
+					</div>
+					<div class="line"></div>
+				</div>
+				<div class="mui-scroll" style="margin-top: 40px;padding-bottom: 40px;">
+					<template v-cloak v-if="pageModel.showList&&pageModel.showList.length>0">
+						<ul class="mui-table-view">
+							<li v-for="model in pageModel.showList" class="mui-table-view-cell">
+								<div v-if="model" class="mui-row" style="">
+									<div style="" class="mui-col-xs-6">
+										<p class="leaveSum"><span v-if="subModel.sub_code==-1">总分</span>分数：{{model.score}}</p>
+									</div>
+									<div style="" class="mui-col-xs-6">
+										<p class="leaveSum" style="font-size: 15px;font-weight: bold;">{{model.cls_name}} {{model.stu_name}}</p>
+									</div>
+									<div style="" class="mui-col-xs-12">
+										<p class="leaveSum"><span v-if="subModel.sub_code==-1">总分</span>排名：{{model.grd_order}}</p>
+									</div>
+									<div style="" class="mui-col-xs-6">
+										<div class="leaveSum" style="">
+											<span class=""><span v-if="subModel.sub_code==-1">总分</span>年级进退步：{{Math.abs(model.grd_order_diff)}}</span>
+											<span v-if="model.grd_order_diff>0" style="font-size: 15px;color: red;"
+												class="mui-icon mui-icon-arrowthinup"></span>
+											<span v-else-if="model.grd_order_diff<0"
+												style="font-size: 15px;color: green;"
+												class="mui-icon mui-icon-arrowthindown"></span>
+										</div>
+									</div>
+									<div v-if="subModel.sub_code==-1" class="mui-col-xs-6">
+										<div style="margin-top: 8px;color: #00cfbd;">
+											<a href="#middlePopover"
+												style="font-size: 14px;margin-left: 20px;padding-top: 20px;color: #00cfbd;"
+												@tap='lookDetail(model)'>查看各科分数及排名</a>
+											<span style="font-size: 12px;padding: 0 0 0 0px;"
+												class="mui-icon mui-icon-arrowdown"></span>
+										</div>
+									</div>
+								</div>
+								<!-- <div style="height: 10px;background-color: #e5e5e5;margin: 20px -20px 0px -20px;"></div> -->
+								<div style="height: 10px;background-color: #e5e5e5;margin: 10px -20px -10px -20px;"></div>
+							</li>
+						</ul>
+					</template>
+					<template v-else>
+						<div></div>
+					</template>
+				</div>
+			</div>
+			<div id="middlePopover" class="mui-popover" style="width: 350px;z-index: 999;" v-cloak>
+				<div class="mui-popover-arrow"></div>
+				<div id='scroll1' class="mui-scroll-wrapper">
+					<div class="mui-scroll">
+						<ul class="mui-table-view">
+							<li class="mui-table-view-cell">
+								<div class="mui-row" style="margin: 5px 0px -10px 0px;background-color: #00aba1;border-radius: 10px;height: 40px;">
+									<div style="" class="mui-col-xs-5">
+										<p class="scoreDetail">科目</p>
+									</div>
+									<div style="" class="mui-col-xs-4">
+										<p class="scoreDetail">分数</p>
+									</div>
+									<div style="" class="mui-col-xs-3">
+										<p class="scoreDetail">排名</p>
+									</div>
+								</div>
+							</li>
+							<li v-for="(model,index) in scoreDetailArray" class="mui-table-view-cell">
+								<div class="mui-row" style="">
+									<div style="" class="mui-col-xs-5">
+										<p class="stuScoreDetail">{{model.subName}}</p>
+									</div>
+									<div class="mui-col-xs-4">
+										<p class="stuScoreDetail">{{model.subScore}}</p>
+									</div>
+									<div style="" class="mui-col-xs-3">
+										<p class="stuScoreDetail">{{model.subOrder}}</p>
+									</div>
+								</div>
+							</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<script src="../../js/utils/mui.min.js"></script>
+		<script src="../../js/utils/storageKeyName.js"></script>
+		<script src="../../js/utils/vconsole.min.js"></script>
+		<!-- <script src="../../js/utils/mui.pullToRefresh.js"></script>
+		<script src="../../js/utils/mui.pullToRefresh.material.js"></script> -->
+		<script src="../../js/utils/vue.js"></script>
+		<script src="../../js/utils/publicProtocol.js"></script>
+		<script src="../../js/utils/store.js"></script>
+		<script src="../../js/utils/utils.js"></script>
+		<script src="../../js/utils/events.js"></script>
+
+		<!-- <script src="../../js/utils/showMenu.js"></script> -->
+		<!--加密-->
+		<script src="../../js/libs/RSA/Barrett.js"></script>
+		<script src="../../js/libs/RSA/BigInt.js"></script>
+		<script src="../../js/libs/RSA/RSA.js"></script>
+		<script src="../../js/libs/encryption/RSAEncrypt.js"></script>
+		<script src='../../js/libs/crypto-js/require.js'></script>
+		<script src='../../js/libs/encryption/signHmacSHA1.js'></script>
+		<script src='../../js/libs/jquery.js'></script>
+		<script src='../../js/libs/encryption/sortSign.js'></script>
+		<script src="../../js/utils/mui.picker.js"></script>
+		<script src="../../js/utils/mui.poppicker.js"></script>
+		<script type="text/javascript">
+			var $M = mui.init();
+			//获取个人信息
+			var personal = store.get(window.storageKeyName.PERSONALINFO);
+			console.log('personal:' + JSON.stringify(personal));
+			var curPage = {};
+			var tempVue = new Vue({
+				el: "#tempVue",
+				data: {
+					titleName: '',
+					showBack: 0,
+				},
+			});
+			var datasource = new Vue({
+				el: "#datasource",
+				data: {
+					singleFlag:0,//单科1，全科2
+					pageModel: [], //界面总数据
+					clsArray: [], //班级数组
+					subArray: [], //科目数组
+					examArray: [], //学期数组
+					clsModel: '', //当前选择班级
+					subModel: '', //当前选择科目
+					examModel: '', //学期选择值
+					scoreDetailArray: [], //点击查看详情数组
+					// selectType: 'qk', //查询类型 qk 全科考情 dk 单科考情 第一次进入页面默认为qk
+				},
+				methods: {
+					lookDetail: function(model) {
+						mui('#scroll1').scroll().scrollTo(0, 0);
+						console.log('lookDetail:' + JSON.stringify(model));
+						datasource.scoreDetailArray = [];
+						if (datasource.pageModel.tag_list && datasource.pageModel.tag_list.length > 0) {
+							var tempArr = [];
+							for (var a = 0; a < datasource.pageModel.tag_list.length; a++) {
+								var tempTag = datasource.pageModel.tag_list[a];
+								var tempModel = {
+									subName: tempTag.name,
+									subKey: tempTag.key
+								};
+								for (var i in model) {
+									if (i.indexOf("paper_order_") != -1) {
+										var tempKeyArray = i.split('_');
+										if (tempTag.key == tempKeyArray[2]) {
+											if(model[i]){
+												tempModel.subOrder = model[i];
+											}else{
+												tempModel.subOrder = '无';
+											}
+										}
+									}
+									if (i.indexOf("paper_score_") != -1) {
+										var tempKeyArray = i.split('_');
+										if (tempTag.key == tempKeyArray[2]) {
+											if(model[i]){
+												tempModel.subScore = model[i];
+											}else{
+												tempModel.subScore = '0';
+											}
+										}
+									}
+								}
+								tempArr.push(tempModel);
+							}
+							console.log('tempArr:'+JSON.stringify(tempArr));
+							datasource.scoreDetailArray = [].concat(tempArr);
+						}
+					},
+					showCls: function() {
+						var userPicker = new $M.PopPicker();
+						userPicker.setData(datasource.clsArray);
+						setTimeout(function() {
+							userPicker.pickers[0].setSelectedValue(datasource.clsModel.value);
+						}, 100);
+						userPicker.show(function(items) {
+							console.log(JSON.stringify(items[0]))
+							datasource.clsModel = items[0]
+							datasource.pageModel = {};
+							//1.16.考情分析-考情报表-学生成绩列表
+							getStuScoreArray();
+							userPicker.dispose();
+							userPicker = null;
+						});
+					},
+					showSub: function() {
+						var userPicker = new $M.PopPicker();
+						userPicker.setData(datasource.subArray);
+						setTimeout(function() {
+							userPicker.pickers[0].setSelectedValue(datasource.subModel.value);
+						}, 100);
+						userPicker.show(function(items) {
+							console.log(JSON.stringify(items[0]))
+							datasource.subModel = items[0]
+							datasource.pageModel = {};
+							//1.16.考情分析-考情报表-学生成绩列表
+							getStuScoreArray();
+							userPicker.dispose();
+							userPicker = null;
+						});
+					},
+					showExam: function() {
+						var userPicker = new $M.PopPicker();
+						userPicker.setData(datasource.examArray);
+						setTimeout(function() {
+							userPicker.pickers[0].setSelectedValue(datasource.examModel.value);
+						}, 100);
+						userPicker.show(function(items) {
+							console.log(JSON.stringify(items[0]))
+							datasource.examModel = items[0]
+							datasource.pageModel = {};
+							//1.16.考情分析-考情报表-学生成绩列表
+							getStuScoreArray();
+							userPicker.dispose();
+							userPicker = null;
+						});
+					},
+				}
+			});
+
+			window.onload = function() {
+				curPage = utils.getDataFromUrl(window.location.href);
+				console.log('222:' + JSON.stringify(curPage));
+				tempVue.titleName = curPage.name;
+				tempVue.showBack = 1;
+				if(curPage.selectType == 'qk'){
+					datasource.singleFlag = 2;
+				}else{
+					datasource.singleFlag = 1;
+				}
+				//阻尼系数、初始化刷新加载更多
+				var deceleration = mui.os.ios ? 0.003 : 0.0009;
+				mui('.mui-scroll-wrapper').scroll({
+					bounce: false,
+					indicators: true, //是否显示滚动条
+					deceleration: deceleration
+				});
+
+				events.showWaiting();
+				//1.13.考情分析-考情报表-获取班级
+				getClsList();
+
+				//1.15.获取考试对比的考试列表
+				getExamList();
+			};
+
+			//1.13.考情分析-考情报表-获取班级
+			function getClsList() {
+				comData = {
+					paper_id: curPage.id,
+					index_code: curPage.index_code,
+				}
+				postDataEncry(window.storageKeyName.INTERFACE_MARKINGPAPERS + 'report/getCls', {}, comData, 2, function(data) {
+					events.closeWaiting();
+					if (data.code == 0) {
+						data.data.list.map(function(currentValue) {
+							currentValue.value = currentValue.cls_code;
+							currentValue.text = currentValue.cls_name;
+							if (currentValue.value == -1) {
+								currentValue.text = '全部班级';
+							}
+							if (currentValue.cls_code == curPage.cls_code) {
+								datasource.clsModel = currentValue;
+							}
+						})
+						datasource.clsArray = [].concat(data.data.list);
+						if(datasource.singleFlag == 2){
+							//1.14.考情分析-考情报表-获取科目
+							getSubList();
+						}else{
+							datasource.subModel={
+								name:'temp',
+								value:11
+							}
+							//1.16.考情分析-考情报表-学生成绩列表
+							getStuScoreArray();
+						}
+					} else {
+						mui.toast(data.msg);
+					}
+				});
+			}
+			//1.14.考情分析-考情报表-获取科目
+			function getSubList() {
+				comData = {
+					paper_id: curPage.id,
+					index_code: curPage.index_code,
+					cls_name: datasource.clsModel.cls_name,
+				}
+				postDataEncry(window.storageKeyName.INTERFACE_MARKINGPAPERS + 'report/getSub', {}, comData, 2, function(data) {
+					events.closeWaiting();
+					if (data.code == 0) {
+						data.data.list.map(function(currentValue) {
+							currentValue.value = currentValue.sub_code;
+							currentValue.text = currentValue.sub_name;
+							if (currentValue.value == -1) {
+								currentValue.text = '全部科目';
+							}
+						});
+						if (data.data.list.length > 0) {
+							datasource.subModel = data.data.list[0];
+						}
+						datasource.subArray = [].concat(data.data.list);
+						//1.16.考情分析-考情报表-学生成绩列表
+						getStuScoreArray();
+					} else {
+						mui.toast(data.msg);
+					}
+				});
+			}
+
+			//1.15.获取考试对比的考试列表
+			function getExamList() {
+				comData = {
+					paper_id: curPage.id,
+					index_code: curPage.index_code,
+				}
+				postDataEncry(window.storageKeyName.INTERFACE_MARKINGPAPERS + 'paper/comparePapers', {}, comData, 2, function(
+					data) {
+					events.closeWaiting();
+					if (data.code == 0) {
+						data.data.list.map(function(currentValue) {
+							currentValue.value = currentValue.id;
+							currentValue.text = currentValue.name;
+							if (currentValue.id == data.data.select_id) {
+								datasource.examModel = currentValue;
+							}
+						})
+						datasource.examArray = [].concat(data.data.list);
+						//1.16.考情分析-考情报表-学生成绩列表
+						getStuScoreArray();
+					} else {
+						mui.toast(data.msg);
+					}
+				});
+			}
+
+			//1.16.考情分析-考情报表-学生成绩列表
+			function getStuScoreArray() {
+				console.log('111111111111');
+				if (datasource.clsModel != '' && datasource.subModel != '' && datasource.examModel != '') {
+					console.log('2222222222');
+					mui('#scroll2').scroll().scrollTo(0, 0);
+					//需要加密的数据
+					var comData = {
+						paper_id: curPage.id,
+						// cls_code: datasource.clsModel.value, //班级代码
+						// sub_code: datasource.subModel.value, //科目代码
+						sub_code: curPage.subCode, //科目代码
+						compare_paper_id: datasource.examModel.value, //对比考试id
+						index_code: curPage.index_code,
+					}
+					var tempUrl = 'singleSub/stuScore';
+					if(datasource.singleFlag == 2){
+						tempUrl = 'report/stuScore';
+						comData = {
+							paper_id: curPage.id,
+							cls_code: datasource.clsModel.value, //班级代码
+							sub_code: datasource.subModel.value, //科目代码
+							compare_paper_id: datasource.examModel.value, //对比考试id
+							index_code: curPage.index_code,
+						}
+					}
+					// 1.16.考情分析-考情报表-学生成绩列表
+					postDataEncry(window.storageKeyName.INTERFACE_MARKINGPAPERS + tempUrl, {}, comData, 2, function(
+						data) {
+						events.closeWaiting();
+						if (data.code == 0) {
+							var tempArray = [];
+							for (var a = 0; a < data.data.list.length; a++) {
+								var tempM = data.data.list[a];
+								if (tempM.grd_order_diff) {
+
+								} else {
+									tempM.grd_order_diff = 0;
+								}
+								if(datasource.clsModel.value == '-1'){
+									tempArray.push(tempM);
+								}
+								if(datasource.clsModel.value == tempM.cls_code){
+									tempArray.push(tempM);
+								}
+							}
+							data.data.showList = [].concat(tempArray);
+							datasource.pageModel = data.data;
+						} else {
+							mui.toast(data.msg);
+						}
+					});
+				} else {
+					setTimeout(function() {
+						events.closeWaiting();
+					}, 3000)
+				}
+			};
+		</script>
+	</body>
+
+</html>

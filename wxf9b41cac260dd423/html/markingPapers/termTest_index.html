@@ -1,0 +1,366 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport"
+			content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../../css/mui.min.css" rel="stylesheet" />
+		<link href="../../css/common.css" rel="stylesheet" />
+		<style>
+			[v-cloak] {
+				visibility: hidden;
+				display: none !important;
+			}
+
+			html,
+			body {
+				background-color: #efeff4;
+			}
+
+			.mui-bar~.mui-content .mui-fullscreen {
+				top: 44px;
+				height: auto;
+			}
+
+			.mui-pull-top-tips {
+				position: absolute;
+				top: -20px;
+				left: 50%;
+				margin-left: -25px;
+				width: 40px;
+				height: 40px;
+				border-radius: 100%;
+				z-index: 1;
+			}
+
+			.mui-bar~.mui-pull-top-tips {
+				top: 24px;
+			}
+
+			.mui-pull-top-wrapper {
+				width: 42px;
+				height: 42px;
+				display: block;
+				text-align: center;
+				background-color: #efeff4;
+				border: 1px solid #ddd;
+				border-radius: 25px;
+				background-clip: padding-box;
+				box-shadow: 0 4px 10px #bbb;
+				overflow: hidden;
+			}
+
+			.mui-pull-top-tips.mui-transitioning {
+				-webkit-transition-duration: 200ms;
+				transition-duration: 200ms;
+			}
+
+			.mui-pull-top-tips .mui-pull-loading {
+				margin: 0;
+			}
+
+			.mui-pull-top-wrapper .mui-icon,
+			.mui-pull-top-wrapper .mui-spinner {
+				margin-top: 7px;
+			}
+
+			.mui-pull-top-wrapper .mui-icon.mui-reverse {
+				/*-webkit-transform: rotate(180deg) translateZ(0);*/
+			}
+
+			.mui-pull-bottom-tips {
+				text-align: center;
+				background-color: #efeff4;
+				font-size: 15px;
+				line-height: 40px;
+				color: #777;
+			}
+
+			.mui-pull-top-canvas {
+				overflow: hidden;
+				background-color: #fafafa;
+				border-radius: 40px;
+				box-shadow: 0 4px 10px #bbb;
+				width: 40px;
+				height: 40px;
+				margin: 0 auto;
+			}
+
+			.mui-pull-top-canvas canvas {
+				width: 40px;
+			}
+
+			.mui-slider-indicator.mui-segmented-control {
+				background-color: #efeff4;
+			}
+
+			.peopleImg {
+				width: 50px;
+				height: 40px;
+				border-radius: 50%;
+			}
+
+			.time {
+				font-size: 14px;
+				float: right;
+				color: gray;
+			}
+
+			.biaoti {
+				width: 80%;
+				color: #000000;
+				white-space: nowrap;
+				text-overflow: ellipsis;
+				overflow: hidden;
+			}
+
+			.tempCss {
+				font-size: 14px;
+				color: gray;
+			}
+
+			.divleft {
+				float: left;
+				width: calc(70px);
+				vertical-align: middle;
+				text-align: center;
+				margin-top: 10px;
+				height: 30px;
+			}
+
+			.divright {
+				float: left;
+				width: calc(100% - 100px);
+				vertical-align: middle;
+				/* height: 30px; */
+				color: #505050;
+				word-break: break-all;
+				/* 显示省略号 */
+				overflow: hidden;
+				text-overflow: ellipsis;
+				display: -webkit-box;
+				-webkit-line-clamp: 2;
+				line-clamp: 2;
+				-webkit-box-orient: vertical;
+			}
+
+			.readClass1 {
+				color: #d43030;
+				padding: 3px;
+				font-size: 13px;
+				border-radius: 2px;
+				border: 1px solid #d43030;
+			}
+
+			.readClass2 {
+				color: #ff8d1a;
+				padding: 3px;
+				font-size: 13px;
+				border-radius: 2px;
+				border: 1px solid #ff8d1a;
+			}
+			
+			.readClass3 {
+				color: #43cf7c;
+				padding: 3px;
+				font-size: 13px;
+				border-radius: 2px;
+				border: 1px solid #43cf7c;
+			}
+		</style>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav" id="tempVue">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title">{{titleName}}</h1>
+		</header>
+		<div id="datasource" class="mui-content mui-fullscreen" style="z-index:0" v-cloak>
+			<div class="mui-scroll-wrapper" style="margin-top: 44px;" v-cloak>
+				<div class="mui-scroll" v-cloak>
+					<ul class="mui-table-view" v-cloak>
+						<li v-for="model in pageArray" class="mui-table-view-cell" @tap="clickLi(model)">
+							<div class="mui-table">
+								<div class="mui-table-cell">
+									<a class="mui-navigate-right">
+										<div class="mui-table">
+											<div class="mui-table-cell">
+												<div class="divleft">
+													<span v-if="model.status == 1" class="readClass1">未阅</span>
+													<span v-else-if="model.status == 2" class="readClass2">阅卷中</span>
+													<span v-else-if="model.status == 3" class="readClass3">已阅</span>
+												</div>
+												<div class="divright">{{model.name}}{{model.custom_name}}</div>
+											</div>
+										</div>
+									</a>
+								</div>
+							</div>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+		<script src="../../js/utils/mui.min.js"></script>
+		<script src="../../js/utils/storageKeyName.js"></script>
+		<script src="../../js/utils/vconsole.min.js"></script>
+		<script src="../../js/utils/mui.pullToRefresh.js"></script>
+		<script src="../../js/utils/mui.pullToRefresh.material.js"></script>
+		<script src="../../js/utils/vue.js"></script>
+		<script src="../../js/utils/publicProtocol.js"></script>
+		<script src="../../js/utils/store.js"></script>
+		<script src="../../js/utils/utils.js"></script>
+		<script src="../../js/utils/events.js"></script>
+		<!--加密-->
+		<script src="../../js/libs/RSA/Barrett.js"></script>
+		<script src="../../js/libs/RSA/BigInt.js"></script>
+		<script src="../../js/libs/RSA/RSA.js"></script>
+		<script src="../../js/libs/encryption/RSAEncrypt.js"></script>
+		<script src='../../js/libs/crypto-js/require.js'></script>
+		<script src='../../js/libs/encryption/signHmacSHA1.js'></script>
+		<script src='../../js/libs/jquery.js'></script>
+		<script src='../../js/libs/encryption/sortSign.js'></script>
+		<script type="text/javascript">
+			//获取个人信息
+			var personal = store.get(window.storageKeyName.PERSONALINFO);
+			console.log('personal:' + JSON.stringify(personal));
+			var curPage = {};
+			var pageIndex = 1; //请求数据页面
+			var totalPageCount; //总页码
+			var flagRef = 0; //是刷新0，还是加载更多1
+			var tempVue = new Vue({
+				el: "#tempVue",
+				data: {
+					titleName: ''
+				}
+			});
+			var datasource = new Vue({
+				el: "#datasource",
+				data: {
+					pageArray: [] //界面总数组
+				},
+				methods: {
+					clickLi: function(model) {
+						console.log('clickLi.model:' + JSON.stringify(model));
+						model.access = curPage.access;
+						if(model.status == 3){
+							utils.mOpenWithData("../../html/markingPapers/markScore.html", model);
+						}else{
+							utils.mOpenWithData("../../html/markingPapers/markingDetail.html", model);
+						}
+					}
+				}
+			});
+			mui.init();
+
+			window.onload = function() {
+				curPage = utils.getDataFromUrl(window.location.href);
+				console.log('2222:' + JSON.stringify(curPage));
+				tempVue.titleName = curPage.name;
+				events.showWaiting();
+				//1.3.期中期末
+				getPageDataArray();
+
+				//阻尼系数、初始化刷新加载更多
+				var deceleration = mui.os.ios ? 0.003 : 0.0009;
+				mui('.mui-scroll-wrapper').scroll({
+					bounce: false,
+					indicators: true, //是否显示滚动条
+					deceleration: deceleration
+				});
+
+				//上拉下拉注册
+				mui(".mui-scroll-wrapper .mui-scroll").pullToRefresh({
+					down: {
+						callback: function() {
+							//清除节点
+							// document.getElementById('list-container').innerHTML = "";
+							var self = this;
+							//console.log("下拉刷新");
+							pageIndex = 1;
+							flagRef = 0;
+							mui(".mui-pull-loading")[0].innerHTML = "";
+							//1.3.期中期末
+							getPageDataArray();
+							setTimeout(function() {
+								//结束下拉刷新
+								self.endPullDownToRefresh();
+							}, 1000);
+						}
+					},
+					up: {
+						callback: function() {
+							var self = this;
+							//console.log("上拉加载更多");
+							flagRef = 1;
+							if (pageIndex <= totalPageCount) {
+								//1.3.期中期末
+								getPageDataArray();
+								setTimeout(function() {
+									//结束下拉刷新
+									self.endPullUpToRefresh();
+									if (mui(".mui-table-view-cell").length < 20) {
+										mui(".mui-pull-loading")[0].innerHTML = "";
+									}
+								}, 1000);
+							} else {
+								//结束下拉刷新
+								self.endPullUpToRefresh();
+								mui(".mui-pull-loading")[0].innerHTML = "没有更多了";
+							}
+						}
+					}
+				});
+
+			};
+
+			//1.3.期中期末
+			function getPageDataArray() {
+				//需要加密的数据
+				comData = {
+					page_number: pageIndex, //当前页数
+					page_size: '20', //每页记录数
+					index_code: curPage.access.split('#')[1],
+					grd_code: '', //年级代码
+					status: '1,2,3', //状态,0未启动 1未阅 2阅卷中 3已阅
+					exam_type: '', //考试类型,1期中、3期末
+					start_time: '', //查询开始时间
+					end_time: '', //查询结束时间
+					keyword: '', //名称关键字
+					user_code: personal.user_code, //用户代码
+				}
+				//1.3.期中期末
+				postDataEncry(window.storageKeyName.INTERFACE_MARKINGPAPERS + 'termTest/page', {}, comData, 2, function(
+					data) {
+					events.closeWaiting();
+					if (data.code == 0) {
+						//总页数
+						totalPageCount = data.data.total_page;
+						pageIndex++;
+						if (flagRef == 0) { //刷新
+							datasource.pageArray = data.data.list;
+							if (data.data.list.length == 0) {
+								mui.toast('暂无数据');
+							}
+							mui(".mui-scroll-wrapper").scroll().refresh();
+						} else { //加载更多
+							//合并数组
+							datasource.pageArray = datasource.pageArray.concat(data.data.list);
+							if (data.data.list.length == 0) {
+								// mui.toast('已加载全部');
+							}
+						}
+						if (mui(".mui-table-view-cell").length < 20) {
+							mui(".mui-pull-loading")[0].innerHTML = "";
+						}
+					} else {
+						mui.toast(data.msg);
+					}
+				});
+			};
+		</script>
+	</body>
+
+</html>

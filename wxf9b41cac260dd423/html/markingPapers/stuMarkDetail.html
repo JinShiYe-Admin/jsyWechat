@@ -1,0 +1,266 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport"
+			content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../../css/mui.min.css" rel="stylesheet" />
+		<link href="../../css/common.css" rel="stylesheet" />
+		<link rel="stylesheet" href="../../css/utils/preview.css" />
+		<style>
+			[v-cloak] {
+				visibility: hidden;
+				display: none !important;
+			}
+
+			html,
+			body {
+				background-color: #efeff4;
+			}
+
+			.mui-bar~.mui-content .mui-fullscreen {
+				top: 44px;
+				height: auto;
+			}
+
+			.leaveSum {
+				margin-top: 10px;
+				margin-left: 20px;
+				margin-bottom: 0px;
+				font-size: 14px;
+				color: #505050;
+			}
+
+			.scoreDetail {
+				font-size: 14px;
+				color: white;
+				text-align: center;
+				margin-top: 10px;
+			}
+			
+			.stuScoreDetail {
+				font-size: 14px;
+				color: #505050;
+				text-align: center;
+				background-color: #e5e5e5;
+				border-radius: 5px;
+				margin-left: 2px;
+				margin-right: 2px;
+			}
+
+			.mui-table-view:before {
+				height: 0px;
+			}
+
+			.mui-table-view:after {
+				height: 0px;
+			}
+
+			.mui-navigate-right:after,
+			.mui-push-left:after,
+			.mui-push-right:after {
+				color: #00cfbd;
+			}
+		</style>
+	</head>
+
+	<body style="background-color: white;">
+		<header class="mui-bar mui-bar-nav" id="tempVue">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title">{{titleName}}</h1>
+			<a v-show="showLook>0" @click="lookDetail()" class="mui-icon  mui-pull-right" style="font-size: 15px;margin-top: 7px;">查看批阅</a>
+		</header>
+		<div class="mui-content">
+			<div id="datasource" class="mui-fullscreen" v-cloak>
+				<p style="margin: 5px 0px 0px 20px;color: #505050;font-size: 14px;font-weight: bold;">考生信息</p>
+				<div style="height: 0.5px;background-color: #00cfbd;margin: 5px 28px 0px 15px;"></div>
+				<div v-if="stuDetailModel" class="mui-row" style="text-align: left;">
+					<div style="" class="mui-col-xs-6">
+						<p class="leaveSum">姓名：{{stuDetailModel.stu_name}}</p>
+					</div>
+					<div style="" class="mui-col-xs-6">
+						<p class="leaveSum">考号：{{stuDetailModel.sno}}</p>
+					</div>
+					<div style="" class="mui-col-xs-6">
+						<p class="leaveSum">班级：{{stuDetailModel.cls_name}}</p>
+					</div>
+					<div style="" class="mui-col-xs-6">
+						<p class="leaveSum">科目：{{stuDetailModel.sub_name}}</p>
+					</div>
+					<div style="" class="mui-col-xs-6">
+						<p class="leaveSum">总分：{{stuDetailModel.total_score}}</p>
+					</div>
+					<div style="" class="mui-col-xs-6">
+						<p class="leaveSum">客观题得分：{{stuDetailModel.object_score}}</p>
+					</div>
+					<div style="" class="mui-col-xs-6">
+						<p class="leaveSum">主观题得分：{{stuDetailModel.subject_score}}</p>
+					</div>
+					<div style="" class="mui-col-xs-6">
+						<p class="leaveSum">考试日期：{{stuDetailModel.exam_date}}</p>
+					</div>
+				</div>
+				<div v-if="result_file_list">
+					<template v-for="tempImg in result_file_list">
+						<img style="display: none;" width="100%" :src="tempImg.merge_file_path" :data-preview-src="tempImg.merge_file_path" data-preview-group="1" />
+					</template>
+				</div>
+				<div style="height: 10px;background-color: #e5e5e5;margin: 5px 0px 0px 0px;"></div>
+				<p style="margin: 5px 0px 0px 20px;color: #505050;font-size: 14px;font-weight: bold;">得分详情</p>
+				<div style="height: 0.5px;background-color: #00cfbd;margin: 5px 28px 0px 15px;"></div>
+				<div style="margin: 10px 20px 0px 20px;"></div>
+				<div class="mui-row"
+					style="margin: 5px 10px 0 10px;background-color: #00aba1;border-radius: 10px;height: 40px;">
+					<div style="" class="mui-col-xs-2">
+						<p class="scoreDetail">题号</p>
+					</div>
+					<div style="" class="mui-col-xs-3">
+						<p class="scoreDetail">标准答案</p>
+					</div>
+					<div style="" class="mui-col-xs-2">
+						<p class="scoreDetail">满分</p>
+					</div>
+					<div style="" class="mui-col-xs-3">
+						<p class="scoreDetail">学生答案</p>
+					</div>
+					<div style="" class="mui-col-xs-2">
+						<p class="scoreDetail">得分</p>
+					</div>
+				</div>
+				<div class="" style="margin-top: 0px;" v-cloak>
+					<div class="mui-scroll" v-cloak>
+						<ul class="mui-table-view" v-cloak>
+							<li v-for="model in stuResultList" class="mui-table-view-cell">
+								<div class="mui-row" style="">
+									<div style="" class="mui-col-xs-2">
+										<p class="stuScoreDetail">{{model.question_number}}</p>
+									</div>
+									<div class="mui-col-xs-3">
+										<p v-if="model.answer_list" style="background-color: #c6c6c6;" class="stuScoreDetail">{{model.answer_list.join(',')}}</p>
+									</div>
+									<div style="" class="mui-col-xs-2">
+										<p class="stuScoreDetail">{{model.complete_score}}</p>
+									</div>
+									<div class="mui-col-xs-3">	
+										<p v-if="model.stu_answer_list" style="background-color: #c6c6c6;" class="stuScoreDetail">{{model.stu_answer_list.join(',')}}</p>
+									</div>
+									<div style="" class="mui-col-xs-2">
+										<p class="stuScoreDetail">{{model.stu_score}}</p>
+									</div>
+								</div>
+							</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+		<script src="../../js/utils/mui.min.js"></script>
+		<script src="../../js/utils/mui.zoom.js"></script>
+		<script src="../../js/utils/mui.previewimage.js"></script>
+		<script src="../../js/utils/storageKeyName.js"></script>
+		<script src="../../js/utils/vconsole.min.js"></script>
+		<script src="../../js/utils/vue.js"></script>
+		<script src="../../js/utils/publicProtocol.js"></script>
+		<script src="../../js/utils/store.js"></script>
+		<script src="../../js/utils/utils.js"></script>
+		<script src="../../js/utils/events.js"></script>
+		<!--加密-->
+		<script src="../../js/libs/RSA/Barrett.js"></script>
+		<script src="../../js/libs/RSA/BigInt.js"></script>
+		<script src="../../js/libs/RSA/RSA.js"></script>
+		<script src="../../js/libs/encryption/RSAEncrypt.js"></script>
+		<script src='../../js/libs/crypto-js/require.js'></script>
+		<script src='../../js/libs/encryption/signHmacSHA1.js'></script>
+		<script src='../../js/libs/jquery.js'></script>
+		<script src='../../js/libs/encryption/sortSign.js'></script>
+		<script type="text/javascript">
+			//获取个人信息
+			var personal = store.get(window.storageKeyName.PERSONALINFO);
+			console.log('personal:' + JSON.stringify(personal));
+			var curPage = {};
+			var imgeGroup;
+			var tempVue = new Vue({
+				el: "#tempVue",
+				data: {
+					titleName: '',
+					showLook:0,
+				},methods:{
+					lookDetail:function(){
+						imgeGroup.open(0,1); 
+					}
+				}
+			});
+			var datasource = new Vue({
+				el: "#datasource",
+				data: {
+					stuDetailModel: {}, //学生考试详情
+					stuResultList: [], //学生答题详情列表
+					result_file_list:[],
+				},
+				methods: {}
+			});
+			mui.init();
+
+			window.onload = function() {
+				curPage = utils.getDataFromUrl(window.location.href);
+				datasource.stuDetailModel = curPage;
+				console.log('2222:' + JSON.stringify(curPage));
+				// tempVue.titleName = curPage.name;
+				tempVue.titleName = '成绩详情';
+				imgeGroup = mui.previewImage();
+				events.showWaiting();
+				//1.10.根据id获取学生考试详情
+				getPageDataArray();
+				//1.11.获取学生每题答题详情
+				getResultDetail();
+
+			};
+
+			//1.10.根据id获取学生考试详情
+			function getPageDataArray() {
+				//需要加密的数据
+				comData = {
+					index_code: curPage.access.split('#')[1],
+					id: curPage.id, //
+				}
+				//1.10.根据id获取学生考试详情
+				postDataEncry(window.storageKeyName.INTERFACE_MARKINGPAPERS + 'taskResult/getById', {}, comData, 2, function(
+					data) {
+					events.closeWaiting();
+					if (data.code == 0) {
+						datasource.result_file_list = data.data.result_file_list;
+						// datasource.stuDetailModel.sub_name = curPage.sub_name;
+						// datasource.stuDetailModel.exam_date = curPage.exam_date;
+						if(data.data.result_file_list&&data.data.result_file_list.length>0){
+							tempVue.showLook = 1;
+						}
+					} else {
+						mui.toast(data.msg);
+					}
+				});
+			};
+
+			//1.11.获取学生每题答题详情
+			function getResultDetail() {
+				//需要加密的数据
+				comData = {
+					index_code: curPage.access.split('#')[1],
+					result_id: curPage.id, //
+				}
+				//1.11.获取学生每题答题详情
+				postDataEncry(window.storageKeyName.INTERFACE_MARKINGPAPERS + 'taskResultDetail', {}, comData, 2, function(
+					data) {
+					events.closeWaiting();
+					if (data.code == 0) {
+						datasource.stuResultList = [].concat(data.data.list);
+					} else {
+						mui.toast(data.msg);
+					}
+				});
+			};
+		</script>
+	</body>
+
+</html>
