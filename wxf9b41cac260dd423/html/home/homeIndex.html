@@ -14,88 +14,379 @@
 		<link rel="stylesheet" type="text/css" href="../../css/common.css" />
 		<style>
 			[v-cloak] {
-				visibility: hidden;
 				display: none !important;
 			}
 
-			.mui-bar-tab .mui-tab-item.mui-active {
-				color: #00CFBD;
+			.circular-square,
+			.circular-square2 {
+				border-radius: 10%;
+				width: 40px;
+				height: 40px;
+			}
+
+			.circular-square2 {
+				width: 34px;
+				height: 34px;
+			}
+
+			.mui-badge {
+				font-size: 12px;
+				line-height: 1;
+				display: inline-block;
+				padding: 3px 6px;
+				color: white;
+				border-radius: 100px;
+				background-color: red;
+				margin-top: -40px;
+				margin-right: -10px;
+			}
+
+			.mui-card-content-inner {
+				margin-top: -10px;
+				padding: 0px;
+			}
+
+			.mui-grid-view.mui-grid-9 {
+				border-top: 0px solid #eee;
+				border-left: 0px solid #eee;
+				background-color: white;
+			}
+
+			.mui-card {
+				font-size: 14px;
+				position: relative;
+				overflow: hidden;
+				margin: 10px;
+				border-radius: 10px;
+				background-color: #fff;
+				background-clip: padding-box;
+				box-shadow: 0 0px 0px rgba(0, 0, 1, .3);
+			}
+
+			.mui-card-header:after {
+				height: 0px;
+			}
+
+			.mui-card-header {
+				color: black;
+				font-size: 15px;
+				font-weight: 800;
+			}
+
+			.mui-table-view-cell .mui-media-body {
+				text-overflow: initial !important;
+				overflow: initial;
+			}
+
+			.mui-active {
+				background-color: #FFFFFF !important;
+			}
+			
+			/*  */
+			.head-portrait {
+				width: 80px;
+				height: 80px;
+				border-radius: 50%;
+				margin-bottom: 10px;
+			}
+			
+			.user-info {
+				padding: 30px 0 10px 0;
+				text-align: center;
+				background: #fff;
+			}
+			
+			.btns {
+				background: #fff;
+				height: 100%;
+			}
+			
+			.user-text {
+				font-size: 16px;
+				color: #333333;
+			}
+			
+			.mui-table-view-cell {
+				color: #333333;
+			}
+			
+			.mui-icon,
+			.mui-icon-extra {
+				color: #00A5E0;
+			}
+			
+			.out-btn {
+				position: fixed;
+				bottom: 0px;
+				height: 60px;
+				width: 100%;
+				padding:10px 10% ;
+				background: #fff;
 			}
 		</style>
 	</head>
 
 
-	<body>
-		<header class="mui-bar mui-bar-nav" id="tempHead">
-			<h1 class="mui-title">{{headTitle}}</h1>
-		</header>
-		<div v-cloak class="mui-content" id="indexPage" style="background-color: #f2f2f2;padding-bottom: 5px;">
-			<div v-cloak class="mui-card" v-for="(model,index) in showArray">
-				<div v-cloak class="mui-card-header">{{model.name}}</div>
-				<div v-cloak class="mui-card-content">
-					<div v-cloak class="mui-card-content-inner">
-						<template v-if="model.childList.length>0">
-							<!-- 如果有子菜单 -->
-							<ul class="mui-table-view mui-grid-view mui-grid-9"
-								style="background-color: white;padding-left: 7px;margin-top: 0px;">
-								<li v-for="(childModel,childIndex) in model.childList" @tap="clickFunction(childModel)"
-									class="mui-table-view-cell mui-media mui-col-sm-3 mui-col-xs-3"
-									style="border: 0px;padding:10px 5px">
-									<a href="javascript:void(0)">
-										<img class="circular-square2" :src=childModel.icon />
-										<div class="mui-media-body divNameCss">{{childModel.name}}</div>
-									</a>
-								</li>
+	<body style="background-color: #f2f2f2;">
+		<!--侧滑菜单容器-->
+		<div id="offCanvasWrapper" class="mui-off-canvas-wrap mui-draggable">
+			<!--菜单部分-->
+			<aside id="offCanvasSide" class="mui-off-canvas-left">
+				<div id="offCanvasSideScroll" class="mui-scroll-wrapper">
+					<div class="mui-scroll" style="position: absolute;z-index: 0;">
+						<div class="mui-row" style="margin-top: 44px;">
+							<div class="user-info">
+								<!-- <img v-on:click="clickHeadImg()" class="head-portrait" :src=userImg /> -->
+								<img class="head-portrait" :src=userImg />
+								<p class="user-text">{{userName}}</p>
+								<p v-if="userMsg" style="text-align: center;">{{userMsg}}</p>
+							</div>
+						</div>
+						<div class="mui-row" style="background: #EEEEEE;height: 20px;"></div>
+						<div class="mui-row btns">
+							<ul class="mui-table-view" style="margin-bottom: 61px;">
+								<template v-for="setting in settings">
+									<li class="mui-table-view-cell" v-on:click="jumpToDetail(setting)">
+										<a class="mui-navigate-right">
+											<span :class="setting.cls" :style="setting.name=='关联学生'||setting.name=='学生账号'?'font-size: 24px;margin:0 -2px 0 -3px;':'font-size: 20px'"></span>
+											<span style="font-size: 14px;">{{setting.name}}</span>
+										</a>
+									</li>
+								</template>
 							</ul>
-						</template>
-						<template v-if="model.childList.length==0">
-							<!-- 如果没有子菜单 -->
-							<ul class="mui-table-view mui-grid-view mui-grid-9"
-								style="background-color: white;padding-left: 7px;margin-top: 0px;">
-								<li v-cloak @tap="clickFunction(model)"
-									class="mui-table-view-cell mui-media mui-col-sm-3 mui-col-xs-3"
-									style="border: 0px;padding:10px 5px">
-									<a href="javascript:void(0)">
-										<img class="circular-square" :src=model.img_href />
-										<div class="mui-media-body divNameCss">{{model.name}}</div>
-									</a>
-								</li>
-							</ul>
-						</template>
+							<div class="out-btn">
+								<button @tap='unReg' type="button" class="mui-btn mui-btn-danger " style="width: 100%;height:40px;">解除绑定</button>
+							</div>
+						</div>
 					</div>
 				</div>
+			</aside>
+			<div class="mui-inner-wrap">
+				<header class="mui-bar mui-bar-nav" id="tempHead">
+					<!-- <a v-cloak v-if="showBack==2" @click="clickLeftImg" class="mui-icon mui-pull-left">
+						<img v-cloak :src=headImg style="width: 26px;height: 26px;border-radius: 50%;" />
+					</a> -->
+					<a v-cloak href="#offCanvasSide" class="mui-icon mui-pull-left">
+						<img v-cloak :src=headImg style="width: 26px;height: 26px;border-radius: 50%;" />
+					</a>
+					<!-- <a href="#offCanvasSide" class="mui-icon mui-action-menu mui-icon-bars mui-pull-left"></a> -->
+					<h1 class="mui-title">{{headTitle}}</h1>
+				</header>
+				<div v-cloak class="mui-content" id="indexPage" style="background-color: #f2f2f2;padding-bottom: 5px;">
+					<div v-cloak class="mui-card" v-for="(model,index) in showArray">
+						<div v-cloak class="mui-card-header">{{model.name}}</div>
+						<div v-cloak class="mui-card-content">
+							<div v-cloak class="mui-card-content-inner">
+								<template v-if="model.childList.length>0">
+									<!-- 如果有子菜单 -->
+									<ul class="mui-table-view mui-grid-view mui-grid-9"
+										style="background-color: white;padding-left: 7px;margin-top: 0px;">
+										<li v-for="(childModel,childIndex) in model.childList"
+											@tap="clickFunction(childModel)"
+											class="mui-table-view-cell mui-media mui-col-sm-3 mui-col-xs-3"
+											style="border: 0px;padding:10px 5px">
+											<a href="javascript:void(0)">
+												<img class="circular-square2" :src=childModel.icon />
+												<div class="mui-media-body divNameCss">{{childModel.name}}</div>
+											</a>
+										</li>
+									</ul>
+								</template>
+								<template v-if="model.childList.length==0">
+									<!-- 如果没有子菜单 -->
+									<ul class="mui-table-view mui-grid-view mui-grid-9"
+										style="background-color: white;padding-left: 7px;margin-top: 0px;">
+										<li v-cloak @tap="clickFunction(model)"
+											class="mui-table-view-cell mui-media mui-col-sm-3 mui-col-xs-3"
+											style="border: 0px;padding:10px 5px">
+											<a href="javascript:void(0)">
+												<img class="circular-square" :src=model.img_href />
+												<div class="mui-media-body divNameCss">{{model.name}}</div>
+											</a>
+										</li>
+									</ul>
+								</template>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div id="backdrop" class="mui-off-canvas-backdrop"></div>
 			</div>
 		</div>
 		<script src="../../js/utils/storageKeyName.js"></script>
 		<script src="../../js/utils/mui.min.js"></script>
 		<script src="../../js/utils/store.js"></script>
+		<script src="../../js/utils/publicProtocol.js"></script>
 		<script src="../../js/utils/vue.js"></script>
 		<script src="../../js/utils/vconsole.min.js"></script>
 		<script src="../../js/utils/utils.js"></script>
 		<script src="../../js/libs/jquery.js"></script>
+		<script src="../../js/utils/jweixin-1.2.0.js"></script>
+		<!--加密-->
+		<script src="../../js/libs/RSA/Barrett.js"></script>
+		<script src="../../js/libs/RSA/BigInt.js"></script>
+		<script src="../../js/libs/RSA/RSA.js"></script>
+		<script src="../../js/libs/encryption/RSAEncrypt.js"></script>
+		<script src='../../js/libs/crypto-js/require.js'></script>
+		<script src='../../js/libs/encryption/signHmacSHA1.js'></script>
+		<script src='../../js/libs/jquery.js'></script>
+		<script src='../../js/libs/encryption/sortSign.js'></script>
+		<!-- <script src="../../js/utils/showMenu.js"></script> -->
 		<script type="text/javascript" charset="utf-8">
 			mui.init();
 			var personal = store.get(window.storageKeyName.PERSONALINFO);
-			var subpage_style = {
-				top: '0px',
-				bottom: '51px',
-				statusbar: {
-					background: "#00CFBD"
-				}
-			};
-
-			window.addEventListener('home_refresh', function(data) {
-				location.reload();
+			//侧滑容器父节点
+			var offCanvasWrapper = mui('#offCanvasWrapper');
+			//主界面容器
+			var offCanvasInner = offCanvasWrapper[0].querySelector('.mui-inner-wrap');
+			//菜单容器
+			var offCanvasSide = document.getElementById("offCanvasSide");
+			offCanvasWrapper[0].insertBefore(offCanvasSide, offCanvasWrapper[0].firstElementChild);
+			//侧滑容器的class列表，增加.mui-slide-in即可实现菜单移动、主界面不动的效果；
+			var classList = offCanvasWrapper[0].classList;
+			classList.add('mui-slide-in');
+			//禁止滑动主界面的时候出现侧滑菜单
+			document.getElementsByClassName('mui-inner-wrap')[0].addEventListener('drag', function(event) {
+				event.stopPropagation();
+			})
+			// 点击遮罩层
+			document.getElementById('backdrop').addEventListener('tap', function() {
+				mui('#offCanvasSideScroll').scroll().scrollTo(0, 0);
 			});
+			// var subpage_style = {
+			// 	top: '0px',
+			// 	bottom: '51px',
+			// 	statusbar: {
+			// 		background: "#00CFBD"
+			// 	}
+			// };
 
-			//获取未读数
-			window.addEventListener('showNoReadCnt', function(data) {
-				//获取未读数
-				console.log('showNoReadCnt.data:' + JSON.stringify(data.detail));
-				for (var i = 0; i < indexPage.showArray.length; i++) {
-					var tempM = indexPage.showArray[i];
-					if (tempM.url == data.detail.url) {
-						tempM.NoReadCnt = data.detail.showNoReadCnt;
+			// window.addEventListener('home_refresh', function(data) {
+			// 	location.reload();
+			// });
+
+			// //获取未读数
+			// window.addEventListener('showNoReadCnt', function(data) {
+			// 	//获取未读数
+			// 	console.log('showNoReadCnt.data:' + JSON.stringify(data.detail));
+			// 	for (var i = 0; i < indexPage.showArray.length; i++) {
+			// 		var tempM = indexPage.showArray[i];
+			// 		if (tempM.url == data.detail.url) {
+			// 			tempM.NoReadCnt = data.detail.showNoReadCnt;
+			// 		}
+			// 	}
+			// });
+			
+			var offCanvasSide = new Vue({
+				el: "#offCanvasSide",
+				data: {
+					userModel:store.get(window.storageKeyName.PERSONALINFO),
+					userName: '',
+					userMsg:'',
+					userImg: setImg(store.get(window.storageKeyName.PERSONALINFO).img_url, 9),
+					settings: [
+						// {
+						// 	name: "密码修改",
+						// 	icon: "",
+						// 	href: "",
+						// 	tempID: 0,
+						// 	cls: 'mui-icon mui-icon-locked',
+						// 	qx: "0,1,2"
+						// },{
+						// 	name: "注销账号",
+						// 	icon: "",
+						// 	href: "",
+						// 	tempID: 1,
+						// 	cls: 'mui-icon mui-icon-locked',
+						// 	qx: "0,1,2"
+						// },{
+						// 	name: "用户隐私政策",
+						// 	icon: "",
+						// 	href: "",
+						// 	tempID: 3,
+						// 	cls: 'mui-icon mui-icon-locked',
+						// 	qx: "0,1,2"
+						// },{
+						// 	name: "关于教宝校园",
+						// 	icon: "",
+						// 	href: "",
+						// 	tempID: 2,
+						// 	cls: 'mui-icon mui-icon-info',
+						// 	qx: "0,1,2"
+						// },
+					],
+					isMineShow: false, //屏蔽或显示我的界面
+				},
+				methods: {
+					jumpToDetail: function(setting) {
+						hideMenu();
+						this.isMineShow = false;
+						if (setting.tempID == 0) { //密码修改
+							var tempModel = {
+								flag: 0 //0是主动修改密码，1是判断是默认密码，自动让修改
+							}
+							utils.mOpenWithData("../../html/mine/modifyPassword.html", tempModel);
+						} else if (setting.tempID == 2) { //关于教宝校园
+							utils.mOpenWithData("../../html/mine/about.html", setting);
+						}else if (setting.tempID == 1) { //注销账号
+							mui.confirm("注销后账号将不可使用，与账号相关的数据也会一并删除，确定注销吗？", '确定注销？', ['确定', '取消'], function(e) {
+									if (e.index == 0) {
+										var personal = store.get(window.storageKeyName.PERSONALINFO);
+										var enData0 = {};
+										//不需要加密的数据
+										var comData0 = {
+											platform_code: personal.platform_code, //平台代码
+											app_code: personal.app_code, //应用系统代码
+											unit_code: personal.unit_code, //单位代码，如应用系统需限制本单位用户才允许登录，则传入单位代码，否则传“-1”
+											index_code:'index',
+											op_user_code:personal.user_code,
+											access_token: personal.access_token
+										};
+										events.showWaiting();
+										//发送网络请求，data为网络返回值
+										postDataEncry(window.storageKeyName.INTERFACE_HR_SKIN + 'unregister', enData0, comData0, 0, function(data) {
+											events.closeWaiting();
+											if(data.code == 0) {
+												mui.toast(data.msg);
+												quitLogin();
+											} else {
+												mui.toast(data.msg);
+											}
+										});
+									}
+								});
+						}else if (setting.tempID == 3) { //隐私协议
+							utils.mOpenWithData("../../html/login/privace.html", setting);
+						}
+					},
+					clickHeadImg: function() {
+						this.isMineShow = false;
+						hideMenu();
+						utils.mOpenWithData("../../html/mine/headImg.html", {});
+					},
+					unReg:function(){
+						var personal = store.get(window.storageKeyName.PERSONALINFO);
+						var publicPar = store.get(window.storageKeyName.PUBLICPARAMETER);
+						//不需要加密的数据 
+						var comData2 = {
+							platform_code: window.storageKeyName.PLATFORMCODE, //平台代码
+							app_code: window.storageKeyName.APPCODE, //应用系统代码
+							index_code:'index',
+							unit_code: personal.unit_code, //单位代码，如应用系统需限制本单位用户才允许登录，则传入单位代码，否则传“-1”
+							access_token:personal.access_token,
+							op_user_code:personal.user_code,//用户代码
+							thuser_code:publicPar.openid,//第三方用户代码或账号
+							thuser_fromcode:window.storageKeyName.THIRD_FORMCODE,//第三方平台,微信:WX;支付宝:ZFB
+						};
+						// events.showWaiting();
+						//2.8.第三方账号解绑
+						postDataEncry(window.storageKeyName.INTERFACE_HR_SKIN + 'unregister/thuserunreg', {}, comData2, 0, function(data2) {
+							if (data2.code == 0) {
+								utils.mOpenWithData("../../html/login/index.html", {});
+							} else {
+								mui.toast(data2.msg);
+							}
+						});
 					}
 				}
 			});
@@ -103,7 +394,14 @@
 			var tempHead = new Vue({
 				el: "#tempHead",
 				data: {
-					headTitle: '智慧校园'
+					showBack: 0,
+					headTitle: '智慧校园',
+					headImg: setImg(personal.img_url, 9)
+				},
+				methods: {
+					clickLeftImg: function() {
+						appPay.openMenu();
+					}
 				}
 			});
 
@@ -121,49 +419,61 @@
 			// 	}
 			// });
 
-			mui.plusReady(function() {
-				var ws = plus.webview.currentWebview();
-				console.log("当前Webview窗口：" + JSON.stringify(ws.preload));
+			window.onload = function() {
+				// var ws = plus.webview.currentWebview();
+				// console.log("当前Webview窗口：" + JSON.stringify(ws.preload));
+				tempHead.showBack = 2;
 				//创建子页面，首个选项卡页面显示，其它均隐藏；
 				var tempMenu = store.get(window.storageKeyName.MENULIST);
 				console.log('tempMenu:' + JSON.stringify(tempMenu));
 				var tempA = [];
-				// for (var i = 0; i < tempMenu.list[0].childList.length; i++) { //一级菜单循环
-				// 	var web_first_item = tempMenu.list[0].childList[i];
-				// 	for (var a = 0; a < indexPage.pageArray.length; a++) {
-				// 		var local_first_item = indexPage.pageArray[a];
-				// 		if (local_first_item.url == web_first_item.url) {
-				// 			local_first_item.name = web_first_item.name;
-				// 			local_first_item.access = web_first_item.access;
-				// 			let childList = []
-				// 			for (var b = 0; b < web_first_item.childList.length; b++) { //二级菜单循环
-				// 				var web_second_item = web_first_item.childList[b];
-				// 				for (var c = 0; c < local_first_item.childList.length; c++) {
-				// 					var local_second_item = local_first_item.childList[c];
-				// 					if (local_second_item.url == web_second_item.url) {
-				// 						local_second_item.access = web_second_item.access;
-				// 						local_second_item.redspot_url = web_second_item.redspot_url;
-				// 						local_second_item.childList = web_second_item.childList;
-				// 						local_second_item.name = web_second_item.name;
-				// 						childList.push(local_second_item)
-				// 					}
-				// 				}
-				// 			}
-				// 			local_first_item.childList = childList
-				// 			tempA.push(local_first_item);
-				// 		}
-				// 	}
-				// }
-				// for (var i = 0; i < tempA.length; i++) {
-				// 	tempA[i].index = i;
-				// }
-				// console.log('tempA:'+JSON.stringify(tempA));
-				// indexPage.showArray = [].concat(tempA);
-				// var personal = store.get(window.storageKeyName.PERSONALINFO);
-				// if (indexPage.showArray.length == 0) {
-				// 	mui.toast('暂无可用菜单');
-				// } 
-			});
+				for (var i = 0; i < tempMenu.list[0].childList.length; i++) { //一级菜单循环
+					var web_first_item = tempMenu.list[0].childList[i];
+					for (var a = 0; a < indexPage.pageArray.length; a++) {
+						var local_first_item = indexPage.pageArray[a];
+						if (local_first_item.url == web_first_item.url) {
+							local_first_item.name = web_first_item.name;
+							local_first_item.access = web_first_item.access;
+							let childList = []
+							for (var b = 0; b < web_first_item.childList.length; b++) { //二级菜单循环
+								var web_second_item = web_first_item.childList[b];
+								for (var c = 0; c < local_first_item.childList.length; c++) {
+									var local_second_item = local_first_item.childList[c];
+									if (local_second_item.url == web_second_item.url) {
+										local_second_item.access = web_second_item.access;
+										local_second_item.redspot_url = web_second_item.redspot_url;
+										local_second_item.childList = web_second_item.childList;
+										local_second_item.name = web_second_item.name;
+										childList.push(local_second_item)
+									}
+								}
+							}
+							local_first_item.childList = childList
+							tempA.push(local_first_item);
+						}
+					}
+				}
+				for (var i = 0; i < tempA.length; i++) {
+					tempA[i].index = i;
+				}
+				console.log('tempA:' + JSON.stringify(tempA));
+				indexPage.showArray = [].concat(tempA);
+				var personal = store.get(window.storageKeyName.PERSONALINFO);
+				if (indexPage.showArray.length == 0) {
+					mui.toast('暂无可用菜单');
+				}
+				
+				var personal = store.get(window.storageKeyName.PERSONALINFO);
+				offCanvasSide.userName = personal.user_name;
+				if(personal.type_code == 'YHLX0003'){
+					offCanvasSide.userMsg = personal.sch_name?personal.sch_name:''+' '+personal.dpt_name?personal.dpt_name:'';
+				}else{
+					offCanvasSide.userMsg = personal.sch_name?personal.sch_name:''+' '+personal.grd_name?grd_name:''+' '+personal.cls_name?personal.cls_name:'';
+					if(personal.type_code == 'YHLX0004'){
+						offCanvasSide.userMsg = offCanvasSide.userMsg +' '+ personal.stu_name +"(家长)";
+					}
+				}
+			};
 
 			var indexPage = new Vue({
 				el: "#indexPage",
@@ -172,37 +482,37 @@
 					pageArray: [{
 							name: "stuLeave", //学生请假
 							href: "../leave/stuLeaveIndex.html",
-							img_href: "../../image/leave/kaowu_tab.png",
+							img_href: "../../img/leave/stuLeave.png",
 							tempID: 'leave-student',
-							cls: 'mui-icon iconfont icon-kaowuxitong',
+							cls: 'mui-icon iconfont icon-xueshengqingjia',
 							url: 'wechatapp_stuLeave',
 							childList: []
 						},
 						{
 							name: "parLeave", //家长代请假
 							href: "../leave/parLeaveIndex.html",
-							img_href: "../../image/leave/kaowu_tab.png",
+							img_href: "../../img/leave/parLeave.png",
 							tempID: 'leave-parent',
-							cls: 'mui-icon iconfont icon-kaowuxitong',
+							cls: 'mui-icon iconfont icon-jiachangdaiqingjia',
 							url: 'wechatapp_parLeave',
 							childList: []
 						},
 						{
 							name: "teaLeave", //教师代请假
 							href: "../leave/teaLeaveIndex.html",
-							img_href: "../../image/leave/kaowu_tab.png",
+							img_href: "../../img/leave/tecLeave.png",
 							tempID: 'leave-teacher',
-							cls: 'mui-icon iconfont icon-kaowuxitong',
+							cls: 'mui-icon iconfont icon-jiaoshidaiqingjia',
 							url: 'wechatapp_teaLeave',
 							childList: [{
 									name: '教师代请假',
-									icon: '../../image/leave/zhouce.png',
+									icon: '../../img/leave/tecLeave.png',
 									href: "../leave/teaLeaveAsk.html",
 									url: 'wechatapp_teaLeave_askForLeave'
 								},
 								{
 									name: '代请假查询',
-									icon: '../../image/leave/yuekao.png',
+									icon: '../../img/leave/leavequery.png',
 									href: "../leave/teaLeaveQuery.html",
 									url: 'wechatapp_teaLeave_leaveSelect'
 								},
@@ -235,7 +545,33 @@
 								},
 							]
 						},
+						{
+							name: "kaowu", //考务
+							href: "../../html/schapp_examination/index.html",
+							img_href: "../../img/schapp_examination/kaowu_tab.png",
+							tempID: 'kaowu',
+							cls: 'mui-icon iconfont icon-kaowuxitong',
+							url: 'wechatapp_Examination',
+							childList: [{
+								name: '考勤报表',
+								icon: '../../img/schapp_examination/form.png',
+								href: "../../html/schapp_examination/form.html",
+								url: 'wechatapp_Examination_form'
+							}, {
+								name: '班级成绩趋势',
+								icon: '../../img/schapp_examination/clsScoreDiff.png',
+								href: "../../html/schapp_examination/clsScoreDiff.html",
+								url: 'wechatapp_Examination_clsScoreDiff'
+							}, ],
+						},
 					]
+				},
+				methods: {
+					clickFunction: function(model) {
+						console.log("model: " + JSON.stringify(model));
+						// var personal0 = store.get(window.storageKeyName.PERSONALINFO);
+						utils.mOpenWithData(model.href, model);
+					}
 				}
 			});
 		</script>

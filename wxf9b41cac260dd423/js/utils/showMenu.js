@@ -1,4 +1,5 @@
 var appPay = (function(mod) {
+	console.log('11111111111111111111');
 	mod.main = mui.createMask(_closeMenu);
 	mod.menu = mui.createMask(_closeMenu);
 	mod.mask = mui.createMask(_closeMenu);
@@ -22,24 +23,24 @@ var appPay = (function(mod) {
 	 */
 	mod.openMenu = function() {
 		if (!mod.showMenu) {
-			var wvs = plus.webview.getDisplayWebview();
-			for (var i = 0; i < wvs.length; i++) {
-				var url = wvs[i].getURL();
-				if (url.indexOf('/mine/mine') == -1) {
-					if (plus.os.name == 'Android') {
-						wvs[i].setStyle({
-							mask: "rgba(0,0,0,0.1)"
-						});
-					} else {
-						wvs[i].setStyle({
-							mask: "rgba(0,0,0,0.3)"
-						});
-					}
-					wvs[i].addEventListener("maskClick", function() {
-						mod.closeMenu();
-					}, false);
-				}
-			}
+			// var wvs = plus.webview.getDisplayWebview();
+			// for (var i = 0; i < wvs.length; i++) {
+			// 	var url = wvs[i].getURL();
+			// 	if (url.indexOf('/mine/mine') == -1) {
+			// 		if (plus.os.name == 'Android') {
+			// 			wvs[i].setStyle({
+			// 				mask: "rgba(0,0,0,0.1)"
+			// 			});
+			// 		} else {
+			// 			wvs[i].setStyle({
+			// 				mask: "rgba(0,0,0,0.3)"
+			// 			});
+			// 		}
+			// 		wvs[i].addEventListener("maskClick", function() {
+			// 			mod.closeMenu();
+			// 		}, false);
+			// 	}
+			// }
 			//侧滑菜单处于隐藏状态，则立即显示出来；
 			//显示完毕后，根据不同动画效果移动窗体；
 			console.log("mod.menu:"+mod.menu)
@@ -81,12 +82,12 @@ var appPay = (function(mod) {
 	 */
 	function _closeMenu() {
 		if (mod.showMenu) {
-			var wvs = plus.webview.getDisplayWebview();
-			for (var i = 0; i < wvs.length; i++) {
-				wvs[i].setStyle({
-					mask: "none"
-				});
-			}
+			// var wvs = plus.webview.getDisplayWebview();
+			// for (var i = 0; i < wvs.length; i++) {
+			// 	wvs[i].setStyle({
+			// 		mask: "none"
+			// 	});
+			// }
 
 			//等窗体动画结束后，隐藏菜单webview，节省资源；
 			setTimeout(function() {
@@ -119,24 +120,25 @@ var appPay = (function(mod) {
 		mod.mask.close();
 		mod.menu.hide();
 		mod.showMenu = false;
-		var wvs = plus.webview.getDisplayWebview();
-		for (var i = 0; i < wvs.length; i++) {
-			wvs[i].setStyle({
-				mask: "none"
-			});
-		}
+		// var wvs = plus.webview.getDisplayWebview();
+		// for (var i = 0; i < wvs.length; i++) {
+		// 	wvs[i].setStyle({
+		// 		mask: "none"
+		// 	});
+		// }
 	});
-	setTimeout(function() {
-		//侧滑菜单默认隐藏，这样可以节省内存；
-		mod.menu = mui.preload({
-			id: '../../html/mine/mine.html',
-			url: '../../html/mine/mine.html',
-			styles: {
-				left: 0,
-				width: '70%',
-				zindex: 9997
-			}
-		});
-	}, 1000);
+	// setTimeout(function() {
+	// 	console.log('1234567890');
+	// 	//侧滑菜单默认隐藏，这样可以节省内存；
+	// 	mod.menu = mui.preload({
+	// 		id: '../../html/mine/mine.html',
+	// 		url: '../../html/mine/mine.html',
+	// 		styles: {
+	// 			left: 0,
+	// 			width: '70%',
+	// 			zindex: 9997
+	// 		}
+	// 	});
+	// }, 1000);
 return mod;
 })(appPay || {})
