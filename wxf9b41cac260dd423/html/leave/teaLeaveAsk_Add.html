@@ -336,7 +336,6 @@
 						}else if(datasource.formData.comment==''){
 							mui.toast('请输入请假事由')
 						}else{
-							events.showWaiting();
 							submitData(datasource.formData)
 						}
 					}
@@ -756,6 +755,7 @@
 			function submitData(data) {
 				if(datasource.canSub){
 					datasource.canSub=false
+					events.showWaiting();
 					//额外审批人
 					let _approve_list=[{
 						approve_user_code:personal.user_code,
@@ -790,6 +790,7 @@
 						 if(showToast){
 						 	mui.toast('含有禁止使用的关键词	‘'+words.join("/")+'’	请编辑后再尝试发送')
 						 	events.closeWaiting();
+							datasource.canSub=true
 						 	return 0
 						 }
 					}
@@ -824,6 +825,7 @@
 								},1500)
 							})
 						} else {
+							datasource.canSub=true
 							events.closeWaiting()
 							mui.toast(data.msg);
 						}
