@@ -71,7 +71,7 @@ var events = (function(mod) {
 		let times = 30000;
 		let title = '加载中...';
 		if (string) {
-			times = 120000;
+			times = 30000;
 			title = string;
 		}
 		addToast(title);

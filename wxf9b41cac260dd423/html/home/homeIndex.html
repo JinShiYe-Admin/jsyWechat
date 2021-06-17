@@ -419,6 +419,10 @@
 			// 	}
 			// });
 
+			history.pushState(null, null, document.URL); //禁止网页返回上一页
+			window.addEventListener('popstate', function() {
+				history.pushState(null, null, document.URL);
+			});
 			window.onload = function() {
 				// var ws = plus.webview.currentWebview();
 				// console.log("当前Webview窗口：" + JSON.stringify(ws.preload));
