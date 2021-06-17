@@ -260,7 +260,7 @@
 			
 			var setUUID = function(openid){
 				var publicPar = store.get(window.storageKeyName.PUBLICPARAMETER);
-				console.log('publicPar:' + publicPar);
+				console.log('publicPar111:' + JSON.stringify(publicPar));
 				if(publicPar){
 					if (window.storageKeyName.APPFLAG == 1) {
 						register.appFlag = 1;
@@ -399,7 +399,7 @@
 				events.showWaiting("正在登录...");
 				//登录
 				postDataEncry(window.storageKeyName.INTERFACE_SSO_SKIN + 'login', enData1, comData1, 0, function(data1) {
-					// events.closeWaiting();
+					events.closeWaiting();
 					if (data1.code == 0) {
 						var tempData = data1.data;
 						data1.data.userName0 = userCode;

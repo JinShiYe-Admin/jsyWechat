@@ -387,20 +387,24 @@
 				// loadImg();
 				// tempVue.titleName = curPage.name;
 				// events.showWaiting();
-				var orientationFlag = 0;
-				$(window).bind('orientationchange', function(e){
-					if((window.orientation == 90||window.orientation==-90)&&orientationFlag==0){
-						orientationFlag = 1;
-						//1.4.阅卷任务题组列表
-						getGroupNumberData();
-					}
-					if(window.orientation == 0){
-						mui.toast('请打开手机竖排方向锁定后，将手机横屏');
-					}
-				});
-				if(window.orientation == 0){
-					mui.toast('请打开手机竖排方向锁定后，将手机横屏');
-				}
+				// var orientationFlag = 0;
+				// $(window).bind('orientationchange', function(e){
+				// 	if((window.orientation == 90||window.orientation==-90)&&orientationFlag==0){
+				// 		orientationFlag = 1;
+				// 		//1.4.阅卷任务题组列表
+				// 		getGroupNumberData();
+				// 	}
+				// 	if(window.orientation == 0){
+				// 		mui.toast('请打开手机竖排方向锁定后，将手机横屏');
+				// 	}
+				// });
+				// if(window.orientation == 0){
+				// 	mui.toast('请打开手机竖排方向锁定后，将手机横屏');
+				// }else{
+				// 	orientationFlag = 1;
+					//1.4.阅卷任务题组列表
+					getGroupNumberData();
+				// }
 
 				canvas = document.getElementById('myCanvas'); //获得画布
 				context = canvas.getContext('2d'); //注意：2d小写，3d：webgl
@@ -472,8 +476,8 @@
 					e.preventDefault();
 					// console.log('touchstart');
 					canvasClickFlag = 1;
-					var x = canvas.getBoundingClientRect().left;
-					var y = e.clientY - canvas.getBoundingClientRect().top;
+					// var x = canvas.getBoundingClientRect().left;
+					// var y = e.clientY - canvas.getBoundingClientRect().top;
 					// console.log('xxxxxxx:'+x);
 					if (e.touches.length === 1) {
 						// console.log('touchstart111111111');
@@ -494,12 +498,12 @@
 						var t1 = e.touches[0];
 						var t2 = e.touches[1];
 						var pos1 = {
-							x: t1.clientX,
-							y: t1.clientY
+							x: parseInt(t1.clientX),
+							y: parseInt(t1.clientY)
 						}
 						var pos2 = {
-							x: t2.clientX,
-							y: t2.clientY
+							x: parseInt(t2.clientX),
+							y: parseInt(t2.clientY)
 						}
 						pos = windowToCanvas((pos1.x + pos2.x) / 2, (pos1.y + pos2.y) / 2);
 					}
@@ -517,8 +521,8 @@
 								// console.log('1111111111111111111111111111111111111111111111111111111111');
 								canvasClickFlag = 0;
 							}
-							var x = posl.x - pos.x;
-							var y = posl.y - pos.y;
+							var x = parseInt(posl.x - pos.x);
+							var y = parseInt(posl.y - pos.y);
 							// console.log('1111111111111111111111111111111111111111111111111111111111:'+x+','+y);
 							imgX += x;
 							imgY += y;
@@ -584,8 +588,8 @@
 						// console.log('imgX:'+imgX+',imgY:'+imgY);
 						var tempM = {
 							type: datasource.typeFlag,
-							x: pos.x - imgX,
-							y: pos.y - imgY
+							x: parseInt(pos.x - imgX),
+							y: parseInt(pos.y - imgY)
 						}
 						// if(imgX>0){
 						// 	tempM.x = pos.x-imgX;
@@ -753,6 +757,9 @@
 								} else {
 									img.src = '';
 									drawImage();
+									if(data.data.msg){
+										mui.toast(data.data.msg);
+									}
 								}
 							} else {
 								mui.toast(data.msg);

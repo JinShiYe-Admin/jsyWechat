@@ -208,6 +208,9 @@ var postDataEncry1 = function(encryData, commonData, flag) {
 		if (commonData[item] instanceof Array) {
 			console.log('000');
 			arr1.push(item + '=' + JSON.stringify(commonData[item]) + '');
+		}else if(commonData[item] instanceof Object){
+			console.log('000');
+			arr1.push(item + '=' + JSON.stringify(commonData[item]) + '');
 		} else {
 			arr1.push(item + '=' + commonData[item]);
 		}
@@ -296,7 +299,7 @@ var jQAjaxPost = function(url, data, callback) {
 					user_code: personal.user_code, //登录名
 					uuid: publicPar.uuid, //设备唯一识别码,防同一应用在不同机器上登录互串,验证码校检用
 					webid: publicPar.webid, //浏览器识别码,防不同浏览器登录同一应用互串,验证码校检用（web用浏览器类型加版本，app用操作系统+版本））
-					device_type: '1' //登录设备类型，0：WEB、1：APP、2：客户端
+					device_type: '3' //登录设备类型，0：WEB、1：APP、2：客户端
 				}
 				console.log('qqq1111111111111111');
 				//令牌续订
