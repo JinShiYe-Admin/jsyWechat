@@ -638,13 +638,13 @@
 							datasource.clsValue=clsList[0];
 							getStuList(grd_id,clsList[0].value)
 						}else{
-							events.showWaiting();
+							events.closeWaiting();
 							datasource.clsList=[];
 							datasource.clsValue={};
 							mui.toast('无数据授权 无法获取班级');
 						}
 					}else{
-						events.showWaiting();
+						events.closeWaiting();
 						mui.toast(data.msg);
 					}
 				});
@@ -680,11 +680,11 @@
 						}else{
 							datasource.stuList=[];
 							datasource.stuValue={};
-							events.showWaiting();
+							events.closeWaiting();
 							mui.toast('无数据授权 无法获取学生');
 						}
 					}else{
-						events.showWaiting();
+						events.closeWaiting();
 						mui.toast(data.msg);
 					}
 				});

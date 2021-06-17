@@ -376,7 +376,7 @@
 							// diff_times_days=difftimesFromDays
 						}
 					}else{
-						let minutes=moment(rs.text).subtract(difftimesFromHours,'hours').diff(moment(_begin_time),'minutes')
+						let minutes=moment(endtime).subtract(difftimesFromHours,'hours').diff(moment(begintime),'minutes')
 						diff_times_text=difftimesFromHours+'小时 '+minutes+'分钟'
 					}
 				}else{
