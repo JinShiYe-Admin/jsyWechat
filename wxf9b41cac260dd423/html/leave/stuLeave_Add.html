@@ -274,7 +274,18 @@
 				window.addEventListener('pageshow', function() {
 					console.log('pageshowpageshowpageshow3');
 					if (isPageHide) {
-						window.location.reload();
+						// window.location.reload();
+						// let datasourceData=	store.get(SESSIONNAME)
+						// if(datasourceData){
+						// 	Object.assign(datasource.$data,datasourceData);
+						// 	store.remove(SESSIONNAME)
+						// }
+						
+						let checkTec=store.get(SESSIONNAME_SELECT)
+						if(checkTec && checkTec.length>0){
+							datasource.formData.copy_list=checkTec
+							store.remove(SESSIONNAME_SELECT)
+						}
 					}
 				});
 				window.addEventListener('pagehide', function() {
@@ -492,17 +503,6 @@
 				}
 			});
 				
-				let datasourceData=	store.get(SESSIONNAME)
-				if(datasourceData){
-					Object.assign(datasource.$data,datasourceData);
-					store.remove(SESSIONNAME)
-				}
-				
-				let checkTec=store.get(SESSIONNAME_SELECT)
-				if(checkTec && checkTec.length>0){
-					datasource.formData.copy_list=checkTec
-					store.remove(SESSIONNAME_SELECT)
-				}
 				curPage = utils.getDataFromUrl(window.location.href);
 				// tempVue.titleName = '添加'+curPage.title;
 
@@ -611,7 +611,7 @@
 			
 			//获取班级任教跳转选人页面
 			function toSelectPage(){
-				store.set(SESSIONNAME,datasource.$data)
+				// store.set(SESSIONNAME,datasource.$data)
 				utils.mOpenWithData("../../html/leave/selectDptUser.html",{copy_list:datasource.formData.copy_list,index_code:curPage.index_code});
 			}
 			
