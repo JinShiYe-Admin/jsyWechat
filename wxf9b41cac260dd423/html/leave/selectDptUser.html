@@ -199,6 +199,7 @@
 						 let list=data.data.list
 						 list.map(item=>{
 							 item.title=item.dpt_name
+							 item.id=item.dpt_code
 						 })
 						 let treeList=getDptTree(list);
 						 datasource.pageArray=treeList
@@ -214,6 +215,7 @@
 									getDptUser(obj.data.dpt_code)
 							    }
 						     }); 
+							 test()
 						   });
 					}else{
 						mui.toast(data.msg);
@@ -221,6 +223,20 @@
 				});
 			} 
 			
+			function test(){
+				$('.layui-tree-entry').each(function(){
+					$(this).bind("click",function(){
+						let dpt_code='';
+						let bottom=true
+						if(bottom){
+							bottom=false
+							dpt_code=$(this).parent().data('id')	
+							datasource.dptClicked=true
+							getDptUser(dpt_code)
+						}
+					});
+				})
+			}
 			
 			//获取学校有账号的部门人员
 			function getDptUser(dpt_code){
