@@ -372,10 +372,10 @@
 				methods: {
 					toDetails: function(model) {
 						console.log(JSON.stringify(model));
-						utils.mOpenWithData("../../html/leave/teaLeaveQuery_Detail.html", [1,model,curPage.access.split('#')[1]]);
+						utils.mOpenWithData("../../html/leave/teaLeaveQuery_detail.html", [1,model,curPage.access.split('#')[1]]);
 					},
 					showGrd: function() {
-						var userPicker = new $M.PopPicker();
+						var userPicker = new $M.PopPicker();   
 						userPicker.setData(datasource.grdList);
 						setTimeout(function() {
 							userPicker.pickers[0].setSelectedValue(datasource.grdValue.value);
