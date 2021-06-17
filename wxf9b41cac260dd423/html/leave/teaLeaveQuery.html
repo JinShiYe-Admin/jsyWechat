@@ -231,6 +231,7 @@
 				display: -webkit-box;
 				-webkit-box-orient: vertical;
 				-webkit-line-clamp: 2;
+				 text-overflow: ellipsis;
 				overflow: hidden;
 				color: #505050;
 				font-size: 14px;
@@ -269,7 +270,7 @@
 
 	<body>
 		<header class="mui-bar mui-bar-nav" id="tempVue">
-			<!-- <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a> -->
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
 			<h1 class="mui-title" v-cloak>{{titleName}}</h1>
 		</header>
 		<div v-cloak id="datasource" class="mui-content mui-fullscreen" style="z-index:0;background-color: #FFFFFF;">
@@ -372,10 +373,10 @@
 				methods: {
 					toDetails: function(model) {
 						console.log(JSON.stringify(model));
-						utils.mOpenWithData("../../html/leave/teaLeaveQuery_Detail.html", [1,model,curPage.access.split('#')[1]]);
+						utils.mOpenWithData("../../html/leave/teaLeaveQuery_detail.html", [1,model,curPage.access.split('#')[1]]);
 					},
 					showGrd: function() {
-						var userPicker = new $M.PopPicker();
+						var userPicker = new $M.PopPicker();   
 						userPicker.setData(datasource.grdList);
 						setTimeout(function() {
 							userPicker.pickers[0].setSelectedValue(datasource.grdValue.value);
@@ -638,13 +639,13 @@
 							datasource.clsValue=clsList[0];
 							getStuList(grd_id,clsList[0].value)
 						}else{
-							events.showWaiting();
+							events.closeWaiting();
 							datasource.clsList=[];
 							datasource.clsValue={};
 							mui.toast('无数据授权 无法获取班级');
 						}
 					}else{
-						events.showWaiting();
+						events.closeWaiting();
 						mui.toast(data.msg);
 					}
 				});
@@ -680,11 +681,11 @@
 						}else{
 							datasource.stuList=[];
 							datasource.stuValue={};
-							events.showWaiting();
+							events.closeWaiting();
 							mui.toast('无数据授权 无法获取学生');
 						}
 					}else{
-						events.showWaiting();
+						events.closeWaiting();
 						mui.toast(data.msg);
 					}
 				});

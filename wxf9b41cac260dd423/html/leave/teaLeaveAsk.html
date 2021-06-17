@@ -96,6 +96,7 @@
 				overflow: hidden;
 				color: #505050;
 				font-size: 14px;
+				text-overflow: ellipsis;
 			}
 			.leaveType {
 				color: #2A82E4;
@@ -141,7 +142,7 @@
 
 	<body style="background: white;">
 		<header class="mui-bar mui-bar-nav" id="tempHead">
-			<!-- <a v-cloak class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a> -->
+			<a v-cloak class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
 			<h1 v-cloak class="mui-title">{{headTitle}}</h1>
 			<a v-show="showAdd" @tap="add()" class="mui-pull-right top-btn">+代学生请假</a>
 		</header>
