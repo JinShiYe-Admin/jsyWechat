@@ -260,7 +260,8 @@
 			
 			var setUUID = function(openid){
 				var publicPar = store.get(window.storageKeyName.PUBLICPARAMETER);
-				if(publicPar.uuid){
+				console.log('publicPar:' + publicPar);
+				if(publicPar){
 					if (window.storageKeyName.APPFLAG == 1) {
 						register.appFlag = 1;
 					} else {
