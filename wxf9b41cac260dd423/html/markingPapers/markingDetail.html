@@ -387,24 +387,24 @@
 				// loadImg();
 				// tempVue.titleName = curPage.name;
 				// events.showWaiting();
-				// var orientationFlag = 0;
-				// $(window).bind('orientationchange', function(e){
-				// 	if((window.orientation == 90||window.orientation==-90)&&orientationFlag==0){
-				// 		orientationFlag = 1;
-				// 		//1.4.阅卷任务题组列表
-				// 		getGroupNumberData();
-				// 	}
-				// 	if(window.orientation == 0){
-				// 		mui.toast('请打开手机竖排方向锁定后，将手机横屏');
-				// 	}
-				// });
-				// if(window.orientation == 0){
-				// 	mui.toast('请打开手机竖排方向锁定后，将手机横屏');
-				// }else{
-				// 	orientationFlag = 1;
+				var orientationFlag = 0;
+				$(window).bind('orientationchange', function(e){
+					if((window.orientation == 90||window.orientation==-90)&&orientationFlag==0){
+						orientationFlag = 1;
+						//1.4.阅卷任务题组列表
+						getGroupNumberData();
+					}
+					if(window.orientation == 0){
+						mui.toast('请打开手机竖排方向锁定后，将手机横屏');
+					}
+				});
+				if(window.orientation == 0){
+					mui.toast('请打开手机竖排方向锁定后，将手机横屏');
+				}else{
+					orientationFlag = 1;
 					//1.4.阅卷任务题组列表
 					getGroupNumberData();
-				// }
+				}
 
 				canvas = document.getElementById('myCanvas'); //获得画布
 				context = canvas.getContext('2d'); //注意：2d小写，3d：webgl
