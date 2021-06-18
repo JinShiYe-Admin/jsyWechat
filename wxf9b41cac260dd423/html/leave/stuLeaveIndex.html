@@ -258,7 +258,7 @@
 			mui.init();
 			//获取个人信息
 			var personal = store.get(window.storageKeyName.PERSONALINFO);
-			var curPage ={}
+			var curPage =utils.getDataFromUrl(window.location.href);
 			console.log('personal:' + JSON.stringify(personal));
 			var tempHead = new Vue({
 				el: "#tempHead", 
