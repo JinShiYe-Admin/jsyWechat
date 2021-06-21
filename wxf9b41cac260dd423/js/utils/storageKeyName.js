@@ -286,6 +286,8 @@ var storageKeyName = (function(mod) {
 	mod.QN_XSXW_XSTH = "xsxw/xsth/"; //学生谈话
 	// 教师考勤
 	mod.QN_JSKQ_WDKQ = "jskq/wdkq/"; //我的考勤
+	// 阅卷
+	mod.QN_MARKINGPAPERS = 'yuejuanApp/markingPapers';//七牛公有空间名
 	//---七牛---end---
 
 
