@@ -379,12 +379,16 @@
 			//1.16.考情分析-考情报表-学生成绩列表
 			function getStuScoreArray() {
 					mui('#scroll2').scroll().scrollTo(0, 0);
+					var tempID = '';
+					if(datasource.examModel.value){
+						tempID = datasource.examModel.value;
+					}
 					//需要加密的数据
 					comData = {
 						paper_id: curPage.id,
 						cls_code: '-1', //班级代码
 						sub_code: '-1', //科目代码
-						compare_paper_id: datasource.examModel.value, //对比考试id
+						compare_paper_id: tempID, //对比考试id
 						index_code: curPage.index_code,
 					}
 					var tempUrl = 'report/stuScore';
