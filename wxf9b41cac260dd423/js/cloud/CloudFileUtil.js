@@ -415,14 +415,16 @@ var CloudFileUtil = (function($, mod) {
 			}
 		}
 
-//		console.log("参数数据：" + JSON.stringify(configure.options))
+		console.log("参数数据：" + JSON.stringify(configure.options))
 		//获取token
 		mod.getQNUpTokenWithManage(url, configure.options, function(data) {
+			console.log('successCB');
 			successCB({
 				configure: configure,
 				data: data
 			});
 		}, function(xhr, type, errorThrown) {
+			console.log('errorThrown');
 			errorCB(xhr, type, errorThrown);
 		});
 

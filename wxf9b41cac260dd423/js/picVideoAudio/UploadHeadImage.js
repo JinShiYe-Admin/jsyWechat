@@ -177,7 +177,7 @@ var UploadHeadImage = (function($, mod) {
 		}, function(event) {
 			uploadHeadImge(wd, event.target);
 		}, function(error) {
-			wd.close();
+			events.closeWaiting();
 			mui.toast('压缩失败 ' + '错误编码 ' + error.code + '描述信息 ' + error.message);
 		});
 	}
@@ -211,7 +211,7 @@ var UploadHeadImage = (function($, mod) {
 			if(QNUptoken.Status == 0) { //失败
 				mui.toast('获取上传凭证失败 ' + QNUptoken.Message);
 				//console.log('### ERROR ### 请求上传凭证失败' + QNUptoken.Message);
-				wd.close();
+				events.closeWaiting();
 			} else {
 				CloudFileUtil.upload(fPath, QNUptoken.Data.Token, QNUptoken.Data.Key, function(upload, status) {
 					//上传任务完成的监听
@@ -239,7 +239,7 @@ var UploadHeadImage = (function($, mod) {
 						}, 2000);
 					} else { //上传失败
 						errorCallBack(upload.responseText);
-						wd.close();
+						events.closeWaiting();
 					}
 				}, function(upload, status) {
 					//上传任务状态监听
@@ -283,7 +283,7 @@ var UploadHeadImage = (function($, mod) {
 				});
 			}
 		}, function(xhr, type, errorThrown) {
-			wd.close();
+			events.closeWaiting();
 			mui.toast('请求上传凭证失败 ' + type);
 			//console.log('### ERROR ### 请求上传凭证失败' + type);
 		});
@@ -301,6 +301,7 @@ var UploadHeadImage = (function($, mod) {
 			mainSpace: window.storageKeyName.QN_PB_NAME, //str 必填 私有空间或公有空间
 			uploadSpace: window.storageKeyName.QN_MARKINGPAPERS, //str 必填  上传的空间
 		}
+		console.log('getToken:'+JSON.stringify(getToken));
 		CloudFileUtil.getQNUpToken(getUploadTokenUrl, getToken, function(data) {
 			var QNUptoken = data.data; //token数据
 			var configure = data.configure; //获取token的配置信息
@@ -308,7 +309,7 @@ var UploadHeadImage = (function($, mod) {
 			if(QNUptoken.Status == 0) { //失败
 				mui.toast('获取上传凭证失败 ' + QNUptoken.Message);
 				//console.log('### ERROR ### 请求上传凭证失败' + QNUptoken.Message);
-				wd.close();
+				events.closeWaiting();
 			} else {
 				// console.log("上传的Token:"+QNUptoken.Data.Token);
 				// console.log("上传的Domain:"+QNUptoken.Data.Domain);
@@ -336,7 +337,7 @@ var UploadHeadImage = (function($, mod) {
 				xhr.send(pic);
 			}
 		}, function(xhr, type, errorThrown) {
-			wd.close();
+			events.closeWaiting();
 			mui.toast('请求上传凭证失败 ' + type);
 			//console.log('### ERROR ### 请求上传凭证失败' + type);
 		});
@@ -350,7 +351,7 @@ var UploadHeadImage = (function($, mod) {
 		return base64;
 	}
 	
-	//获取私有空间的身份证头像			function getIDCardImg(domain,callback){				var wd =events.showWaiting();				var getDownToken = {					appId: window.storageKeyName.QN_APPID, //int 必填 项目id					appKey: window.storageKeyName.QN_APPKEY,					urls: [domain] //array 必填 需要获取下载token文件的路径				}				var getDownTokenUrl = window.storageKeyName.QNGETDOWNTOKENFILE;				CloudFileUtil.getQNDownToken(getDownTokenUrl, getDownToken, function(data) {					var urlStr = encodeURI(data.Data[0].Value)					callback(urlStr);					wd.close();				}, function(xhr, type, errorThrown) {					mui.toast('获取文件失败 ' + type); 					wd.close();				});			}						//删除私有空间的身份证头像			function deleteIDCardImg(domain){				console.log("开始删除进程咯");				var wd =events.showWaiting();				var data = {					appId: window.storageKeyName.QN_APPID,  					appKey: window.storageKeyName.QN_APPKEY,					urls: [domain]  				}				CloudFileUtil.BatchDelete(window.storageKeyName.QNGETTOKENDELETE,data,function(da){					console.log("da:"+JSON.stringify(da))					console.log("删除成功咯");					wd.close();				},function(xhr, type, errorThrown){					mui.toast("文件删除失败！")					wd.close();				})			}
+	//获取私有空间的身份证头像			function getIDCardImg(domain,callback){				var wd =events.showWaiting();				var getDownToken = {					appId: window.storageKeyName.QN_APPID, //int 必填 项目id					appKey: window.storageKeyName.QN_APPKEY,					urls: [domain] //array 必填 需要获取下载token文件的路径				}				var getDownTokenUrl = window.storageKeyName.QNGETDOWNTOKENFILE;				CloudFileUtil.getQNDownToken(getDownTokenUrl, getDownToken, function(data) {					var urlStr = encodeURI(data.Data[0].Value)					callback(urlStr);					events.closeWaiting();				}, function(xhr, type, errorThrown) {					mui.toast('获取文件失败 ' + type); 					events.closeWaiting();				});			}						//删除私有空间的身份证头像			function deleteIDCardImg(domain){				console.log("开始删除进程咯");				var wd =events.showWaiting();				var data = {					appId: window.storageKeyName.QN_APPID,  					appKey: window.storageKeyName.QN_APPKEY,					urls: [domain]  				}				CloudFileUtil.BatchDelete(window.storageKeyName.QNGETTOKENDELETE,data,function(da){					console.log("da:"+JSON.stringify(da))					console.log("删除成功咯");					events.closeWaiting();				},function(xhr, type, errorThrown){					mui.toast("文件删除失败！")					events.closeWaiting();				})			}
 
 	/**
 	 * 修改群头像
@@ -380,7 +381,7 @@ var UploadHeadImage = (function($, mod) {
 			} else {
 				errorCallBack(data);
 			}
-			wd.close();
+			events.closeWaiting();
 		});
 	}
 
@@ -405,7 +406,7 @@ var UploadHeadImage = (function($, mod) {
 		};
 		postDataEncry(window.storageKeyName.INTERFACE_SSO_SKIN + 'user/updImg', {}, comData0, 2, function(data3) {
 			console.log('updImg:' + JSON.stringify(data3));
-			wd.close();
+			events.closeWaiting();
 			if(data3.code == 0) {
 				successCallBack(imgeURL);
 			} else {
@@ -443,7 +444,7 @@ var UploadHeadImage = (function($, mod) {
 			} else {
 				errorCallBack(data);
 			}
-			wd.close();
+			events.closeWaiting();
 		});
 	}
 
