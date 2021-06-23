@@ -10,6 +10,9 @@
 		<link rel="stylesheet" href="../../fonts/iconfont1.css" />
 		<link rel="stylesheet" href="../../css/mui.picker.min.css" />
 		<link href="../../css/mui.poppicker.css" rel="stylesheet" />
+		<script src="../../js/utils/mui.min.js"></script>
+		<script src="../../js/utils/vconsole.min.js"></script>
+		<script src='../../js/libs/jquery.js'></script>
 		<style type="text/css">
 		</style>
 	</head>
@@ -23,8 +26,13 @@
 				var tempUrl1 = tempUrl.replace('index','registerIndex');
 				console.log('tempUrl1:'+tempUrl1);
 				var tempArray = tempUrl.split('/');
-				var appid = tempArray[4];
 				console.log('tempArray:'+JSON.stringify(tempArray));
+				var appid = '';
+				for(var a = 0;a<tempArray.length;a++){
+					if(tempArray[a].indexOf("wx") != -1){
+						appid = tempArray[a];
+					}
+				}
 				var tempGo = 'https://jsypay.jiaobaowang.net/jsypaym/wxpay/ThdGetOpenid.ashx?appid='+appid+'&returi='+encodeURI(tempUrl1);
 				// 向服务器传递appid、返回URL
 				location.replace(tempGo);

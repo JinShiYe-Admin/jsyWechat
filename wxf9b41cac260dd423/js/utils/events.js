@@ -67,6 +67,7 @@ var events = (function(mod) {
 	 * 返回一个等待框
 	 */
 	mod.showWaiting = function(string) {
+		console.log('showWaitingshowWaiting');
 		clearTimeout(timeOut);
 		let times = 30000;
 		let title = '加载中...';

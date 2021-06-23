@@ -9,6 +9,7 @@
 		<meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=0">
 		<link href="../../css/mui.min.css" rel="stylesheet" />
 		<link href="../../css/common.css" rel="stylesheet" />
+		<link rel="stylesheet" type="text/css" href="../../css/weui.min.css"/>
 		<!-- <link href="../../css/mui.picker.css" rel="stylesheet" />
 		<link href="../../css/mui.poppicker.css" rel="stylesheet" /> -->
 		<style>
@@ -55,7 +56,9 @@
 			<h1 class="mui-title">{{titleName}}</h1>
 		</header>
 		<div id="datasource" class="mui-content mui-fullscreen" v-cloak>
-			<p v-if="currentInfoData.count_info" style="margin-top: 10px;text-align: center;color: black;">
+			<div class="mui-scroll-wrapper" id="scroll2">
+				<div class="mui-scroll">
+			<p v-if="currentInfoData.count_info" style="margin-top: 50px;text-align: center;color: black;">
 				该题组已阅{{currentInfoData.count_info.view_count}}份，当前第{{currentInfoData.count_info.count}}份，任务量{{currentInfoData.count_info.group_count}}份
 			</p>
 			<a href="#middlePopover" class="mui-btn mui-btn-primary mui-btn-block mui-navigate-right"
@@ -90,8 +93,10 @@
 				提交
 			</div>
 			<p style="color: #d43030;margin-left: 20px;margin-bottom: 0px;">如需添加批阅，请点击图片</p>
+			<div v-if="imgSrc" @tap='clearImg'style="width: 120px;margin-left: 20px;background-color: #00CFBD;border-color: #00CFBD;margin-bottom: 10px;margin-top: 10px;"
+				class="mui-btn mui-btn-primary">清空全部批阅</div>
 			<img :src=imgSrc style="margin: 0px 20px 0px 20px;width: 85%;" onclick="usePED()">
-		</div>
+		</div></div></div>
 		<div id="middlePopover" class="mui-popover" style="width: 150px;" v-cloak>
 			<div class="mui-popover-arrow"></div>
 			<div class="mui-scroll-wrapper">
@@ -160,6 +165,7 @@
 			var ped = null
 
 			function usePED() {
+				mui('#scroll2').scroll().scrollTo(0, 0);
 				ped = new PED.imageInfo(datasource.imgSrc, saveFn);
 			}
 			var datasource = new Vue({
@@ -194,6 +200,10 @@
 						} else {
 							mui.toast('请输入正确的分数');
 						}
+					},
+					clearImg:function(){
+						datasource.imgSrcFlag = 0;
+						datasource.imgSrc = datasource.currentInfoData.evaluation.painting_img?datasource.currentInfoData.evaluation.painting_img:datasource.currentInfoData.evaluation.stu_answer_img;
 					},
 					clickSubmit: function() {
 						console.log('clickSubmit:' + JSON.stringify(datasource.currentInfoData));
@@ -253,6 +263,7 @@
 								evaluation: tempMMM,
 								eqs: tempA, //题组下题目
 							}
+							events.showWaiting();
 							if (datasource.imgSrcFlag == 0) {
 								//1.6.保存批改
 								postDataEncry(window.storageKeyName.INTERFACE_MARKINGPAPERS + 'evaluation/save', {},
@@ -260,6 +271,7 @@
 									function(data) {
 										events.closeWaiting();
 										if (data.code == 0) {
+											datasource.imgSrcFlag = 0;
 											datasource.typeFlag = 0;
 											datasource.typeArray = [];
 											//1.5.阅卷任务题组的批改情况
@@ -271,29 +283,29 @@
 							} else {
 								// 先将涂鸦后的图片，上传七牛
 								var wd = events.showWaiting();
-								var tempData = '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';
-								// var fileName = 'markingPapers' + new Date().getTime();
-								var fileName = 'markingPapers111';
-								// var tempData = datasource.imgSrc.replace('data:image/png;base64,','');
+								var fileName = 'markingPapers' + new Date().getTime();
+								var tempData = datasource.imgSrc.replace('data:image/png;base64,','');
 								UploadHeadImage.uploadIDCardHeadImge(wd, 1, fileName, tempData, function(domain) {
 									console.log("domain: " + JSON.stringify(domain));
 									tempMMM.painting_img = domain;
 									comData.evaluation = tempMMM;
 									console.log('comData:::'+JSON.stringify(comData));
+									events.showWaiting();
 									//1.6.保存批改
-									// postDataEncry(window.storageKeyName.INTERFACE_MARKINGPAPERS + 'evaluation/save', {},
-									// 	comData, 2,
-									// 	function(data) {
-									// 		events.closeWaiting();
-									// 		if (data.code == 0) {
-									// 			datasource.typeFlag = 0;
-									// 			datasource.typeArray = [];
-									// 			//1.5.阅卷任务题组的批改情况
-									// 			getCurrentInfoData();
-									// 		} else {
-									// 			mui.toast(data.msg);
-									// 		}
-									// 	});
+									postDataEncry(window.storageKeyName.INTERFACE_MARKINGPAPERS + 'evaluation/save', {},
+										comData, 2,
+										function(data) {
+											events.closeWaiting();
+											if (data.code == 0) {
+												datasource.imgSrcFlag = 0;
+												datasource.typeFlag = 0;
+												datasource.typeArray = [];
+												//1.5.阅卷任务题组的批改情况
+												getCurrentInfoData();
+											} else {
+												mui.toast(data.msg);
+											}
+										});
 								}, function() {
 									events.closeWaiting();
 								})
@@ -334,11 +346,11 @@
 			});
 
 			window.onload = function() {
-				// mui('.mui-scroll-wrapper').scroll();
+				mui('.mui-scroll-wrapper').scroll();
 				curPage = utils.getDataFromUrl(window.location.href);
 				console.log('2222:' + JSON.stringify(curPage));
 				tempVue.titleName = curPage.name;
-				// events.showWaiting();
+				events.showWaiting();
 				//1.4.阅卷任务题组列表
 				getGroupNumberData();
 			};
@@ -405,7 +417,7 @@
 								}
 							}
 							datasource.currentInfoData = data.data;
-							datasource.imgSrc = datasource.currentInfoData.evaluation.stu_answer_img;
+							datasource.imgSrc = datasource.currentInfoData.evaluation.painting_img?datasource.currentInfoData.evaluation.painting_img:datasource.currentInfoData.evaluation.stu_answer_img;
 						}
 						if (data.data.msg) {
 							mui.toast(data.data.msg);

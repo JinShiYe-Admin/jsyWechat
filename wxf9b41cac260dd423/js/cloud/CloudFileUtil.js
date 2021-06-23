@@ -490,20 +490,36 @@ var CloudFileUtil = (function($, mod) {
 	 * @param {Object} errorCB
 	 */
 	mod.getQNUpTokenWithManage = function(url, data, successCB, errorCB) {
-//		console.log('url:'+url);
-//		console.log('data:'+data);
-		mui.ajax(url, {
-			async: false,
-			data: data, //请求参数
-			dataType: 'json', //服务器返回json格式数据
-			type: 'post', //HTTP请求类型
-			timeout: 60000, //超时时间设置为60秒
-			success: function(data) {
-				//服务器返回响应
-				successCB(data);
+		console.log('url:'+url);
+		console.log('data:'+JSON.stringify(data));
+		// mui.ajax(url, {
+		// 	async: true,
+		// 	data: data, //请求参数
+		// 	dataType: 'json', //服务器返回json格式数据
+		// 	type: 'post', //HTTP请求类型
+		// 	timeout: 60000, //超时时间设置为60秒
+		// 	success: function(data) {
+		// 		//服务器返回响应
+		// 		successCB(data);
+		// 	},
+		// 	error: function(xhr, type, errorThrown) {
+		// 		//异常处理
+		// 		errorCB(xhr, type, errorThrown);
+		// 	}
+		// });
+		jQuery.ajax({
+			url: url,
+			type: "POST",
+			data: data,
+			timeout: 10000,
+			dataType: "json",
+			contentType: "application/x-www-form-urlencoded",
+			async: true,
+			success: function(success_data) {
+				successCB(success_data);
 			},
 			error: function(xhr, type, errorThrown) {
-				//异常处理
+				console.log('jQAP-Error777:', url, xhr, type);
 				errorCB(xhr, type, errorThrown);
 			}
 		});
