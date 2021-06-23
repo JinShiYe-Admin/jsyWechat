@@ -268,31 +268,29 @@
 		<script src='../../js/libs/jquery.js'></script>
 		<script src='../../js/libs/encryption/sortSign.js'></script>
 		<script type="text/javascript">
-			// $(function() {
-			// 	var isPageHide = false;
-			// 	window.addEventListener('pageshow', function() {
-			// 		console.log('pageshowpageshowpageshow3');
-			// 		if (isPageHide) {
-			// 			// window.location.reload();
-			// 			// let datasourceData=	store.get(SESSIONNAME)
-			// 			// if(datasourceData){
-			// 			// 	Object.assign(datasource.$data,datasourceData);
-			// 			// 	store.remove(SESSIONNAME)
-			// 			// }
-			// 			let checkTec=store.get(SESSIONNAME_SELECT)
-			// 			if(checkTec && checkTec.length>0){
-			// 				datasource.formData.copy_list=checkTec
-			// 				store.remove(SESSIONNAME_SELECT)
-			// 			}
-			// 		}
-			// 	});
-			// 	window.addEventListener('pagehide', function() {
-			// 		console.log('pagehidepagehidepagehidepagehide4');
-			// 		isPageHide = true;
-			// 	});
-			// })
-			const SESSIONNAME='parLeave_Add.HTML'
-			const SESSIONNAME_SELECT='selectDptUser.HTML'
+		const SESSIONNAME='parLeave_Add.HTML'
+		const SESSIONNAME_SELECT='selectDptUser.HTML'
+			$(function() {
+				var isPageHide = false;
+				window.addEventListener('pageshow', function() {
+					if (isPageHide) {
+						// window.location.reload();
+						let datasourceData=	store.get(SESSIONNAME)
+						if(datasourceData){
+							Object.assign(datasource.$data,datasourceData);
+							store.remove(SESSIONNAME)
+						}
+						let checkTec=store.get(SESSIONNAME_SELECT)
+						if(checkTec && checkTec.length>0){
+							datasource.formData.copy_list=checkTec
+							store.remove(SESSIONNAME_SELECT)
+						}
+					}
+				});
+				window.addEventListener('pagehide', function() {
+					isPageHide = true;
+				});
+			})
 			var $M = mui.init();
 			//获取个人信息
 			var personal = store.get(window.storageKeyName.PERSONALINFO);
@@ -677,7 +675,7 @@
 						apply_time:data.diff_times_text,
 						in_out_permission_code:data.crqx.value,
 						item_code:data.qjlb.value,
-						sms_parent_stu_flag:1,
+						sms_parent_stu_flag:0,
 						comment:comment,
 						create_user_code:personal.user_code,
 						create_user_name:personal.user_name,

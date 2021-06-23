@@ -294,22 +294,26 @@
 			const SESSIONNAME='teaLeaveAsk_Add.HTML'
 			const SESSIONNAME_SELECT='selectDptUser.HTML'
 			$(function() {
-				// var isPageHide = false;
-				// window.addEventListener('pageshow', function() {
-				// 	console.log('pageshowpageshowpageshow3');
-				// 	if (isPageHide) {
-				// 		// window.location.reload();
-				// 		let checkTec=store.get(SESSIONNAME_SELECT)
-				// 		if(checkTec && checkTec.length>0){
-				// 			datasource.formData.copy_list=checkTec
-				// 			store.remove(SESSIONNAME_SELECT)
-				// 		}
-				// 	}
-				// });
-				// window.addEventListener('pagehide', function() {
-				// 	console.log('pagehidepagehidepagehidepagehide4');
-				// 	isPageHide = true;
-				// });
+				var isPageHide = false;
+				window.addEventListener('pageshow', function() {
+					if (isPageHide) {
+						// window.location.reload();
+						let datasourceData=	store.get(SESSIONNAME)
+						if(datasourceData){
+							Object.assign(datasource.$data,datasourceData);
+							store.remove(SESSIONNAME)
+						}
+						
+						let checkTec=store.get(SESSIONNAME_SELECT)
+						if(checkTec && checkTec.length>0){
+							datasource.formData.copy_list=checkTec
+							store.remove(SESSIONNAME_SELECT)
+						}
+					}
+				});
+				window.addEventListener('pagehide', function() {
+					isPageHide = true;
+				});
 			})
 			var $M = mui.init();
 			//获取个人信息

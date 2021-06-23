@@ -140,7 +140,7 @@
 			
 			.mui-segmented-control{
 				position: fixed;
-				top:54px
+				top:54px;
 			}
 		</style>
 	</head>
@@ -152,14 +152,12 @@
 			<a v-show="showAdd" @tap="add()" class="mui-pull-right top-btn">+代学生请假</a>
 		</header>
 		<div v-cloak class="mui-content" style="margin-top: 0px;background: white;" id="contentData">
-			<div style="padding: 10px 10px;">
 				<div id="segmentedControl" class="mui-segmented-control">
 					<a @tap="clickSeg(0)" class="mui-control-item mui-active" href="#item1">待审批</a>
 					<a @tap="clickSeg(1)" class="mui-control-item" href="#item2">已审批</a>
 					<a @tap="clickSeg(2)" class="mui-control-item" href="#item3">已发起</a>
 					<a @tap="clickSeg(3)" class="mui-control-item" href="#item4">抄送本人</a>
 				</div>
-			</div>
 			<div class="mui-slider-group">
 				<div id="item1" class="mui-control-content mui-active">
 					<div class="mui-scroll-wrapper" style="margin-top: 100px;">
