@@ -70,7 +70,7 @@
 				<div v-if="eqsModel.step_score_list">
 					<div style="margin-top: 5px;">
 						<div style="margin-top: 5px;" v-for="(stepModel,index) in eqsModel.step_score_list">
-							<span style="color: white;">({{index+1}})</span>
+							<span style="color: #00CFBD;">({{index+1}})</span>
 							<input type="number" @blur="inputChange(stepModel)" placeholder="请输入分数" style="width: 150px;font-size: 13px;"
 								v-model="stepModel.stu_score">
 							<button class="mui-btn" @tap='clickScore(stepModel)'
