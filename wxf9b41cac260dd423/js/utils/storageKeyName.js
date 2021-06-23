@@ -126,7 +126,7 @@ var storageKeyName = (function(mod) {
 			mod.INTERFACE_SCHHOME_STU = 'http://nwifapp.jiaobaowang.net/hsservsubapi/';//家校互动 学生端（顾)
 			mod.PARENTS_ATTENDANCE = 'http://nwifapp.jiaobaowang.net/stukq/api/app/';//学生考勤家长端（阮)、行为与评语
 			mod.INTERFACE_MARKINGPAPERS = 'http://nwifapp.jiaobaowang.net/stuzysubapi/api/admin/';//考务--阅卷，（蒙)
-			mod.STULEAVE_API='???';//学生请假系统(孔)
+			mod.STULEAVE_API='http://nwifapp.jiaobaowang.net/stuleavesubapi/sub/api/';//学生请假系统(孔)
 			//七牛上传
 			mod.QN_APPID = 16;//七牛appid
 			mod.QN_APPKEY = "oatest1010";//七牛appkey
@@ -158,7 +158,7 @@ var storageKeyName = (function(mod) {
 			mod.INTERFACE_SCHHOME_STU = 'http://apps.108800.com:8080/hsservsubapi/';//家校互动 学生端（顾)
 			mod.PARENTS_ATTENDANCE = 'http://apps.108800.com/stukq/api/app/';//学生考勤家长端（阮)、行为与评语
 			mod.INTERFACE_MARKINGPAPERS = 'http://apps.108800.com/stuzysubapi/api/admin/';//考务--阅卷，（蒙)
-			mod.STULEAVE_API='???';//学生请假系统(孔)
+			mod.STULEAVE_API='http://apps.108800.com/stuleavesubapi/sub/api/';//学生请假系统(孔)
 			//七牛上传
 			mod.QN_APPID = 17;//七牛appid
 			mod.QN_APPKEY = "oafor1010";//七牛appkey

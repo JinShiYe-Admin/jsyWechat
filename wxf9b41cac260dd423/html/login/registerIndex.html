@@ -180,7 +180,7 @@
 			</div>
 			<div class="mui-input-row">
 				<label class="aCss">短信验证码</label>
-				<input :disabled="disabledFlag==2?true:false" type="number" maxlength="6" placeholder="请输入验证码"
+				<input id="yanzmInput" oninput="onIputAA()" :disabled="disabledFlag==2?true:false" type="number" maxlength="6" placeholder="请输入验证码"
 					v-model="yanzm" style="color: #000000;float: left;width: 100px;">
 				<button v-if="yanZMTime==60" @tap='sendYanzm()' :disabled="yanZMTime<60||disabledFlag==2?true:false"
 					type="button" class="mui-btn"
@@ -258,6 +258,14 @@
 					mui.toast('没有获取到用户信息');
 				}
 			};
+				
+			var onIputAA = function(){
+				// console.log("正在输入...:"+register.yanzm.length+','+register.yanzm);
+				if(register.yanzm.length>6){
+					register.yanzm = register.yanzm.substring(0,6);
+					// console.log("register.yanzm:"+register.yanzm);
+				}
+			}
 			
 			var setUUID = function(openid){
 				var publicPar = store.get(window.storageKeyName.PUBLICPARAMETER);
