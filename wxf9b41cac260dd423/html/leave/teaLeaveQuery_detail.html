@@ -145,7 +145,7 @@
 								<li v-cloak v-for="(item,index) in detailData.approve_list" class="mui-table-view-cell no-bgc">
 									<a class=""> <!-- mui-navigate-right -->
 										<div class="mui-ellipsis">{{item.approve_user_name}}</div>
-										<p style="margin-top: 0.75rem ;font-size: 13px;">{{item.approve_content}}</p>
+										<p style="margin-top: 0.75rem ;font-size: 13px;word-break: break-all;">{{item.approve_content}}</p>
 										<template v-if="item.lstatus==0">
 											<div style="position: absolute; right: 10px;top: 15px;">
 												<img src="../../img/leave/stuleave/pass.png" style="width: 15px;height: 15px;">
