@@ -134,7 +134,6 @@
 					<div v-cloak class="mui-input-row" style="font-size: 15px;">
 						<ul v-cloak class="mui-table-view no-line">
 							<li v-cloak v-for="(item,index) in detailData.approve_list" class="mui-table-view-cell no-bgc">
-								<a class=""> <!-- mui-navigate-right -->
 									<div class="mui-ellipsis">{{item.approve_user_name}}</div>
 									<p style="margin-top: 0.75rem ;font-size: 13px;word-break: break-all;">{{item.approve_content}}</p>
 									<template v-if="item.lstatus==0">
@@ -152,7 +151,6 @@
 											<img src="../../img/leave/stuleave/ref.png" style="width: 15px;height: 15px;">
 										</div>
 									</template>
-								</a>
 							</li>
 						</ul>
 					</div>
