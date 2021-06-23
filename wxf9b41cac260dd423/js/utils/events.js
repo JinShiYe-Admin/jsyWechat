@@ -79,6 +79,7 @@ var events = (function(mod) {
 		$('#loadingToast').fadeIn(100);
 		timeOut=setTimeout(function() {
 			events.closeWaiting();
+			mui.toast('网络链接超时');
 		}, times);
 		return $('#loadingToast')
 	}

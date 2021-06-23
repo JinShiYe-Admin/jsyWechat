@@ -245,11 +245,20 @@
 				t.addEventListener("click", function(t) {
 					var e = t.currentTarget.getAttribute("operate");
 					if (function(t) {
-							n.operateType = t
+						if(t==1&&n.operateType==1){
+							n.operateType = 0;
+						}else{
+							n.operateType = t;
+						}
 						}(e), 1 == e) {
+							console.log('n.operateType:'+n.operateType)
 						var o = t.currentTarget;
-						o.firstChild.src = "../../img/markingPapers/painting1.png", o.style
-							.color = "#4594f8"
+						if(n.operateType==0){
+							c();
+						}else{
+							o.firstChild.src = "../../img/markingPapers/painting1.png", o.style
+								.color = "#4594f8"
+						}
 					} else if (4 == e) h(), f(), n.paintingArray = [], c();
 					else if (2 == e) n.textBox.style.display = "block", n.textInput
 						.style.display = "inline-block", n.textInput.focus(), c();
@@ -336,7 +345,7 @@
 					var t =
 						"style=\"flex: 1;padding-top: 1rem\" class='picture-operate'",
 						e = r(
-							'<div style="position: fixed;top: 0;left: 0;right: 0;bottom: 0;overflow: hidden;z-index: 997;background-color: white"><div id="picture_edit_cancel" style="position: absolute;left: 15px;top: 15px;padding: 5px 13px;background-color: white;color: black;z-index: 2;border-radius: 3px">取消</div><div id="picture_edit_save" style="position: absolute;right: 15px;top: 15px;padding: 5px 13px;background-color: #67c23a;color: white;z-index: 2;border-radius: 3px">保存</div><div style="width: 100%;height:calc(100% - 4rem);overflow: scroll;-webkit-overflow-scrolling: touch;overflow-scrolling: touch;box-sizing: border-box"><div style="position: relative">' +
+							'<div style="position: fixed;top: 0;left: 0;right: 0;bottom: 0;overflow: hidden;z-index: 997;background-color: white"><div id="picture_edit_cancel" style="position: absolute;left: 15px;top: 15px;padding: 5px 13px;background-color: #00CFBD;color: white;z-index: 2;border-radius: 3px">返回</div><div id="picture_edit_save" style="position: absolute;right: 15px;top: 15px;padding: 5px 13px;background-color: #00CFBD;color: white;z-index: 2;border-radius: 3px">保存</div><div style="width: 100%;height:calc(100% - 4rem);overflow: scroll;-webkit-overflow-scrolling: touch;overflow-scrolling: touch;box-sizing: border-box"><div style="position: relative">' +
 							'<canvas id="picture_edit_canvas" width="'.concat(n.img
 								._width, '" height="').concat(n.img._height,
 								'" style="width: ').concat(n.device._width + "px",
@@ -344,7 +353,7 @@
 								.img._WH) + "px", '"></canvas>') +
 							'</div></div><div style="position: absolute;bottom: 0;left: 0;right: 0;height: 4rem;background-color: black;display: flex;text-align: center;color: white">' +
 							"<div ".concat(t, ' operate="1">') +
-							'<img src="../../img/markingPapers/painting.png" style="width: 1.3rem;display: block;margin: auto;">涂画</div>' +
+							'<img src="../../img/markingPapers/painting.png" style="width: 1.3rem;display: block;margin: auto;">批注</div>' +
 							"<div ".concat(t, ' operate="3">') +
 							'<img src="../../img/markingPapers/withdraw.png" style="width: 1.3rem;display: block;margin: auto"> 撤回</div>' +
 							"<div ".concat(t, ' operate="4">') +
