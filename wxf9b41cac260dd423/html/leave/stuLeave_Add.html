@@ -282,7 +282,7 @@
 						}
 						
 						let checkTec=store.get(SESSIONNAME_SELECT)
-						if(checkTec && checkTec.length>0){
+						if(checkTec){
 							datasource.formData.copy_list=checkTec
 							store.remove(SESSIONNAME_SELECT)
 						}
@@ -507,7 +507,7 @@
 				}
 				
 				let checkTec=store.get(SESSIONNAME_SELECT)
-				if(checkTec && checkTec.length>0){
+				if(checkTec){
 					datasource.formData.copy_list=checkTec
 					store.remove(SESSIONNAME_SELECT)
 				}
