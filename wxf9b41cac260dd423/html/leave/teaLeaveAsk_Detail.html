@@ -166,9 +166,9 @@
 					<div v-if="flag==0">
 						<div class="double-line"></div>
 						<div style="padding: 10px;">
-							<textarea maxlength="120" v-model="detailData.approve_comment" style="border: 1px solid rgba(0,207,189,0.3);" rows="6" placeholder="批复内容(选填)"></textarea>
+							<textarea maxlength="50" v-model="detailData.approve_comment" style="border: 1px solid rgba(0,207,189,0.3);" rows="6" placeholder="批复内容(选填)"></textarea>
 						</div>
-						<div style="text-align: center;">
+						<div style="text-align: center;margin-bottom: 30px;">
 							<button @tap="cancel" type="button" class="mui-btn mui-btn-bottom">
 								拒 绝
 							</button>
