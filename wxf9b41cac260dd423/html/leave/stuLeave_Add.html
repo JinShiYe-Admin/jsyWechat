@@ -414,6 +414,7 @@
 								datasource.formData.begin_time=rs.text
 								datasource.formData.end_time=''
 								datasource.formData.diff_times_text=''
+								datasource.formData.diff_times_days=0
 								datePicker.dispose();
 								datePicker = null;
 							});
@@ -435,6 +436,8 @@
 							var datePicker=new $M.DtPicker(dtObj);
 							datePicker.show(function(rs) {
 								datasource.formData.end_time=rs.text
+								datasource.formData.diff_times_text=''
+								datasource.formData.diff_times_days=0
 								let difftimesFromMinute=moment(rs.text).diff(moment(_begin_time),'minutes')
 								let difftimesFromHours=moment(rs.text).diff(moment(_begin_time),'hours')
 								let difftimesFromDays=moment(rs.text).diff(moment(_begin_time),'days')
