@@ -163,7 +163,7 @@
 								<template v-for="(item,index) in detailData.copy_list"><template v-if="index < detailData.copy_list.length-1">{{item.copy_user_name}},</template><template v-else>{{item.copy_user_name}}</template></template>
 						</label>
 					</div>
-					<div v-if="flag==0">
+					<div v-if="detailData.status==0">
 						<div class="double-line"></div>
 						<div style="padding: 10px;">
 							<textarea maxlength="50" v-model="detailData.approve_comment" style="border: 1px solid rgba(0,207,189,0.3);" rows="6" placeholder="批复内容(选填)"></textarea>
@@ -176,6 +176,14 @@
 								通 过
 							</button>
 						</div>
+					</div>
+					<div v-else>
+						<template v-if="flag==0">
+							<div class="double-line"></div>
+							<div style="text-align: center;margin-bottom: 30px;">
+								该请假已审核，请刷新列表记录
+							</div>
+						</template>
 					</div>
 					<!-- <div v-else-if="flag==1">
 						<div class="double-line"></div>
@@ -245,7 +253,7 @@
 						id:0,
 						grd_code:"",
 						cls_code:"",
-						status:1,
+						status:-1,
 						approve_comment:'',//审核意见
 					}, //详情
 					index_code:'',
@@ -340,6 +348,7 @@
 								}
 							})
 						}
+						leave.status=2
 						datasource.detailData=leave
 					} else {
 						mui.toast(data.msg);
