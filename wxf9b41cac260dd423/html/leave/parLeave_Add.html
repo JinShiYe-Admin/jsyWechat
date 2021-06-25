@@ -411,6 +411,8 @@
 							var datePicker=new $M.DtPicker(dtObj);
 							datePicker.show(function(rs) {
 								datasource.formData.begin_time=rs.text
+								datasource.formData.end_time=''
+								datasource.formData.diff_times_text=''
 								datePicker.dispose();
 								datePicker = null;
 							});
