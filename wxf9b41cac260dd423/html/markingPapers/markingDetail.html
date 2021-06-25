@@ -4,12 +4,12 @@
 	<head>
 		<meta charset="UTF-8">
 		<title></title>
-		<!-- <meta name="viewport"
-			content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover" /> -->
-		<meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=0">
+		<meta name="viewport"
+			content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover" />
+		<!-- <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=0"> -->
 		<link href="../../css/mui.min.css" rel="stylesheet" />
 		<link href="../../css/common.css" rel="stylesheet" />
-		<link rel="stylesheet" type="text/css" href="../../css/weui.min.css"/>
+		<link rel="stylesheet" type="text/css" href="../../css/weui.min.css" />
 		<!-- <link href="../../css/mui.picker.css" rel="stylesheet" />
 		<link href="../../css/mui.poppicker.css" rel="stylesheet" /> -->
 		<style>
@@ -32,6 +32,7 @@
 			.mui-popover {
 				height: 200px;
 			}
+
 			.mui-navigate-right:after,
 			.mui-push-left:after,
 			.mui-push-right:after {
@@ -47,6 +48,39 @@
 				color: white;
 				-webkit-font-smoothing: antialiased;
 			}
+
+			.divleft {
+				margin-top: 10px;
+				float: left;
+				width: calc(60px);
+				overflow: auto;
+			}
+
+			.divRight {
+				float: left;
+				width: calc(200px);
+				overflow: auto;
+			}
+
+			.divContent {
+				/* float: left; */
+				width: calc(260px);
+				overflow: auto;
+			}
+
+			.divSubmit {
+				/* float: right; */
+				width: calc(100% - 260px);
+				overflow: auto;
+				width: 70px;
+				height: 70px;
+				background-color: goldenrod;
+				border: 1px solid goldenrod;
+				border-radius: 60px;
+				text-align: center;
+				padding-top: 20px;
+				color: white;
+			}
 		</style>
 	</head>
 
@@ -56,47 +90,63 @@
 			<h1 class="mui-title">{{titleName}}</h1>
 		</header>
 		<div id="datasource" class="mui-content mui-fullscreen" v-cloak>
-			<div class="mui-scroll-wrapper" id="scroll2">
-				<div class="mui-scroll">
-			<p v-if="currentInfoData.count_info" style="margin-top: 50px;text-align: center;color: black;">
-				该题组已阅{{currentInfoData.count_info.view_count}}份，当前第{{currentInfoData.count_info.count}}份，任务量{{currentInfoData.count_info.group_count}}份
-			</p>
-			<a href="#middlePopover" class="mui-btn mui-btn-primary mui-btn-block mui-navigate-right"
-				style="padding: 5px 20px;width: 150px;margin-top: 10px;margin-left: 5%;text-align: left;background-color: #00CFBD;border-color: #00CFBD;font-size: 14px;">题组{{nowGroupNumber}}</a>
-			<div v-if="currentInfoData.eqs" style="margin-left: 20px;margin-top: 10px;"
-				v-for="eqsModel in currentInfoData.eqs">
-				<span
-					style="color: #00CFBD;border: 1px solid #00CFBD;border-radius: 3px;font-size: 13px;">第{{eqsModel.question_number}}题得分</span>
-				<div v-if="eqsModel.step_score_list">
-					<div style="margin-top: 5px;">
-						<div style="margin-top: 5px;" v-for="(stepModel,index) in eqsModel.step_score_list">
-							<span style="color: #00CFBD;">({{index+1}})</span>
-							<input type="number" @blur="inputChange(stepModel)" placeholder="请输入分数" style="width: 150px;font-size: 13px;"
-								v-model="stepModel.stu_score">
-							<button class="mui-btn" @tap='clickScore(stepModel)'
-								style="font-size: 13px;color: #00CFBD;width: 60px;height: 40px;margin-left: -7px;">/{{stepModel.score}}</button>
+			<div v-cloak class="mui-scroll-wrapper" id="scroll2" style="margin-top: 60px;">
+				<div v-cloak class="mui-scroll">
+					<!-- <div> -->
+					<a href="#middlePopover" class="mui-btn mui-btn-primary mui-btn-block mui-navigate-right"
+						style="padding: 5px 20px;width: 100px;margin-left: 20px;text-align: left;background-color: #00CFBD;border-color: #00CFBD;font-size: 14px;float: left;margin-right: 10px;">题组{{nowGroupNumber}}</a>
+					<!-- </div> -->
+					<div v-cloak v-if="currentInfoData.count_info"
+						style="margin-top: 5px;color: black;text-align: left;">
+						该题已阅{{currentInfoData.count_info.view_count}}份，总量{{currentInfoData.count_info.group_count}}份
+					</div>
+					<!-- <p>222</p> -->
+					<br />
+					<div v-cloak style="margin-top: -12px;">
+						<div v-cloak v-if="currentInfoData.eqs" class="divContent"
+							style="margin-left: 20px;margin-top: 0px;margin-bottom: -10px;" v-for="eqsModel in currentInfoData.eqs">
+							<div v-cloak class="divleft">
+								<span
+									style="color: #00CFBD;border: 1px solid #00CFBD;border-radius: 3px;font-size: 13px;">第{{eqsModel.question_number}}题</span>
+							</div>
+							<div v-cloak class="divRight">
+								<div v-if="eqsModel.step_score_list">
+									<div style="margin-top: 5px;">
+										<div style="margin-top: 5px;margin-bottom: -10px;"
+											v-for="(stepModel,index) in eqsModel.step_score_list">
+											<span style="color: #00CFBD;">({{index+1}})</span>
+											<input type="number" @blur="inputChange(stepModel)" placeholder="请输入分数"
+												style="width: 100px;font-size: 13px;" v-model="stepModel.stu_score">
+											<button class="mui-btn" @tap='clickScore(stepModel)'
+												style="font-size: 13px;color: #00CFBD;width: 60px;height: 40px;margin-left: -7px;">/{{stepModel.score}}</button>
+										</div>
+									</div>
+								</div>
+								<div v-else>
+									<div style="margin-top: 5px;">
+										<input type="number" @blur="inputChange(eqsModel)" placeholder="请输入分数"
+											style="width: 100px;font-size: 13px;" v-model="eqsModel.stu_score">
+										<button class="mui-btn" @tap='clickScore(eqsModel)'
+											style="font-size: 13px;color: #00CFBD;width: 60px;height: 40px;margin-left: -7px;">/{{eqsModel.score}}</button>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div v-cloak v-if="currentInfoData.evaluation" @tap='clickSubmit'
+							style="margin-top: -70px;margin-left: 280px;" class="divSubmit">
+							提交
 						</div>
 					</div>
-				</div>
-				<div v-else>
-					<div style="margin-top: 5px;">
-						<input type="number" @blur="inputChange(eqsModel)" placeholder="请输入分数" style="width: 150px;font-size: 13px;"
-							v-model="eqsModel.stu_score">
-						<button class="mui-btn" @tap='clickScore(eqsModel)'
-							style="font-size: 13px;color: #00CFBD;width: 60px;height: 40px;margin-left: -7px;">/{{eqsModel.score}}</button>
+					<div style="margin-bottom: 10px;margin-top: 10px;">
+						<div v-cloak v-if="imgSrc" @tap='clearImg'
+							style="width: 100px;margin-left: 20px;background-color: #00CFBD;border-color: #00CFBD;margin-top: -5px;"
+							class="mui-btn mui-btn-primary">清空批注</div>
+						<span v-cloak style="color: #d43030;margin-left: 0px;">点击图片批注</span>
+						<img :src=imgSrc style="margin: 10px 20px 0px 20px;width: 85%;" onclick="usePED()">
 					</div>
 				</div>
 			</div>
-			<div v-if="currentInfoData.evaluation" @tap='clickSubmit'
-				style="width: 80px;margin-left: 40px;background-color: #00CFBD;border-color: #00CFBD;margin-bottom: 20px;"
-				class="mui-btn mui-btn-primary">
-				提交
-			</div>
-			<p style="color: #d43030;margin-left: 20px;margin-bottom: 0px;">如需添加批注，请点击图片</p>
-			<div v-if="imgSrc" @tap='clearImg'style="width: 120px;margin-left: 20px;background-color: #00CFBD;border-color: #00CFBD;margin-bottom: 10px;margin-top: 10px;"
-				class="mui-btn mui-btn-primary">清空全部批注</div>
-			<img :src=imgSrc style="margin: 0px 20px 0px 20px;width: 85%;" onclick="usePED()">
-		</div></div></div>
+		</div>
 		<div id="middlePopover" class="mui-popover" style="width: 150px;" v-cloak>
 			<div class="mui-popover-arrow"></div>
 			<div class="mui-scroll-wrapper">
@@ -201,9 +251,11 @@
 							mui.toast('请输入正确的分数');
 						}
 					},
-					clearImg:function(){
+					clearImg: function() {
 						datasource.imgSrcFlag = 0;
-						datasource.imgSrc = datasource.currentInfoData.evaluation.painting_img?datasource.currentInfoData.evaluation.painting_img:datasource.currentInfoData.evaluation.stu_answer_img;
+						datasource.imgSrc = datasource.currentInfoData.evaluation.painting_img ? datasource
+							.currentInfoData.evaluation.painting_img : datasource.currentInfoData.evaluation
+							.stu_answer_img;
 					},
 					clickSubmit: function() {
 						console.log('clickSubmit:' + JSON.stringify(datasource.currentInfoData));
@@ -284,15 +336,16 @@
 								// 先将涂鸦后的图片，上传七牛
 								var wd = events.showWaiting();
 								var fileName = 'markingPapers' + new Date().getTime();
-								var tempData = datasource.imgSrc.replace('data:image/png;base64,','');
+								var tempData = datasource.imgSrc.replace('data:image/png;base64,', '');
 								UploadHeadImage.uploadIDCardHeadImge(wd, 1, fileName, tempData, function(domain) {
 									console.log("domain: " + JSON.stringify(domain));
 									tempMMM.painting_img = domain;
 									comData.evaluation = tempMMM;
-									console.log('comData:::'+JSON.stringify(comData));
+									console.log('comData:::' + JSON.stringify(comData));
 									events.showWaiting();
 									//1.6.保存批改
-									postDataEncry(window.storageKeyName.INTERFACE_MARKINGPAPERS + 'evaluation/save', {},
+									postDataEncry(window.storageKeyName.INTERFACE_MARKINGPAPERS +
+										'evaluation/save', {},
 										comData, 2,
 										function(data) {
 											events.closeWaiting();
@@ -417,7 +470,9 @@
 								}
 							}
 							datasource.currentInfoData = data.data;
-							datasource.imgSrc = datasource.currentInfoData.evaluation.painting_img?datasource.currentInfoData.evaluation.painting_img:datasource.currentInfoData.evaluation.stu_answer_img;
+							datasource.imgSrc = datasource.currentInfoData.evaluation.painting_img ? datasource
+								.currentInfoData.evaluation.painting_img : datasource.currentInfoData.evaluation
+								.stu_answer_img;
 						}
 						if (data.data.msg) {
 							mui.toast(data.data.msg);

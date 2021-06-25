@@ -105,19 +105,19 @@
 			window.onload = function() {
 				curPage = utils.getDataFromUrl(window.location.href);
 				tempHead.headTitle = curPage.name;
-				if(curPage&&JSON.stringify(curPage)=='{}'){//前四个页面时，不显示返回按钮
-					var ws = plus.webview.currentWebview();
-					if (ws.preload) {
-						curPage = ws.preload;
-						tempHead.headTitle = ws.preload.name;
-						contentData.showArray=ws.preload.childList;
-					}
-					if (ws.preload.index == 0) {
-						tempHead.showBack = 2;
-					}
-				}else{
+				// if(curPage&&JSON.stringify(curPage)=='{}'){//前四个页面时，不显示返回按钮
+				// 	var ws = plus.webview.currentWebview();
+				// 	if (ws.preload) {
+				// 		curPage = ws.preload;
+				// 		tempHead.headTitle = ws.preload.name;
+				// 		contentData.showArray=ws.preload.childList;
+				// 	}
+				// 	if (ws.preload.index == 0) {
+				// 		tempHead.showBack = 2;
+				// 	}
+				// }else{
 					tempHead.showBack = 1;//更多页面打开时，显示返回按钮
-				}
+				// }
 				// //获取未读数 TODO 触发条件还没写
 				// window.addEventListener('getKaoqinNoReadCnt', function(data) {
 				// 	//获取未读数
