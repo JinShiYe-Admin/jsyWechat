@@ -50,7 +50,7 @@
 			}
 
 			.divleft {
-				margin-top: 10px;
+				padding-top: 10px;
 				float: left;
 				width: calc(60px);
 				overflow: auto;
@@ -72,13 +72,13 @@
 				/* float: right; */
 				width: calc(100% - 260px);
 				overflow: auto;
-				width: 70px;
-				height: 70px;
+				width: 55px;
+				height: 55px;
 				background-color: goldenrod;
 				border: 1px solid goldenrod;
 				border-radius: 60px;
 				text-align: center;
-				padding-top: 20px;
+				padding-top: 13px;
 				color: white;
 			}
 		</style>
@@ -100,18 +100,18 @@
 						style="margin-top: 5px;color: black;text-align: left;">
 						该题已阅{{currentInfoData.count_info.view_count}}份，总量{{currentInfoData.count_info.group_count}}份
 					</div>
-					<!-- <p>222</p> -->
 					<br />
 					<div v-cloak style="margin-top: -12px;">
 						<div v-cloak v-if="currentInfoData.eqs" class="divContent"
-							style="margin-left: 20px;margin-top: 0px;margin-bottom: -10px;" v-for="eqsModel in currentInfoData.eqs">
+							style="margin-left: 20px;margin-top: 0px;margin-bottom: -10px;"
+							v-for="eqsModel in currentInfoData.eqs">
 							<div v-cloak class="divleft">
 								<span
 									style="color: #00CFBD;border: 1px solid #00CFBD;border-radius: 3px;font-size: 13px;">第{{eqsModel.question_number}}题</span>
 							</div>
 							<div v-cloak class="divRight">
-								<div v-if="eqsModel.step_score_list">
-									<div style="margin-top: 5px;">
+								<div v-if="eqsModel.step_score_list" style="margin-bottom: 10px;">
+									<div style="margin-top: 0px;margin-bottom: -10px;">
 										<div style="margin-top: 5px;margin-bottom: -10px;"
 											v-for="(stepModel,index) in eqsModel.step_score_list">
 											<span style="color: #00CFBD;">({{index+1}})</span>
@@ -124,20 +124,21 @@
 								</div>
 								<div v-else>
 									<div style="margin-top: 5px;">
-										<input type="number" @blur="inputChange(eqsModel)" placeholder="请输入分数"
-											style="width: 100px;font-size: 13px;" v-model="eqsModel.stu_score">
-										<button class="mui-btn" @tap='clickScore(eqsModel)'
-											style="font-size: 13px;color: #00CFBD;width: 60px;height: 40px;margin-left: -7px;">/{{eqsModel.score}}</button>
+										<div style="margin-top: 5px;margin-bottom: 0px;">
+											<input type="number" @blur="inputChange(eqsModel)" placeholder="请输入分数"
+												style="width: 120px;font-size: 13px;" v-model="eqsModel.stu_score">
+											<button class="mui-btn" @tap='clickScore(eqsModel)'
+												style="font-size: 13px;color: #00CFBD;width: 60px;height: 40px;margin-left: -7px;">/{{eqsModel.score}}</button>
+										</div>
 									</div>
 								</div>
 							</div>
 						</div>
-						<div v-cloak v-if="currentInfoData.evaluation" @tap='clickSubmit'
-							style="margin-top: -70px;margin-left: 280px;" class="divSubmit">
+						<div v-cloak v-if="currentInfoData.evaluation" @tap='clickSubmit' style="margin-top: -65px;margin-left: 280px;" class="divSubmit">
 							提交
 						</div>
 					</div>
-					<div style="margin-bottom: 10px;margin-top: 10px;">
+					<div style="margin-bottom: 10px;margin-top: 15px;">
 						<div v-cloak v-if="imgSrc" @tap='clearImg'
 							style="width: 100px;margin-left: 20px;background-color: #00CFBD;border-color: #00CFBD;margin-top: -5px;"
 							class="mui-btn mui-btn-primary">清空批注</div>
@@ -307,6 +308,7 @@
 								id: datasource.currentInfoData.evaluation.id, //题组id
 								symbols: datasource.typeArray, //标记坐标信息
 								task_id: datasource.currentInfoData.evaluation.task_id, //任务id
+								painting_img:datasource.currentInfoData.evaluation.painting_img,
 							};
 							comData = {
 								index_code: curPage.access.split('#')[1],
