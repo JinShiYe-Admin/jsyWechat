@@ -360,7 +360,7 @@
 				if(datasource.canSub){
 					datasource.canSub=false
 					events.showWaiting();
-					let comment=datasource.detailData.approve_comment.replace(/\s+/g, '').replace(/\n/g, '').replace(/\t/g, '').replace(/\r/g, '')
+					let comment=datasource.detailData.approve_comment?datasource.detailData.approve_comment.replace(/\s+/g, '').replace(/\n/g, '').replace(/\t/g, '').replace(/\r/g, ''):''
 					if(!comment){
 						if(status==1){
 							comment="同意"
