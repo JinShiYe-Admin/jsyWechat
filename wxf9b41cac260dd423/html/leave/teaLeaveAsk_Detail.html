@@ -161,6 +161,7 @@
 					<div v-cloak class="mui-input-row">
 						<label style="width: 100%;font-size: 14px;">
 								<template v-for="(item,index) in detailData.copy_list"><template v-if="index < detailData.copy_list.length-1">{{item.copy_user_name}},</template><template v-else>{{item.copy_user_name}}</template></template>
+								<template v-if="detailData.copy_list.length===0">无</template>
 						</label>
 					</div>
 					<div v-if="detailData.status==0">
@@ -360,7 +361,7 @@
 				if(datasource.canSub){
 					datasource.canSub=false
 					events.showWaiting();
-					let comment=datasource.detailData.approve_comment.replace(/\s+/g, '').replace(/\n/g, '').replace(/\t/g, '').replace(/\r/g, '')
+					let comment=datasource.detailData.approve_comment?datasource.detailData.approve_comment.replace(/\s+/g, '').replace(/\n/g, '').replace(/\t/g, '').replace(/\r/g, ''):''
 					if(!comment){
 						if(status==1){
 							comment="同意"
