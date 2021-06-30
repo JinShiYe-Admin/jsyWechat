@@ -387,7 +387,7 @@
 					//需要加密的数据
 					comData = {
 						paper_id: curPage.id,
-						cls_code: '-1', //班级代码
+						cls_code: curPage.cls_code, //班级代码
 						sub_code: '-1', //科目代码
 						compare_paper_id: tempID, //对比考试id
 						index_code: curPage.index_code,
@@ -413,7 +413,7 @@
 								}else{
 									tempSeM.text = '['+ tempM[0] +', ' +tempM[1]+')';
 								}
-								if(tempSeM.text == curPage.cls_code){
+								if(tempSeM.text == curPage.fsd_code){
 									datasource.clsModel = tempSeM;
 								}
 								tempSeM.value = a;

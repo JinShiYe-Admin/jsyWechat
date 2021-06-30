@@ -623,7 +623,9 @@
 					tempM.id = curPage.id;
 					tempM.name = curPage.name;
 					tempM.index_code = curPage.index_code;
-					tempM.cls_code = datasource.zfdDetail.list[params.dataIndex].name;
+					tempM.grd_code = curPage.grdCode;
+					tempM.cls_code = curPage.clsCode;
+					tempM.fsd_code = datasource.zfdDetail.list[params.dataIndex].name;
 					tempM.selectType = curPage.selectType;
 					tempM.subCode = curPage.subCode;
 					utils.mOpenWithData("../../html/schapp_examination/stuResult2.html", tempM);

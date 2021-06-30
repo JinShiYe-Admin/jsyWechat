@@ -161,7 +161,7 @@
 		<div id="register-body" v-if="showFlag==1" class="mui-content" style="background: white;">
 			<div
 				style="background-color: #F2F2F2;height: 30px;padding-left: 15px;padding-top: 5px;color: brown;font-size: 13px;">
-				注意：请输入教宝校园已登记的用户相关信息</div>
+				注意：请输入系统中已登记的用户相关信息</div>
 			<div v-if="appFlag==0" class="mui-input-row">
 				<label class="aCss" @tap="selectUType()">用户类型</label>
 				<input :disabled="disabledFlag==0?false:true" type="text" @tap="selectUType()" placeholder="请选择"
@@ -576,7 +576,54 @@
 								}
 							});
 					} else {
-						mui.toast(data1.msg);
+						mui.confirm('当前用户账号信息不正常，是否进行解绑？', '确定', ['否', '是'], function(e) {
+							if (e.index == 1) {
+								// 走游客登录，然后解绑
+								var publicPar = store.get(window.storageKeyName.PUBLICPARAMETER);
+								var enData1 = {};
+								//不需要加密的数据 
+								var comData1 = {
+									uuid: publicPar.uuid, //设备唯一识别码,防同一应用在不同机器上登录互串,验证码校检用
+									webid: publicPar.webid, //浏览器识别码,防不同浏览器登录同一应用互串,验证码校检用（web用浏览器类型加版本，app用操作系统+版本）
+									shaketype: '1', //
+									login_name: '00000000000', //登录名
+									password: '', //
+									device_type: '3', //登录设备类型，0：WEB、1：APP、2：客户端、3：第三方登录
+									platform_code: window.storageKeyName.PLATFORMCODE, //平台代码
+									app_code: window.storageKeyName.APPCODE, //应用系统代码
+									unit_code: '-1', //单位代码，如应用系统需限制本单位用户才允许登录，则传入单位代码，否则传“-1”
+									verify_code: ''
+								};
+								//登录
+								postDataEncry(window.storageKeyName.INTERFACE_SSO_SKIN + 'login', enData1, comData1, 0, function(data1) {
+									if(data1.code == 0) {
+										//不需要加密的数据 
+										var comData2 = {
+											platform_code: window.storageKeyName.PLATFORMCODE, //平台代码
+											app_code: window.storageKeyName.APPCODE, //应用系统代码
+											index_code:'index',
+											unit_code: data1.data.user.unit_code, //单位代码，如应用系统需限制本单位用户才允许登录，则传入单位代码，否则传“-1”
+											access_token:data1.data.access_token,
+											op_user_code:tempOpenId,//用户代码
+											thuser_code:tempOpenId,//第三方用户代码或账号
+											thuser_fromcode:window.storageKeyName.THIRD_FORMCODE,//第三方平台,微信:WX;支付宝:ZFB
+										};
+										// events.showWaiting();
+										//2.8.第三方账号解绑
+										postDataEncry(window.storageKeyName.INTERFACE_HR_SKIN + 'unregister/thuserunreg', {}, comData2, 0, function(data2) {
+											if (data2.code == 0) {
+												utils.mOpenWithData("../../html/login/index.html", {});
+											} else {
+												mui.toast(data2.msg);
+											}
+										});
+									}
+								});
+							} else {
+								console.log('22222')
+							}
+						})
+						// mui.toast(data1.msg);
 					}
 				});
 			}

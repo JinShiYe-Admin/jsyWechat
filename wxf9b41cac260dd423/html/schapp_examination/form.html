@@ -354,6 +354,8 @@
 						model.index_code=index_code;
 						model.selectType=datasource.selectType;
 						model.subCode=datasource.kqValue.value;
+						model.grdCode=datasource.grdValue.value;
+						model.clsCode=datasource.clsValue.value;
 						utils.mOpenWithData("../../html/schapp_examination/details.html", model);
 					},
 					showKq: function() {
@@ -394,7 +396,9 @@
 							pageIndex=1;
 							flagRef = 0;
 							datasource.pageArray=[];
-							getPageDataArray();
+							// getPageDataArray();
+							//获取数据范围授权：班级
+							getClsList(datasource.grdValue.value);
 							userPicker.dispose();
 							userPicker = null;
 						});
@@ -413,7 +417,9 @@
 							pageIndex=1;
 							flagRef = 0;
 							datasource.pageArray=[];
-							getPageDataArray();
+							// getPageDataArray();
+							//1.1: 系统科目信息
+							getKmList();
 							userPicker.dispose();
 							userPicker = null;
 						});
@@ -582,12 +588,21 @@
 					grd_code: datasource.grdValue.value,
 					cls_code: datasource.clsValue.value,
 					get_sub:true,
-					all_sub:false,
+					all_sub:true,
 					index_code:  curPage.access.split('#')[1],
 				}
 				postDataEncry(window.storageKeyName.INTERFACE_HR_SUB + 'acl/dataRange', {}, comData, 2, function(data) {
 					if (data.code == 0) {
-						let list=[{"value":"","name":"全科考情","stat":1}].concat(data.data.sub_list);
+						let list=[];
+						if (data.data.sub_list&&data.data.sub_list.length>0) {
+							if (data.data.sub_list[0].value=='-1') {
+								datasource.selectType='qk';
+								list=[{"value":"","name":"全科考情","stat":1}].concat(data.data.sub_list);
+							} else{
+								datasource.selectType='dk';
+								list=[].concat(data.data.sub_list);
+							}
+						}
 						let kmList=[]
 						list.map(function(currentValue){
 							 let obj={};
