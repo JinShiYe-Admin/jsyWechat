@@ -305,9 +305,7 @@
 								<!-- <div class="mui-col-xs-1 mui-navigate-right" style="height: 95px;"></div> -->
 							</div>
 						</template>
-						<template v-else>
-							<div></div>
-						</template>
+						<div v-if="pageArray.length===0" class="mui-row" style="height: calc(100vh - 150px);"></div>
 					</div>
 				</div>
 			</div>
