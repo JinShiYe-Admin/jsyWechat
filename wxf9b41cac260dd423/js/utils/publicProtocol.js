@@ -324,7 +324,7 @@ var jQAjaxPost = function(url, data, callback) {
 						mui.toast(data1.msg);
 					}
 				});
-			} else if (success_data.code == 'sup_0015'||success_data.code == '0001') {
+			} else if (success_data.code == 'sup_0015') {
 				mui.toast(success_data.msg);
 				setTimeout(function() {
 					//获取个人信息
