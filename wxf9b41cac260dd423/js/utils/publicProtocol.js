@@ -280,82 +280,84 @@ var checkNewWork = function(callback) {
 var jQAjaxPost = function(url, data, callback) {
 	// checkNewWork(callback);
 	console.log('jQAP-Data:' + data);
-	jQuery.ajax({
-		url: url,
-		type: "POST",
-		data: data,
-		timeout: 10000,
-		dataType: "json",
-		contentType: "application/json",
-		async: true,
-		success: function(success_data) { //请求成功的回调
-			console.log('jQAP-Success11111111:' + url + ',' + JSON.stringify(success_data));
-			if (success_data.code == 6 || success_data.code == 'sup6' || success_data.code == '0006' || success_data.code ==
-				'sup_0006') { //令牌过期
-				var publicPar = store.get(window.storageKeyName.PUBLICPARAMETER);
-				var personal = store.get(window.storageKeyName.PERSONALINFO);
-				var tempToken = {
-					index_code: 'index',
-					user_code: personal.user_code, //登录名
-					uuid: publicPar.uuid, //设备唯一识别码,防同一应用在不同机器上登录互串,验证码校检用
-					webid: publicPar.webid, //浏览器识别码,防不同浏览器登录同一应用互串,验证码校检用（web用浏览器类型加版本，app用操作系统+版本））
-					device_type: '3' //登录设备类型，0：WEB、1：APP、2：客户端
-				}
-				console.log('qqq1111111111111111');
-				//令牌续订
-				postDataEncry(window.storageKeyName.INTERFACE_SSO_SKIN + 'token/refresh', {}, tempToken, 2, function(data1) {
-					// console.log('data1:' + JSON.stringify(data1));
-					console.log('qwertyuiop');
-					if (data1.code == 0) {
-						var tempInfo00 = store.get(window.storageKeyName.PERSONALINFO);
-						tempInfo00.access_token = data1.data.access_token;
-						store.set(window.storageKeyName.PERSONALINFO, tempInfo00);
-						var urlArr = url.split('/');
-						var tempData = JSON.parse(data);
-						tempData.access_token = data1.data.access_token;
-						delete tempData.sign;
-						console.log('urlArr:' + urlArr[urlArr.length - 1]);
-						console.log('data:' + JSON.stringify(tempData));
-						postDataEncry(url, {}, tempData, 0, function(data2) {
-							data2 = modifyParameter(url, data2);
-							callback(data2);
-						});
-					} else {
-						mui.toast(data1.msg);
+	if(url.indexOf('setApproveByApply')==-1){
+		jQuery.ajax({
+			url: url,
+			type: "POST",
+			data: data,
+			timeout: 10000,
+			dataType: "json",
+			contentType: "application/json",
+			async: true,
+			success: function(success_data) { //请求成功的回调
+				console.log('jQAP-Success11111111:' + url + ',' + JSON.stringify(success_data));
+				if (success_data.code == 6 || success_data.code == 'sup6' || success_data.code == '0006' || success_data.code ==
+					'sup_0006') { //令牌过期
+					var publicPar = store.get(window.storageKeyName.PUBLICPARAMETER);
+					var personal = store.get(window.storageKeyName.PERSONALINFO);
+					var tempToken = {
+						index_code: 'index',
+						user_code: personal.user_code, //登录名
+						uuid: publicPar.uuid, //设备唯一识别码,防同一应用在不同机器上登录互串,验证码校检用
+						webid: publicPar.webid, //浏览器识别码,防不同浏览器登录同一应用互串,验证码校检用（web用浏览器类型加版本，app用操作系统+版本））
+						device_type: '3' //登录设备类型，0：WEB、1：APP、2：客户端
 					}
+					console.log('qqq1111111111111111');
+					//令牌续订
+					postDataEncry(window.storageKeyName.INTERFACE_SSO_SKIN + 'token/refresh', {}, tempToken, 2, function(data1) {
+						// console.log('data1:' + JSON.stringify(data1));
+						console.log('qwertyuiop');
+						if (data1.code == 0) {
+							var tempInfo00 = store.get(window.storageKeyName.PERSONALINFO);
+							tempInfo00.access_token = data1.data.access_token;
+							store.set(window.storageKeyName.PERSONALINFO, tempInfo00);
+							var urlArr = url.split('/');
+							var tempData = JSON.parse(data);
+							tempData.access_token = data1.data.access_token;
+							delete tempData.sign;
+							console.log('urlArr:' + urlArr[urlArr.length - 1]);
+							console.log('data:' + JSON.stringify(tempData));
+							postDataEncry(url, {}, tempData, 0, function(data2) {
+								data2 = modifyParameter(url, data2);
+								callback(data2);
+							});
+						} else {
+							mui.toast(data1.msg);
+						}
+					});
+				} else if (success_data.code == 'sup_0015'||success_data.code == '0001') {
+					mui.toast(success_data.msg);
+					setTimeout(function() {
+						//获取个人信息
+						// var personal = store.get(window.storageKeyName.PERSONALINFO);
+						//设置app角标,flag=0直接设置角标数字，flag=1角标减1,falg=2角标加1
+						
+						//获取所有已打开的webview 实例————重新打开login.html————循环关闭页面
+						store.remove(window.storageKeyName.PERSONALINFO);
+						
+						// utils.mOpenWithData("../../html/login/index.html", {});
+						
+						// events.closeWaiting();
+					}, 1000);
+				} else {
+					success_data = modifyParameter(url, success_data);
+					callback(success_data);
+				}
+			},
+			error: function(xhr, type, errorThrown) {
+				console.log('jQAP-Error777:', url, xhr, type);
+				console.log('error111');
+				// events.closeWaiting();
+				console.log('error222');
+				mui.toast('网络连接失败,请重新尝试一下');
+				callback({
+					code: 404,
+					RspData: null,
+					msg: "网络连接失败,请重新尝试一下"
 				});
-			} else if (success_data.code == 'sup_0015'||success_data.code == '0001') {
-				mui.toast(success_data.msg);
-				setTimeout(function() {
-					//获取个人信息
-					// var personal = store.get(window.storageKeyName.PERSONALINFO);
-					//设置app角标,flag=0直接设置角标数字，flag=1角标减1,falg=2角标加1
-					
-					//获取所有已打开的webview 实例————重新打开login.html————循环关闭页面
-					store.remove(window.storageKeyName.PERSONALINFO);
-					
-					utils.mOpenWithData("../../html/login/index.html", {});
-					
-					// events.closeWaiting();
-				}, 1000);
-			} else {
-				success_data = modifyParameter(url, success_data);
-				callback(success_data);
 			}
-		},
-		error: function(xhr, type, errorThrown) {
-			console.log('jQAP-Error777:', url, xhr, type);
-			console.log('error111');
-			// events.closeWaiting();
-			console.log('error222');
-			mui.toast('网络连接失败,请重新尝试一下');
-			callback({
-				code: 404,
-				RspData: null,
-				msg: "网络连接失败,请重新尝试一下"
-			});
-		}
-	});
+		});
+	}
 }
 
 
